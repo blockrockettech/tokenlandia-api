@@ -2,7 +2,6 @@ const {getHttpProvider} = require("../../../web3/provider");
 const {
     attributesForTokenId,
     tokenIdForProductId,
-    totalSupply,
     etherscanUrlForTokenId,
     openSeaUrlForTokenId
 } = require("../../../services/tokenlandia");
@@ -52,7 +51,7 @@ token.get('/info/:tokenIdOrProductId', async function(req, res) {
 
     const ipfsResponse = await axios.get(token_uri);
 
-    res.status(200).json({
+    res.status(200).header('Cache-Control', 'public, max-age=86400, s-maxage=86400').json({
         product_code,
         product_id,
         token_uri,
