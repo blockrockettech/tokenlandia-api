@@ -1,10 +1,5 @@
 const {getHttpProvider} = require("../../../web3/provider");
-const {
-    attributesForTokenId,
-    tokenIdForProductId,
-    etherscanUrlForTokenId,
-    openSeaUrlForTokenId
-} = require("../../../services/tokenlandia");
+const tokenlandia = require("../../../services/tokenlandia");
 
 const axios = require('axios');
 const token = require('express').Router({mergeParams: true});
@@ -12,12 +7,13 @@ const token = require('express').Router({mergeParams: true});
 token.get('/info/:tokenIdOrProductId', async function(req, res) {
     const chainId = req.params.chainId;
     const provider = getHttpProvider(chainId);
+    tokenlandia.init(chainId, provider);
 
     const tokenIdOrProductId = req.params.tokenIdOrProductId;
     let tokenId = tokenIdOrProductId;
     if (tokenIdOrProductId.indexOf('-') !== -1) {
         try {
-            tokenId = await tokenIdForProductId(tokenIdOrProductId, chainId, provider);
+            tokenId = await tokenlandia.tokenIdForProductId(tokenIdOrProductId);
         } catch (e) {
             return res.status(500).json({
                 msg: `Token with product ID ${tokenIdOrProductId} not found`
@@ -33,8 +29,9 @@ token.get('/info/:tokenIdOrProductId', async function(req, res) {
 
     let attributesResponse;
     try {
-        attributesResponse = await attributesForTokenId(tokenId, chainId, provider);
+        attributesResponse = await tokenlandia.attributesForTokenId(tokenId);
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             msg: e.reason && e.reason[0] ? e.reason[0] : `Token with ID ${tokenId} not found`
         });
@@ -46,14 +43,15 @@ token.get('/info/:tokenIdOrProductId', async function(req, res) {
         token_uri
     ] = attributesResponse;
 
-    const open_sea_link = openSeaUrlForTokenId(tokenId, chainId);
-    const etherscan_link = etherscanUrlForTokenId(tokenId, chainId);
+    const open_sea_link = tokenlandia.openSeaUrlForTokenId(tokenId);
+    const etherscan_link = tokenlandia.etherscanUrlForTokenId(tokenId);
 
     const ipfsResponse = await axios.get(token_uri);
 
     res.status(200).header('Cache-Control', 'public, max-age=86400, s-maxage=86400').json({
         product_code,
         product_id,
+        token_id: tokenId.toString(),
         token_uri,
         open_sea_link,
         etherscan_link,

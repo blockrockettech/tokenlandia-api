@@ -10,52 +10,39 @@ function getBaseUrl(domain, networkName) {
     return `https://${domain}`;
 }
 
-function etherscanUrlForTokenId(tokenId, chainId) {
-    const baseUrl = getBaseUrl('etherscan.io', getNetworkName(chainId));
-    const contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, chainId);
-    return `${baseUrl}/token/${contractAddress}?a=${tokenId}`;
+class TokenLandia {
+    init(chainId, provider) {
+        this.chainId = chainId;
+        this.provider = provider;
+        this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);
+        this.contract = new ethers.Contract(
+            this.contractAddress,
+            TokenLandiaTruffleConf.abi,
+            this.provider
+        );
+    }
+
+    etherscanUrlForTokenId(tokenId) {
+        const baseUrl = getBaseUrl('etherscan.io', getNetworkName(this.chainId));
+        return `${baseUrl}/token/${this.contractAddress}?a=${tokenId}`;
+    }
+
+    openSeaUrlForTokenId(tokenId) {
+        const baseUrl = getBaseUrl('opensea.io', getNetworkName(this.chainId));
+        return `${baseUrl}/assets/${this.contractAddress}/${tokenId}`;
+    }
+
+    async attributesForTokenId(tokenId) {
+        return await this.contract.attributes(tokenId);
+    }
+
+    async tokenIdForProductId(productId) {
+        return await this.contract.tokenIdForProductId(productId);
+    }
+
+    async totalSupply() {
+        return await this.contract.totalSupply();
+    }
 }
 
-function openSeaUrlForTokenId(tokenId, chainId) {
-    const baseUrl = getBaseUrl('opensea.io', getNetworkName(chainId));
-    const contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, chainId);
-    return `${baseUrl}/assets/${contractAddress}/${tokenId}`;
-}
-
-async function attributesForTokenId(tokenId, chainId, provider) {
-    const contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, chainId);
-    const tokenlandia = new ethers.Contract(
-        contractAddress,
-        TokenLandiaTruffleConf.abi,
-        provider
-    );
-    return await tokenlandia.attributes(tokenId);
-}
-
-async function tokenIdForProductId(productId, chainId, provider) {
-    const contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, chainId);
-    const tokenlandia = new ethers.Contract(
-        contractAddress,
-        TokenLandiaTruffleConf.abi,
-        provider
-    );
-    return await tokenlandia.tokenIdForProductId(productId);
-}
-
-async function totalSupply(chainId, provider) {
-    const contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, chainId);
-    const tokenlandia = new ethers.Contract(
-        contractAddress,
-        TokenLandiaTruffleConf.abi,
-        provider
-    );
-    return await tokenlandia.totalSupply();
-}
-
-module.exports = {
-    attributesForTokenId,
-    tokenIdForProductId,
-    totalSupply,
-    etherscanUrlForTokenId,
-    openSeaUrlForTokenId
-};
+module.exports = new TokenLandia();
