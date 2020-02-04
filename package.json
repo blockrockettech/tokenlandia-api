@@ -2,6 +2,7 @@
   "name": "tokenlandia-api",
   "version": "1.0.0",
   "scripts": {
+    "start": "nodemon --exec node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "BlockRocket.tech",
@@ -17,5 +18,8 @@
     "ipfs-http-client": "^42.0.0-pre.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }

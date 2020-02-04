@@ -23,8 +23,7 @@ app.use('*', cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-const info = require('./routes/info');
-app.use('/', info);
+app.use('/v1', require('./routes/v1'));
 
 // Default error handler for all routes
 app.use((err, req, res, next) => {
