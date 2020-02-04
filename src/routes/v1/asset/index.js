@@ -6,8 +6,22 @@ const token = require('express').Router({mergeParams: true});
 
 token.get('/info/:tokenIdOrProductId', async function(req, res) {
     const chainId = req.params.chainId;
-    const provider = getHttpProvider(chainId);
-    tokenlandia.init(chainId, provider);
+    let provider;
+    try {
+        provider = getHttpProvider(chainId);
+    } catch(e) {
+        return res.status(500).json({
+            msg: `Invalid chain ID '${chainId}'`
+        });
+    }
+
+    try {
+        tokenlandia.init(chainId, provider);
+    } catch (e) {
+        return res.status(500).json({
+            msg: e.toString()
+        });
+    }
 
     const tokenIdOrProductId = req.params.tokenIdOrProductId;
     let tokenId = tokenIdOrProductId;

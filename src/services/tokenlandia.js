@@ -15,6 +15,11 @@ class TokenLandia {
         this.chainId = chainId;
         this.provider = provider;
         this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);
+
+        if (!this.contractAddress) {
+            throw new Error(`No contract exists for chain ID '${chainId}'`);
+        }
+
         this.contract = new ethers.Contract(
             this.contractAddress,
             TokenLandiaTruffleConf.abi,
