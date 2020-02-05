@@ -63,15 +63,17 @@ token.get('/info/:tokenIdOrProductId', async function (req, res) {
 
     const ipfsResponse = await axios.get(token_uri);
 
-    res.status(200).header('Cache-Control', 'public, max-age=86400, s-maxage=86400').json({
-        product_code,
-        product_id,
-        token_id: tokenId.toString(),
-        token_uri,
-        open_sea_link,
-        etherscan_link,
-        ...ipfsResponse.data
-    });
+    res.status(200)
+        .header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+        .json({
+            product_code,
+            product_id,
+            token_id: tokenId.toString(),
+            token_uri,
+            open_sea_link,
+            etherscan_link,
+            ...ipfsResponse.data
+        });
 });
 
 module.exports = token;
