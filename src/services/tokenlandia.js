@@ -5,51 +5,57 @@ const {getNetworkName} = require('@blockrocket/utils');
 const {getHttpProvider} = require('../web3/provider');
 
 function getBaseUrl(domain, networkName) {
-    if (networkName !== 'mainnet') {
-        return `https://${networkName}.${domain}`;
-    }
-    return `https://${domain}`;
+  if (networkName !== 'mainnet') {
+    return `https://${networkName}.${domain}`;
+  }
+  return `https://${domain}`;
 }
 
 class TokenLandia {
 
-    constructor(chainId) {
-        this.chainId = chainId;
-        this.provider = getHttpProvider(chainId);
-        this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);
+  constructor(chainId) {
+    this.chainId = chainId;
 
-        if (!this.contractAddress) {
-            throw new Error(`No contract exists for chain ID '${chainId}'`);
-        }
-
-        this.contract = new ethers.Contract(
-            this.contractAddress,
-            TokenLandiaTruffleConf.abi,
-            this.provider
-        );
+    try {
+      this.provider = getHttpProvider(chainId);
+    } catch (e) {
+      throw new Error(`Invalid chain ID '${chainId}'`);
     }
 
-    etherscanUrlForTokenId(tokenId) {
-        const baseUrl = getBaseUrl('etherscan.io', getNetworkName(this.chainId));
-        return `${baseUrl}/token/${this.contractAddress}?a=${tokenId}`;
+    this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);
+
+    if (!this.contractAddress) {
+      throw new Error(`No contract exists for chain ID '${chainId}'`);
     }
 
-    openSeaUrlForTokenId(tokenId) {
-        const baseUrl = getBaseUrl('opensea.io', getNetworkName(this.chainId));
-        return `${baseUrl}/assets/${this.contractAddress}/${tokenId}`;
-    }
+    this.contract = new ethers.Contract(
+      this.contractAddress,
+      TokenLandiaTruffleConf.abi,
+      this.provider
+    );
+  }
 
-    async attributesForTokenId(tokenId) {
-        return await this.contract.attributes(tokenId);
-    }
+  etherscanUrlForTokenId(tokenId) {
+    const baseUrl = getBaseUrl('etherscan.io', getNetworkName(this.chainId));
+    return `${baseUrl}/token/${this.contractAddress}?a=${tokenId}`;
+  }
 
-    async tokenIdForProductId(productId) {
-        return await this.contract.tokenIdForProductId(productId);
-    }
+  openSeaUrlForTokenId(tokenId) {
+    const baseUrl = getBaseUrl('opensea.io', getNetworkName(this.chainId));
+    return `${baseUrl}/assets/${this.contractAddress}/${tokenId}`;
+  }
 
-    async totalSupply() {
-        return await this.contract.totalSupply();
-    }
+  async attributesForTokenId(tokenId) {
+    return await this.contract.attributes(tokenId);
+  }
+
+  async tokenIdForProductId(productId) {
+    return await this.contract.tokenIdForProductId(productId);
+  }
+
+  async totalSupply() {
+    return await this.contract.totalSupply();
+  }
 }
 
 module.exports = TokenLandia;
