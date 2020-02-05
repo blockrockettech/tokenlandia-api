@@ -1,5 +1,7 @@
 # TokenLandia API
 
+[![Test Passing](https://github.com/blockrockettech/tokenlandia-api/workflows/Test%20Runner/badge.svg)](https://github.com/blockrockettech/tokenlandia-api/actions)
+
 ### Running locally
 Install the dependencies: 
 
