@@ -2,6 +2,7 @@ const {ethers} = require('ethers');
 const TokenLandiaTruffleConf = require('../truffleconf/token/Tokenlandia');
 const {getContractAddressFromTruffleConf} = require('../utils/truffle');
 const {getNetworkName} = require('@blockrocket/utils');
+const {getHttpProvider} = require('../web3/provider');
 
 function getBaseUrl(domain, networkName) {
     if (networkName !== 'mainnet') {
@@ -11,9 +12,10 @@ function getBaseUrl(domain, networkName) {
 }
 
 class TokenLandia {
-    init(chainId, provider) {
+
+    constructor(chainId) {
         this.chainId = chainId;
-        this.provider = provider;
+        this.provider = getHttpProvider(chainId);
         this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);
 
         if (!this.contractAddress) {
@@ -50,4 +52,4 @@ class TokenLandia {
     }
 }
 
-module.exports = new TokenLandia();
+module.exports = TokenLandia;

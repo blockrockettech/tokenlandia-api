@@ -1,27 +1,28 @@
-const {getHttpProvider} = require("../../../web3/provider");
-const tokenlandia = require("../../../services/tokenlandia");
+const ServiceFactory = require('../../../services');
 
 const axios = require('axios');
 const token = require('express').Router({mergeParams: true});
 
-token.get('/info/:tokenIdOrProductId', async function(req, res) {
+token.get('/info/:tokenIdOrProductId', async function (req, res) {
     const chainId = req.params.chainId;
-    let provider;
-    try {
-        provider = getHttpProvider(chainId);
-    } catch(e) {
-        return res.status(500).json({
-            msg: `Invalid chain ID '${chainId}'`
-        });
-    }
+    // let provider;
+    // try {
+    //     provider = getHttpProvider(chainId);
+    // } catch(e) {
+    //     return res.status(500).json({
+    //         msg: `Invalid chain ID '${chainId}'`
+    //     });
+    // }
 
-    try {
-        tokenlandia.init(chainId, provider);
-    } catch (e) {
-        return res.status(500).json({
-            msg: e.toString()
-        });
-    }
+    const tokenlandia = ServiceFactory.newTokenLandiaService(chainId);
+
+    // try {
+    //     tokenlandia.init(chainId, provider);
+    // } catch (e) {
+    //     return res.status(500).json({
+    //         msg: e.toString()
+    //     });
+    // }
 
     const tokenIdOrProductId = req.params.tokenIdOrProductId;
     let tokenId = tokenIdOrProductId;
