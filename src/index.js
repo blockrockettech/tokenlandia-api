@@ -40,6 +40,6 @@ app.use((err, req, res, next) => {
         });
 });
 
-const port = 3000 || process.env.PORT;
+const port = 8080 || process.env.PORT;
 app.listen(port, () => console.log(`API started, listening on port [${port}]`));
 module.exports = app;

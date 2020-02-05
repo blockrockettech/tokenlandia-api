@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "nodemon --exec node src/index.js",
+    "start-prod": "node src/index.js",
     "test": "NODE_ENV=test mocha ./test --recursive --exit --timeout 10000"
   },
   "author": "BlockRocket.tech",
@@ -19,10 +20,10 @@
     "ipfs-http-client": "^42.0.0-pre.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "sinon": "^8.1.1",
     "web3": "^1.2.6"
   },
   "devDependencies": {
+    "sinon": "^8.1.1",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "mocha": "^7.0.1",
