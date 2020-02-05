@@ -23,6 +23,7 @@ app.use('*', cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use('/', require('./routes/info'));
 app.use('/v1/network/:chainId', require('./routes/v1'));
 
 // Default error handler for all routes
