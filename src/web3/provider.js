@@ -11,7 +11,7 @@ const getHttpProvider = chainId => {
 
   let provider = new ethers.providers.Web3Provider(new Web3.providers.HttpProvider('http://127.0.0.1:7545'));
 
-  if (chainId != 5777) {
+  if (chainId !== 5777) {
     provider = ethers.getDefaultProvider(getNetworkName(chainId));
   }
 

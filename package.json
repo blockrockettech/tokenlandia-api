@@ -4,6 +4,7 @@
   "scripts": {
     "start": "nodemon --exec node src/index.js",
     "start-prod": "node src/index.js",
+    "deploy-prod": "./deployment/deploy.sh",
     "test": "NODE_ENV=test mocha ./test --recursive --exit --timeout 10000"
   },
   "author": "BlockRocket.tech",

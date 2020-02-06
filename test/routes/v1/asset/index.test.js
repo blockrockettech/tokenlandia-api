@@ -21,6 +21,7 @@ describe('Physical asset token routes', () => {
   describe('/info/:tokenIdOrProductId', () => {
     it('should retrieve token info for a valid token ID', async () => {
       const tokenId = '2';
+      const hash = '0x123abc';
 
       sinon.stub(services, 'newTokenLandiaService').callsFake(() => {
         return {
@@ -39,6 +40,14 @@ describe('Physical asset token routes', () => {
           etherscanUrlForTokenId(token_id) {
             token_id.should.be.equal(tokenId);
             return 'etherscan';
+          },
+          etherscanUrlForTransaction(hash) {
+            hash.should.be.equal(hash);
+            return `transaction_hash/${hash}`;
+          },
+          getBirthTransaction(token_id) {
+            token_id.should.be.equal(tokenId);
+            return {transactionHash: hash};
           }
         };
       });
@@ -70,6 +79,7 @@ describe('Physical asset token routes', () => {
         'token_id': tokenId,
         open_sea_link: 'opensea',
         etherscan_link: 'etherscan',
+        'etherscan_transaction_hash': 'transaction_hash/0x123abc',
         ...fakeInfuraResponse
       });
     });

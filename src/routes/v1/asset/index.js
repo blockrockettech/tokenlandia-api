@@ -51,6 +51,7 @@ token.get('/info/:tokenIdOrProductId', async function (req, res) {
 
   const open_sea_link = tokenlandia.openSeaUrlForTokenId(tokenId);
   const etherscan_link = tokenlandia.etherscanUrlForTokenId(tokenId);
+  const {transactionHash} = await tokenlandia.getBirthTransaction(tokenId);
 
   const ipfsResponse = await axios.get(token_uri);
 
@@ -63,6 +64,8 @@ token.get('/info/:tokenIdOrProductId', async function (req, res) {
       token_uri,
       open_sea_link,
       etherscan_link,
+      etherscan_transaction_hash: tokenlandia.etherscanUrlForTransaction(transactionHash),
+      contract_address: tokenlandia.contractAddress,
       ...ipfsResponse.data
     });
 });

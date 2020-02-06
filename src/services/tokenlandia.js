@@ -1,4 +1,4 @@
-const {ethers} = require('ethers');
+const {ethers, constants, utils} = require('ethers');
 const TokenLandiaTruffleConf = require('../truffleconf/token/Tokenlandia');
 const {getContractAddressFromTruffleConf} = require('../utils/truffle');
 const {getNetworkName} = require('@blockrocket/utils');
@@ -40,6 +40,11 @@ class TokenLandia {
     return `${baseUrl}/token/${this.contractAddress}?a=${tokenId}`;
   }
 
+  etherscanUrlForTransaction(transactionHash) {
+    const baseUrl = getBaseUrl('etherscan.io', getNetworkName(this.chainId));
+    return `${baseUrl}/tx/${transactionHash}`;
+  }
+
   openSeaUrlForTokenId(tokenId) {
     const baseUrl = getBaseUrl('opensea.io', getNetworkName(this.chainId));
     return `${baseUrl}/assets/${this.contractAddress}/${tokenId}`;
@@ -51,6 +56,20 @@ class TokenLandia {
 
   async tokenIdForProductId(productId) {
     return await this.contract.tokenIdForProductId(productId);
+  }
+
+  async getBirthTransaction(tokenId) {
+    // From Zero for token ID
+    const filter = this.contract.filters.Transfer(constants.AddressZero, null, new utils.BigNumber(tokenId).toHexString());
+    filter.fromBlock = 0;
+    filter.toBlock = 'latest';
+
+    const events = await this.provider.getLogs(filter);
+    const {transactionHash, blockNumber} = events[0];
+    return {
+      transactionHash,
+      blockNumber,
+    };
   }
 
   async totalSupply() {
