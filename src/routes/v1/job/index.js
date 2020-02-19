@@ -40,7 +40,6 @@ job.post('/submit/createtoken/general', async function (req, res) {
   }
 
   const {coo, artist_initials, series, design} = rawJobData;
-
   const jobData = {
     ...rawJobData,
     product_id: `${coo}-${artist_initials}-${series}-${design}-${token_id}`

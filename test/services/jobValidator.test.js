@@ -5,7 +5,7 @@ describe('Job validation tests', function () {
 
   const validPayload = {
     'token_id': 1,
-    'country_of_origin': 'USA',
+    'coo': 'USA',
     'artist_initials': 'RSA',
     'series': 2,
     'design': 3,
@@ -32,7 +32,7 @@ describe('Job validation tests', function () {
       valid: false,
       errors: [
         {message: '"token_id" is required', type: 'any.required'},
-        {message: '"country_of_origin" is required', type: 'any.required'},
+        {message: '"coo" is required', type: 'any.required'},
         {message: '"artist_initials" is required', type: 'any.required'},
         {message: '"series" is required', type: 'any.required'},
         {message: '"design" is required', type: 'any.required'},
@@ -73,7 +73,7 @@ describe('Job validation tests', function () {
     results.should.be.deep.equal({
       valid: false,
       errors: [
-        {message: '"unknown_field" is not allowed', type: 'object.unknown'},
+        {message: '"token_id" must be a number', type: 'number.base'},
       ]
     });
   });
