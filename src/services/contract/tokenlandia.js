@@ -1,8 +1,8 @@
 const {ethers, constants, utils} = require('ethers');
-const TokenLandiaTruffleConf = require('../truffleconf/token/Tokenlandia');
-const {getContractAddressFromTruffleConf} = require('../utils/truffle');
+const TokenLandiaTruffleConf = require('../../truffleconf/token/Tokenlandia');
+const {getContractAddressFromTruffleConf} = require('../../utils/truffle');
 const {getNetworkName} = require('@blockrocket/utils');
-const {getHttpProvider} = require('../web3/provider');
+const {getHttpProvider} = require('../../web3/provider');
 
 function getBaseUrl(domain, networkName) {
   if (networkName !== 'mainnet') {
