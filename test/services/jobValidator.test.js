@@ -26,7 +26,7 @@ describe('Job validation tests', function () {
     ],
   };
 
-  it.only('should fail if empty', async function () {
+  it('should fail if empty', async function () {
     const results = await jobValidator.isValidCreateTokenJob({});
     results.should.be.deep.equal({
       valid: false,
@@ -52,7 +52,7 @@ describe('Job validation tests', function () {
     });
   });
 
-  it.only('should fail if with unknown', async function () {
+  it('should fail if with unknown', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       unknown_field: 'abc'
@@ -65,7 +65,7 @@ describe('Job validation tests', function () {
     });
   });
 
-  it.only('should fail if token_id is not a number', async function () {
+  it('should fail if token_id is not a number', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       'token_id': 'abc',
@@ -80,11 +80,10 @@ describe('Job validation tests', function () {
 
   it('should pass', async function () {
     const results = await jobValidator.isValidCreateTokenJob(validPayload);
-    console.log(results);
+    esults.should.be.deep.equal({
+      valid: true
+    });
   });
 
-  it('', async function () {
-
-  });
 
 });
