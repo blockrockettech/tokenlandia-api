@@ -9,45 +9,45 @@ const {
 
 const {JOB_STATUS, JOB_TYPES} = jobConstants;
 
-job.post('/submit/createtoken', async function (req, res) {
+job.post('/submit/createtoken/general', async function (req, res) {
 
   const chainId = req.params;
-  const jobData = req.body;
+  const rawJobData = req.body;
 
-  if (!jobValidator.isValidCreateTokenJob(jobData)) {
-    // TODO validate payload - very strict rules - fail fast/hard
+  const {valid} = jobValidator.isValidCreateTokenJob(rawJobData);
+  if (!valid) {
+    return res.status(400).json({
+      error: `Invalid job data`,
+      details: valid.errors
+    });
   }
 
-  const {token_id} = jobData;
-
-  const existingJob = jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
-  if (existingJob) {
-    return res
-      .status(400)
-      .json({
-        error: `Duplicate Job found`,
-        data: {
-          ...existingJob
-        }
-      });
-  }
+  const {token_id} = rawJobData;
 
   const tokenLandiaService = newTokenLandiaService(chainId);
   const tokenExists = await tokenLandiaService.tokenExists(token_id);
   if (tokenExists) {
-    return res
-      .status(400)
-      .json({
-        error: `Token already creation`,
-      });
+    return res.status(400).json({
+      error: `Token already creation`,
+    });
   }
+
+  const existingJob = jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
+  if (existingJob) {
+    return res.status(400).json({
+      error: `Duplicate Job found`
+    });
+  }
+
+  const jobData = {
+    ...rawJobData,
+  };
 
   // accept job
   const jobDetails = await jobQueue.addJobToQueue(jobData, JOB_TYPES.CREATE_TOKEN);
 
   // return job details
-  return res
-    .status(202)
+  return res.status(202)
     .json(jobDetails);
 });
 

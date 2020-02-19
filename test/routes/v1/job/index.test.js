@@ -1,14 +1,11 @@
 const sinon = require('sinon');
 
-const axios = require('axios');
-
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-
-const app = require('../../../../src');
-
 chai.use(chaiHttp);
 chai.should();
+
+const app = require('../../../../src');
 
 function getBaseUrl(chainId) {
   return `/v1/network/${chainId}/job`;
