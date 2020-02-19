@@ -28,7 +28,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
   const tokenExists = await tokenLandiaService.tokenExists(token_id);
   if (tokenExists) {
     return res.status(400).json({
-      error: `Token already creation`,
+      error: `Token already created`,
     });
   }
 
@@ -40,6 +40,8 @@ job.post('/submit/createtoken/general', async function (req, res) {
   }
 
   const {coo, artist_initials, series, design} = rawJobData;
+
+  // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
     product_id: `${coo}-${artist_initials}-${series}-${design}-${token_id}`

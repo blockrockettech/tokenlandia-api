@@ -28,22 +28,20 @@ const CREATE_TOKEN_SCHEMA = Joi.object({
 
   artist: Joi.string().required(),
 
-  // Optional
-  artist_assistant: Joi.string().alphanum(),
+  artist_assistant: Joi.string().alphanum().optional(),
 
   brand: Joi.string().required(),
 
   model: Joi.string().required(),
 
-  // Optional
-  purchase_location: Joi.string(),
-  purchase_date: Joi.string().pattern(YYYY_MM_DD_PATTERN),
-  customization_location: Joi.string(),
-  customization_date: Joi.string().pattern(YYYY_MM_DD_PATTERN),
+  purchase_location: Joi.string().optional(),
+  purchase_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
+  customization_location: Joi.string().optional(),
+  customization_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
 
   materials_used: Joi.array().items(
     Joi.string().alphanum().min(1).max(40)
-  ).min(0).max(5),
+  ).optional().min(0).max(5),
 
 });
 
