@@ -1,8 +1,22 @@
+const dotenv = require('dotenv');
+
+if (process.env.NODE_ENV === 'test') {
+  console.log(`Applying dotenv config for [${process.env.NODE_ENV}]`);
+  const result = dotenv.config({path: `./.env.${process.env.NODE_ENV}`});
+  if (result.error) throw result.error;
+} else {
+  console.log(`Applying default dotenv`);
+  const result = dotenv.config({path: './.env'});
+  if (result.error) throw result.error;
+}
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const compression = require('compression');
+
+const {chainIdValidator} = require('./routes/middleware');
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(compression());
@@ -24,7 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/', require('./routes/info'));
-app.use('/v1/network/:chainId', require('./routes/v1'));
+app.use('/v1/network/:chainId', chainIdValidator, require('./routes/v1'));
 
 // Default error handler for all routes
 app.use((err, req, res, next) => {

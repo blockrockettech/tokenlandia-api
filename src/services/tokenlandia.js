@@ -54,6 +54,16 @@ class TokenLandia {
     return await this.contract.attributes(tokenId);
   }
 
+  async tokenExists(tokenId) {
+    try {
+      // method call reverts for non exitance token ID
+      await this.contract.productCode(tokenId);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async tokenIdForProductId(productId) {
     return await this.contract.tokenIdForProductId(productId);
   }
