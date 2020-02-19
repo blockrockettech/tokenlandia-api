@@ -3,39 +3,11 @@ const countryCodes = require('../data/country_codes');
 const _ = require('lodash');
 const Joi = require('@hapi/joi');
 
-const test = {
-  'token_id': 1,
-  'recipient': '0x12D062B19a2DF1920eb9FC28Bd6E9A7E936de4c2',
-  'coo': 'USA',
-  'artist_initials': 'RSA',
-  'series': 2,
-  'design': 3,
-  'name': 'token 1',
-  'description': 'token 1 description',
-  'image': 'http://test.test.com',
-  'artist': 'artist',
-  'artist_assistant': 'assistant',
-  'brand': 'brand',
-  'model': 'model',
-  'purchase_location': 'london',
-  'purchase_date': '2020-02-01',
-  'customization_location': 'tokyo',
-  'customization_date': '2020-02-06',
-  'materials_used': [
-    'a',
-    'b'
-  ],
-};
-//Only 1 value needs to be supplied for ‘materials_used’
-// recipient: "0x12D062B19a2DF1920eb9FC28Bd6E9A7E936de4c2"
-
 const YYYY_MM_DD_PATTERN = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/;
 
 const CREATE_TOKEN_SCHEMA = Joi.object({
 
   token_id: Joi.number().integer().min(0).required(),
-
-
 
   // TODO validate COO against country codes
   coo: Joi.string().min(3).max(3).case('upper').required(),

@@ -39,12 +39,15 @@ job.post('/submit/createtoken/general', async function (req, res) {
     });
   }
 
+  const {coo, artist_initials, series, design} = rawJobData;
+
   const jobData = {
     ...rawJobData,
+    product_id: `${coo}-${artist_initials}-${series}-${design}-${token_id}`
   };
 
   // accept job
-  const jobDetails = await jobQueue.addJobToQueue(jobData, JOB_TYPES.CREATE_TOKEN);
+  const jobDetails = await jobQueue.addJobToQueue(chainId, jobData, JOB_TYPES.CREATE_TOKEN);
 
   // return job details
   return res.status(202)
