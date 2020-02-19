@@ -1,5 +1,5 @@
 class IJobProcessor {
-  processJob(jobId) {}
+  async processJob(chainId, jobId) {}
 }
 
 module.exports = IJobProcessor;
