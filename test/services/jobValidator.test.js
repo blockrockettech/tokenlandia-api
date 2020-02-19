@@ -26,7 +26,7 @@ describe('Job validation tests', function () {
     ],
   };
 
-  it.only('should fail if empty', async function () {
+  it('should fail if empty', async function () {
     const results = await jobValidator.isValidCreateTokenJob({});
     results.should.be.deep.equal({
       valid: false,
@@ -40,19 +40,13 @@ describe('Job validation tests', function () {
         {message: '"description" is required', type: 'any.required'},
         {message: '"image" is required', type: 'any.required'},
         {message: '"artist" is required', type: 'any.required'},
-        {message: '"artist_assistant" is required', type: 'any.required'},
         {message: '"brand" is required', type: 'any.required'},
         {message: '"model" is required', type: 'any.required'},
-        {message: '"purchase_location" is required', type: 'any.required'},
-        {message: '"purchase_date" is required', type: 'any.required'},
-        {message: '"customization_location" is required', type: 'any.required'},
-        {message: '"customization_date" is required', type: 'any.required'},
-        {message: '"materials_used" is required', type: 'any.required'}
       ]
     });
   });
 
-  it.only('should fail if with unknown', async function () {
+  it('should fail if with unknown', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       unknown_field: 'abc'
@@ -65,7 +59,7 @@ describe('Job validation tests', function () {
     });
   });
 
-  it.only('should fail if token_id is not a number', async function () {
+  it('should fail if token_id is not a number', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       'token_id': 'abc',
@@ -78,13 +72,27 @@ describe('Job validation tests', function () {
     });
   });
 
+  it('should allow creation without 5 optional fields', async function () {
+    const results = await jobValidator.isValidCreateTokenJob({
+      ..._.omit(validPayload, [
+        'purchase_location',
+        'purchase_date',
+        'customization_location',
+        'customization_date',
+        'materials_used'
+      ])
+    });
+    results.should.be.deep.equal({
+      valid: true
+    });
+  });
+
   it('should pass', async function () {
     const results = await jobValidator.isValidCreateTokenJob(validPayload);
-    console.log(results);
+    results.should.be.deep.equal({
+      valid: true
+    });
   });
 
-  it('', async function () {
-
-  });
 
 });
