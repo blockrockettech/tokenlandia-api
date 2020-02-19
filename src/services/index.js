@@ -1,8 +1,9 @@
-const TokenLandia = require('./tokenlandia');
-const JobQueue = require('./jobQueue');
-const jobConstants = require('./jobConstants');
-const jobValidator = require('./jobValidator');
-const chainUtils = require('./chainUtils');
+const TokenLandia = require('./contract/tokenlandia');
+const JobQueue = require('./job/jobQueue');
+const jobConstants = require('./job/jobConstants');
+const jobValidator = require('./job/jobValidator');
+const chainUtils = require('../utils/chain');
+const IpfsService = require('./ipfs/infura.ipfs.service');
 
 const db = require('./database');
 
@@ -14,4 +15,5 @@ module.exports = {
   jobValidator: jobValidator,
   jobConstants: jobConstants,
   chainUtils: chainUtils,
+  ipfsService: new IpfsService()
 };

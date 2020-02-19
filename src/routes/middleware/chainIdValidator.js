@@ -1,4 +1,4 @@
-const chainUtils = require('../../services/chainUtils');
+const chainUtils = require('../../utils/chain');
 
 module.exports = (req, res, next) => {
 

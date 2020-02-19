@@ -3,7 +3,7 @@ const _ = require('lodash');
 const chai = require('chai');
 chai.should();
 
-const {isValidChainId} = require('../../src/services/chainUtils');
+const {isValidChainId} = require('../../src/utils/chain');
 
 describe('chainUtils', function () {
 

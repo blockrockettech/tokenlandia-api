@@ -1,4 +1,4 @@
-const countryCodes = require('../data/country_codes');
+const countryCodes = require('../../data/country_codes');
 
 const _ = require('lodash');
 const Joi = require('@hapi/joi');
