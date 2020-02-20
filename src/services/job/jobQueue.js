@@ -54,7 +54,7 @@ class JobQueue {
 
     await this.getJobsCollectionRef(chainId)
       .doc(jobId)
-      .set({context: newContext}, {merge: true});
+      .set({context: newContext, status}, {merge: true});
 
     // Return the newly updated job
     return this.getJobForId(chainId, jobId);
@@ -63,8 +63,8 @@ class JobQueue {
   async getNextJobForProcessing(chainId, statuses) {
     console.log(`Get next job for processing for chain [${chainId}]`);
 
-    this.getJobsCollectionRef(chainId)
-      .where('jobType', 'in', statuses)
+    return this.getJobsCollectionRef(chainId)
+      .where('status', 'in', statuses)
       .orderBy('createdDate', 'desc')
       .limit(1)
       .get()

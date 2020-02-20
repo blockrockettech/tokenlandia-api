@@ -97,7 +97,7 @@ job.get('/process/metadata', async function (req, res) {
       });
   }
 
-  await metadataCreationProcessor.processJob(chainId, job);
+  await metadataCreationProcessor.processJob(job);
 
   return res
     .status(200)

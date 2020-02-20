@@ -11,10 +11,11 @@ class MetadataCreationProcessor {
   }
 
   async processJob(job) {
-
+    console.log(job);
     const {context, chainId, jobId} = job;
-
+    console.log('context', context);
     const acceptedJobContext = context[JOB_STATUS.ACCEPTED];
+    console.log('ajc',acceptedJobContext);
 
     const {name, description, image, type, ...restOfData} = acceptedJobContext;
 
