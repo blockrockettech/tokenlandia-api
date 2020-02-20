@@ -4,7 +4,8 @@ const {
   jobQueue,
   jobValidator,
   jobConstants,
-  newTokenLandiaService
+  newTokenLandiaService,
+  metadataCreationProcessor
 } = require('../../../services/index');
 
 const {JOB_STATUS, JOB_TYPES} = jobConstants;
@@ -80,6 +81,59 @@ job.get('/details/:jobId', async function (req, res) {
   return res
     .status(202)
     .json(jobDetails);
+});
+
+job.get('/process/metadata', async function (req, res) {
+  const {chainId} = req.params;
+  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED]);
+
+  if (!job) {
+    return res
+      .status(204)
+      .json({
+        msg: `No jobs found for processing for chain ID [${chainId}]`
+      });
+  }
+
+  await metadataCreationProcessor.processJob(chainId, job);
+
+  return res
+    .status(200)
+    .json({
+      msg: `Processing job [${job.jobId}]`
+    });
+});
+
+job.get('/process/transaction', async function (req, res) {
+  const {chainId} = req.params;
+  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.METADATA_CREATED]);
+
+  if (!job) {
+    return res
+      .status(204)
+      .json({
+        msg: `No jobs found for processing for chain ID [${chainId}]`
+      });
+  }
+
+  // TODO send txs to chain job
+
+});
+
+job.get('/process/completions', async function (req, res) {
+  const {chainId} = req.params;
+  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
+
+  if (!job) {
+    return res
+      .status(204)
+      .json({
+        msg: `No jobs found for processing for chain ID [${chainId}]`
+      });
+  }
+
+  // TODO check status of transaction job
+
 });
 
 module.exports = job;

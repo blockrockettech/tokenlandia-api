@@ -1,26 +1,14 @@
 const _ = require('lodash');
 const BASE_IPFS_URL = 'https://ipfs.infura.io/ipfs';
 
-class MetadataCreationJob  {
+class MetadataCreationProcessor  {
 
   constructor(jobQueue, ipfsService) {
     this.jobQueue = jobQueue;
     this.ipfsService = ipfsService;
   }
 
-  // TODO - handle IPFS failures at both push stages by storing IPFS hash to save re-pushing
-
-  async processJob(chainId, jobId) {
-    const job = await this.jobQueue.getJobForId(chainId, jobId);
-
-    // TODO validate job in the right state
-    // TODO accept jon by updating status
-
-    // TODO move this check the controller
-    if (!job) {
-      throw new Error('Metadata creation - process job - job does not exist or database error');
-    }
-
+  async processJob(job) {
     // Extract required data from job
     const {data} = job;
     const {name, description, image, type, ...restOfData} = data;
@@ -45,8 +33,8 @@ class MetadataCreationJob  {
     console.log(`${BASE_IPFS_URL}/${metadataIpfsHash}`);
 
     // TODO - move job onto the next stage?
-
+    // TODO - update and store job
   }
 }
 
-module.exports = MetadataCreationJob;
+module.exports = MetadataCreationProcessor;
