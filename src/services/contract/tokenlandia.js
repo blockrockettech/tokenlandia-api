@@ -85,6 +85,10 @@ class TokenLandia {
   async totalSupply() {
     return await this.contract.totalSupply();
   }
+
+  async mint(tokenId, recipient, productCode, ipfsHash) {
+    return this.contract.mintToken(tokenId, recipient, productCode, ipfsHash);
+  }
 }
 
 module.exports = TokenLandia;
