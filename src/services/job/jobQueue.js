@@ -15,13 +15,15 @@ class JobQueue {
     let jobsCollectionRef = this.getJobsCollectionRef(chainId.toString());
 
     const newJob = {
+      // Job data
       chainId: chainId.toString(),
       tokenId: token_id.toString(),
       status: JOB_STATUS.CREATED,
       jobType: jobType,
       createdDate: Date.now(),
       attempts: 0,
-      // the job data
+
+      // The actual payload
       data: {
         ...jobData
       }

@@ -14,11 +14,12 @@ job.post('/submit/createtoken/general', async function (req, res) {
   const chainId = req.params;
   const rawJobData = req.body;
 
-  const {valid} = jobValidator.isValidCreateTokenJob(rawJobData);
+  const {valid, errors} = await jobValidator.isValidCreateTokenJob(rawJobData);
+  console.log(`Incoming job found to be valid [${valid}]`, errors);
   if (!valid) {
     return res.status(400).json({
       error: `Invalid job data`,
-      details: valid.errors
+      details: errors
     });
   }
 

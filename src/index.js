@@ -11,12 +11,14 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 const express = require('express');
-const app = express();
+const bearerToken = require('express-bearer-token');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 
 const {chainIdValidator} = require('./routes/middleware');
+
+const app = express();
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(compression());
@@ -33,7 +35,7 @@ const corsOptions = {
 };
 
 app.use('*', cors(corsOptions));
-
+app.use(bearerToken());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
