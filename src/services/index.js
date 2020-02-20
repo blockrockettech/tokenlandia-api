@@ -15,5 +15,5 @@ module.exports = {
   jobValidator: jobValidator,
   jobConstants: jobConstants,
   chainUtils: chainUtils,
-  ipfsService: new IpfsService()
+  ipfsService: new IpfsService('https://ipfs.infura.io', '5001', {protocol: 'https'})
 };
