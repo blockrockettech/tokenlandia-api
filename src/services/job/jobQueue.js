@@ -56,6 +56,29 @@ class JobQueue {
     //   }, {merge: true});
   }
 
+  async getNextJobForProcessing(chainId, statuses) {
+    console.log(`Get next job for processing for chain [${chainId}]`);
+
+    this.getJobsCollectionRef(chainId)
+      .where('jobType', 'in', statuses)
+      .orderBy('createdDate', 'desc')
+      .limit(1)
+      .get()
+      .then((snapshot) => {
+
+        if (snapshot.empty) {
+          console.log('No jobs to process for chain [${chainId}]');
+          return null;
+        }
+
+        const document = snapshot.docs[0];
+        return {
+          jobId: document.id,
+          ...document.data()
+        };
+      });
+  }
+
   async getJobForId(chainId, jobId) {
     console.log('Get job', {chainId, jobId});
 
@@ -78,7 +101,6 @@ class JobQueue {
     console.log('Get jobs for token', {chainId: chainId, tokenId: tokenId, jobType: jobType});
 
     return this.getJobsCollectionRef(chainId)
-      .where('chainId', '==', _.toString(chainId))
       .where('tokenId', '==', _.toString(tokenId))
       .where('jobType', '==', _.toString(jobType))
       .get()

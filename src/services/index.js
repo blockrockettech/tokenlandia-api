@@ -5,7 +5,7 @@ const jobValidator = require('./job/jobValidator');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
-const MetadataCreationJob = require('./processors/metadataCreationJob');
+const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
 
 const db = require('./database');
 
@@ -20,5 +20,5 @@ module.exports = {
   jobConstants: jobConstants,
   chainUtils: chainUtils,
   ipfsService: ipfsService,
-  metadataCreationJob: new MetadataCreationJob(jobQueue, ipfsService),
+  metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
 };
