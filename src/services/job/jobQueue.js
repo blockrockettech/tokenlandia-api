@@ -41,6 +41,7 @@ class JobQueue {
 
   async addStatusAndContextToJob(chainId, jobId, status, context) {
     this.assertChainJobIdValid(chainId, jobId);
+
     const job = this.getJobForId(chainId, jobId);
     if (!job) {
       throw new Error(`Job cannot be found for job ID [${jobId}] and chain ID [${chainId}]`);
@@ -53,9 +54,10 @@ class JobQueue {
 
     await this.getJobsCollectionRef(chainId)
       .doc(jobId)
-      .set({
-        context: newContext
-      }, {merge: true});
+      .set({context: newContext}, {merge: true});
+
+    // Return the newly updated job
+    return this.getJobForId(chainId, jobId);
   }
 
   async getNextJobForProcessing(chainId, statuses) {
