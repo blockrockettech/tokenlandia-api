@@ -5,7 +5,12 @@ const jobValidator = require('./job/jobValidator');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
+
 const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
+
+const MintingProcessor = require('./processors/mintingProcessor');
+
+const JobCompletionProcessor = require('./processors/JobCompletionProcessor');
 
 const db = require('./database');
 
@@ -21,4 +26,6 @@ module.exports = {
   chainUtils: chainUtils,
   ipfsService: ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
+  mintingProcessor: (chainId) => new MintingProcessor(jobQueue, new TokenLandia(chainId)),
+  jobCompletionProcessor: new JobCompletionProcessor(jobQueue),
 };

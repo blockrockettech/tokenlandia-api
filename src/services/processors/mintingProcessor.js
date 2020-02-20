@@ -3,7 +3,8 @@ const {JOB_STATUS} = require('../job/jobConstants');
 const {getContractAddressFromTruffleConf} = require('../../utils/truffle');
 const EscrowContractTruffleConf = require('../../truffleconf/escrow/TrustedNftEscrow');
 
-class MintingJob {
+class MintingProcessor {
+
   constructor(jobQueue, tokenlandiaService) {
     this.jobQueue = jobQueue;
     this.tokenlandiaService = tokenlandiaService;
@@ -18,11 +19,11 @@ class MintingJob {
     const recipient = getContractAddressFromTruffleConf(EscrowContractTruffleConf, chainId);
 
     // fire TX
-    const tx = await this.tokenlandiaService.mint(tokenId, recipient, ACCEPTED.product_code, METADATA_CREATED.metadata_ipfs_hash);
+    const tx = await this.tokenlandiaService.mint(tokenId, recipient, ACCEPTED.product_code, METADATA_CREATED.metadataHash);
 
     // change status to TRANSACTION_SENT and new context including TX hash
     await this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, tx);
   }
 }
 
-module.exports = MintingJob;
+module.exports = MintingProcessor;

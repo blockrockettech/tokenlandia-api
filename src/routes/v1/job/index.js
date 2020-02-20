@@ -5,7 +5,9 @@ const {
   jobValidator,
   jobConstants,
   newTokenLandiaService,
-  metadataCreationProcessor
+  mintingProcessor,
+  metadataCreationProcessor,
+  jobCompletionProcessor
 } = require('../../../services/index');
 
 const {JOB_STATUS, JOB_TYPES} = jobConstants;
@@ -116,8 +118,13 @@ job.get('/process/transaction', async function (req, res) {
       });
   }
 
-  // TODO send txs to chain job
+  await mintingProcessor(chainId).processJob(job);
 
+  return res
+    .status(200)
+    .json({
+      msg: `Processing job [${job.jobId}]`
+    });
 });
 
 job.get('/process/completions', async function (req, res) {
@@ -132,8 +139,13 @@ job.get('/process/completions', async function (req, res) {
       });
   }
 
-  // TODO check status of transaction job
+  await jobCompletionProcessor.processJob(job);
 
+  return res
+    .status(200)
+    .json({
+      msg: `Processing job [${job.jobId}]`
+    });
 });
 
 module.exports = job;
