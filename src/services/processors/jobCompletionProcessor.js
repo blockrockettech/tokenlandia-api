@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const {getHttpProvider} = require('../../web3/provider');
 
 class JobCompletionProcessor {
 
@@ -10,10 +11,17 @@ class JobCompletionProcessor {
 
     const {context, tokenId, jobId, chainId} = job;
     const {TRANSACTION_SENT} = context;
-    const {tx} = TRANSACTION_SENT;
+    const {transactionHash} = TRANSACTION_SENT;
 
     // check transaction status
     // update DB
+
+    const provider = getHttpProvider(chainId);
+
+    const receipt = await provider.getTransactionReceipt(transactionHash);
+
+    console.log(receipt);
+
   }
 
 }

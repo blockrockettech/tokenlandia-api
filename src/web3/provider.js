@@ -20,5 +20,5 @@ const getHttpProvider = chainId => {
 };
 
 module.exports = {
-  getHttpProvider
+  getHttpProvider,
 };
