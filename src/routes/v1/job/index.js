@@ -37,10 +37,9 @@ job.post('/submit/createtoken/general', async function (req, res) {
     });
   }
 
-  const existingJob = jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
-  console.log(`Incoming job - existing job found [${existingJob}] for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`);
-
+  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
   if (existingJob) {
+    console.log(`Incoming job - existing jobs found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`, existingJob);
     return res.status(400).json({
       error: `Duplicate Job found`
     });
@@ -56,11 +55,12 @@ job.post('/submit/createtoken/general', async function (req, res) {
   };
 
   // accept job
-  const jobDetails = await jobQueue.addJobToQueue(chainId, jobData, JOB_TYPES.CREATE_TOKEN);
+  const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.CREATE_TOKEN, jobData);
   console.log(`Job [${JOB_TYPES.CREATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`, jobDetails);
 
   // return job details
-  return res.status(202)
+  return res
+    .status(202)
     .json(jobDetails);
 });
 
