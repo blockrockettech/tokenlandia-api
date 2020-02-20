@@ -5,6 +5,9 @@ const JOB_TYPES = Object.freeze({
   UPDATE_TOKEN: 'UPDATE_TOKEN'
 });
 
+// ACCEPTED -> CREATING_METADATA -> METADATA_CREATED -> SENDING_TRANSACTION -> TRANSACTION_SENT -> TRANSACTION_FAILED
+//          -> FAILED                                -> TRANSACTION_FAILED
+
 const JOB_STATUS = Object.freeze({
   CREATED: 'CREATED',
   // IPFS push

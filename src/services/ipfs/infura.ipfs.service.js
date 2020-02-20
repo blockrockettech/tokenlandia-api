@@ -1,75 +1,51 @@
-const ipfsHttpClient = require('ipfs-http-client');
-const {Buffer} = require('buffer/');
+const _ = require('lodash');
 const axios = require('axios');
 
 class InfuraIpfsService {
-  constructor(host, port, options) {
-    this.baseIpfsUrl = 'https://ipfs.infura.io';
-    this.ipfs = ipfsHttpClient({
-      host: 'ipfs.infura.io',
-      port: '5001',
-      protocol: 'https'
-    });
-  }
 
-  async pushBufferToIpfs(buffer, tryingToUpload) {
-    return this._pushToIpfs([buffer, {pin: true}], tryingToUpload);
-  }
-
-  async pushStreamToIpfs(stream, tryingToUpload) {
-    return this._pushToIpfs([{pin: true, content: stream}], tryingToUpload);
-  }
-
-  // TODO WIP
-  async uploadImageToIpfs(url) {
-    console.log('url', url);
-    const response = await axios.get(url, {
-      responseType: 'arrayBuffer'
-    });
-
-    const buffer = Buffer.from(response.data, 'binary');
-    //console.log('response.data', response.data)
-    const results = await this.ipfs.add(buffer, { pin: true });
-    console.log('ressults', results);
-    return this.pushBufferToIpfs(buffer, 'image');
-  }
-
-  async pushJsonToIpfs(ipfsPayload) {
-    const buffer = Buffer.from(JSON.stringify(ipfsPayload));
-    return this.pushBufferToIpfs(buffer, '721 token meta-data');
+  constructor(baseIpfsUrl, ipfsClient) {
+    this.baseIpfsUrl = baseIpfsUrl;
+    this.ipfs = ipfsClient;
   }
 
   getBaseUrl() {
     return this.baseIpfsUrl;
   }
 
-  async _pushToIpfs(addArgs, tryingToUpload) {
-    try {
-      console.log('add args', addArgs)
-      const results = await this.ipfs.add(...addArgs);
+  async uploadImageToIpfs(url) {
+    console.log('Uploading image from ULR to IPFS', url);
 
-      console.log('results', results);
-      console.log('result', results[0]);
+    const response = await axios({
+      method: 'get',
+      url: url,
+      responseType: 'stream'
+    });
 
-      if (results && Array.isArray(results) && results.length > 0) {
+    return this._pushToIpfs({
+      pin: true,
+      content: response.data
+    });
+  }
 
-        const result = results[0];
-        const hash = result && result.hash ? result.hash : 'unsuccessful';
+  async pushJsonToIpfs(ipfsPayload) {
+    const buffer = Buffer.from(JSON.stringify(ipfsPayload));
+    return this._pushToIpfs({
+      pin: true,
+      content: buffer
+    });
+  }
 
-        if (hash === 'unsuccessful') {
-          throw new Error(`Failed to upload ${tryingToUpload} to IPFS due to: No hash returned`);
-        }
+  async _pushToIpfs(config) {
+    const results = await this.ipfs.add(config);
+    const hash = _.get(results, '[0].hash');
 
-        return hash;
-      }
-
-    } catch (e) {
-      console.log(e);
-      throw new Error(`Failed to upload ${tryingToUpload} to IPFS due to: ${e}`);
+    if (!hash) {
+      throw new Error(`Failed to upload to IPFS due to: No hash returned`);
     }
 
-    throw new Error(`Failed to upload ${tryingToUpload} to IPFS due to: Result being null`);
+    return hash;
   }
+
 }
 
 module.exports = InfuraIpfsService;

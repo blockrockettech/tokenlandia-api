@@ -3,16 +3,22 @@ const JobQueue = require('./job/jobQueue');
 const jobConstants = require('./job/jobConstants');
 const jobValidator = require('./job/jobValidator');
 const chainUtils = require('../utils/chain');
+const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
-const MetadataCreationService = require('./metadata/metadata-creation.service');
+const MetadataCreationService = require('./processors/metadata-creation.service');
 
 const db = require('./database');
 
+const jobQueue = new JobQueue(db);
+
+const ipfsService = new IpfsService('https://ipfs.infura.io/ipfs', ipfsClient);
+
 module.exports = {
   newTokenLandiaService: chainId => new TokenLandia(chainId),
-  jobQueue: new JobQueue(db),
+  jobQueue: jobQueue,
   jobValidator: jobValidator,
   jobConstants: jobConstants,
   chainUtils: chainUtils,
-  ipfsService: new IpfsService('https://ipfs.infura.io', '5001', {protocol: 'https'}),
+  ipfsService: ipfsService,
+  metadataCreationService: new MetadataCreationService(jobQueue, ipfsService),
 };

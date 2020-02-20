@@ -22,7 +22,9 @@ class JobQueue {
 
       // The actual payload
       context: {
-        ...jobData
+        [JOB_STATUS.CREATED]: {
+          ...jobData
+        }
       }
     };
 
