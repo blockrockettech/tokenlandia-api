@@ -9,19 +9,44 @@ class JobCompletionProcessor {
 
   async processJob(job) {
 
-    const {context, tokenId, jobId, chainId} = job;
-    const {TRANSACTION_SENT} = context;
-    const {transactionHash} = TRANSACTION_SENT;
+    const {context, jobId, chainId} = job;
+    console.log(`JobCompletionProcessor - job [${jobId}] on chain [${chainId}]`);
 
-    // check transaction status
-    // update DB
+    const {TRANSACTION_SENT} = context;
+    const {hash} = TRANSACTION_SENT;
+
 
     const provider = getHttpProvider(chainId);
 
-    const receipt = await provider.getTransactionReceipt(transactionHash);
-
+    const receipt = await provider.getTransactionReceipt(hash);
     console.log(receipt);
 
+    // Only set if the tx is confirmed either way
+    if (receipt && receipt.blockNumber > 0) {
+
+      const {status, to, from, blockHash, blockNumber, confirmations, gasUsed, transactionHash, transactionIndex} = receipt;
+
+      const newContext = {
+        status,
+        to,
+        from,
+        blockHash,
+        blockNumber,
+        confirmations,
+        transactionHash,
+        transactionIndex,
+        gasUsed: gasUsed.toString()
+      };
+
+      const jobStatus = receipt.status === 1
+        ? JOB_STATUS.TRANSACTION_SENT
+        : JOB_STATUS.TRANSACTION_FAILED;
+
+      console.log(`Moving job [${jobId}] on chain [${chainId}] to new status of [${jobStatus}]`, newContext);
+      return this.jobQueue.addStatusAndContextToJob(chainId, jobId, jobStatus, newContext);
+    }
+
+    console.log(`Job [${jobId}] on chain [${chainId}] no confirmed yet`);
   }
 
 }

@@ -10,14 +10,14 @@ class MintingProcessor {
   }
 
   async processJob(job) {
-    // get context from previous status - ACCEPTED and METADATA_CREATED
+
     const {context, tokenId, jobId, chainId} = job;
+    console.log(`MintingProcessor - job [${jobId}] on chain [${chainId}]`);
+
     const {ACCEPTED, METADATA_CREATED} = context;
 
-    // prep minting params
     const recipient = getEscrowContractAddress(chainId);
 
-    // fire TX
     const {
       hash,
       from,
