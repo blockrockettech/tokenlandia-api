@@ -8,35 +8,38 @@ class JobQueue {
   }
 
   async addJobToQueue(chainId, jobType, jobData) {
+    console.log('Add job to queue', {chainId, jobType}, jobData);
 
     const {token_id} = jobData;
 
-    // /process-queue/${chain_id}/jobs/${job}
-    let jobsCollectionRef = this.getJobsCollectionRef(chainId.toString());
-
     const newJob = {
       // Job data
-      chainId: chainId.toString(),
-      tokenId: token_id.toString(),
+      chainId: _.toString(chainId),
+      tokenId: _.toString(token_id),
       status: JOB_STATUS.CREATED,
       jobType: jobType,
       createdDate: Date.now(),
-      attempts: 0,
 
       // The actual payload
-      data: {
+      context: {
         ...jobData
       }
     };
 
     // generate Joc ID and place in DB queue
-    let createdJob = jobsCollectionRef.add(newJob);
-    console.log(`Job created`, newJob, createdJob);
+    // /process-queue/${chain_id}/jobs/${job}
+    const createdDocRef = await this.getJobsCollectionRef(chainId).add(newJob);
+    console.log(`Job created`, newJob, createdDocRef);
 
-    return createdJob;
+    return {
+      jobId: createdDocRef.id,
+      ...newJob
+    };
   }
 
   async getJobForId(chainId, jobId) {
+    console.log('Get job', {chainId, jobId});
+
     return this.getJobsCollectionRef(chainId)
       .doc(jobId)
       .get()
@@ -53,10 +56,12 @@ class JobQueue {
   }
 
   async getJobsForTokenId(chainId, tokenId, jobType) {
+    console.log('Get jobs for token', {chainId: chainId, tokenId: tokenId, jobType: jobType});
+
     return this.getJobsCollectionRef(chainId)
-      .where('chainId', '==', chainId)
-      .where('tokenId', '==', tokenId)
-      .where('jobType', '==', jobType)
+      .where('chainId', '==', _.toString(chainId))
+      .where('tokenId', '==', _.toString(tokenId))
+      .where('jobType', '==', _.toString(jobType))
       .get()
       .then((snapshot) => {
 
@@ -65,17 +70,21 @@ class JobQueue {
           return null;
         }
 
-        return snapshot.map(doc => ({
+        const jobs = [];
+
+        snapshot.forEach(doc => jobs.push({
           jobId: doc.id,
           ...doc.data()
         }));
+
+        return jobs;
       });
   }
 
   getJobsCollectionRef(chainId) {
     return this.db
-      .collection('process-queue')
-      .doc(chainId)
+      .collection('job-queue')
+      .doc(_.toString(chainId))
       .collection('jobs');
   }
 }
