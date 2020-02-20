@@ -18,14 +18,22 @@ class MintingProcessor {
     const recipient = getEscrowContractAddress(chainId);
 
     // fire TX
-    const tx = await this.tokenlandiaService.mint(tokenId, recipient, ACCEPTED.product_code, METADATA_CREATED.metadataHash);
+    const {
+      hash,
+      from,
+      to,
+      nonce,
+      gasPrice,
+      gasLimit
+    } = await this.tokenlandiaService.mint(tokenId, recipient, ACCEPTED.product_code, METADATA_CREATED.metadataHash);
 
     const newContext = {
-      tx,
-      // TxHash
-      // Gas Price
-      // Gas Sent
-      // Nonce
+      hash,
+      from,
+      to,
+      nonce,
+      gasPrice: gasPrice.toString(),
+      gasLimit: gasLimit.toString(),
       recipient
     };
 
