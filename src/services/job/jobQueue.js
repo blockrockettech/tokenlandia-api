@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {JOB_STATUS, JOB_TYPES} = require('./jobConstants');
+const {JOB_STATUS} = require('./jobConstants');
 
 class JobQueue {
 

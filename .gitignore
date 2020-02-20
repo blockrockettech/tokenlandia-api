@@ -92,3 +92,5 @@ modules.xml
 
 # End of https://www.gitignore.io/api/intellij+all
 /.env
+/src/_keys/
+/src/_keys/tokenlandia-admin-eff5ebee14d7.json

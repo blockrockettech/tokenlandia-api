@@ -1,0 +1,21 @@
+{
+	"info": {
+		"_postman_id": "cd78da89-10c8-4358-9374-3c560a1c7dc9",
+		"name": "Token Landia",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Submit Create Token Job",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
