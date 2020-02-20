@@ -2,7 +2,7 @@ const {ethers, constants, utils} = require('ethers');
 const TokenLandiaTruffleConf = require('../../truffleconf/token/Tokenlandia');
 const {getContractAddressFromTruffleConf} = require('../../utils/truffle');
 const {getNetworkName} = require('@blockrocket/utils');
-const {getHttpProvider} = require('../../web3/provider');
+const {getWallet} = require('../../web3/provider');
 
 function getBaseUrl(domain, networkName) {
   if (networkName !== 'mainnet') {
@@ -17,7 +17,7 @@ class TokenLandia {
     this.chainId = chainId;
 
     try {
-      this.provider = getHttpProvider(chainId);
+      this.signer = getWallet(chainId);
     } catch (e) {
       throw new Error(`Invalid chain ID '${chainId}'`);
     }
@@ -31,7 +31,7 @@ class TokenLandia {
     this.contract = new ethers.Contract(
       this.contractAddress,
       TokenLandiaTruffleConf.abi,
-      this.provider
+      this.signer
     );
   }
 
