@@ -2,6 +2,7 @@ const IJobProcessor = require('../interfaces/ijob.processor');
 const {jobQueue, ipfsService} = require('../index');
 
 class MetadataCreationService extends IJobProcessor {
+
   // TODO - handle IPFS failures at both push stages by storing IPFS hash to save re-pushing
   async processJob(chainId, jobId) {
 
@@ -10,7 +11,7 @@ class MetadataCreationService extends IJobProcessor {
 
     // Extract required data from job
     const {data} = job;
-    const {name, description, image, ...restOfData} = data;
+    const {name, description, image, type, ...restOfData} = data;
 
     // TODO - Use ipfs service to push image and get IPFS hash
     const imageIpfsHash = await ipfsService.uploadImageToIpfs(image);
@@ -20,8 +21,8 @@ class MetadataCreationService extends IJobProcessor {
       name,
       description,
       image: `${ipfsService.getBaseUrl()}/ipfs/${imageIpfsHash}`,
-      type: 'PHYSICAL_ASSET',
-      created: Math.floor( Date.now() / 1000 ),
+      type,
+      created: Math.floor(Date.now() / 1000),
       attributes: {
         ...restOfData
       }
