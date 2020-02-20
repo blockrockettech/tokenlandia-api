@@ -18,7 +18,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
   console.log(`Incoming job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {
-    console.log(`Errors found in job`, errors);
+    console.error(`Errors found in job`, errors);
     return res.status(400).json({
       error: `Invalid job data`,
       details: errors
@@ -29,9 +29,8 @@ job.post('/submit/createtoken/general', async function (req, res) {
 
   const tokenLandiaService = newTokenLandiaService(chainId);
   const tokenExists = await tokenLandiaService.tokenExists(token_id);
-  console.log(`Incoming job - token exists [${tokenExists}] for tokenId [${token_id}] and chainId [${chainId}]`);
-
   if (tokenExists) {
+    console.error(`Incoming job - token exists [${tokenExists}] for tokenId [${token_id}] and chainId [${chainId}]`);
     return res.status(400).json({
       error: `Token already created`,
     });
@@ -39,7 +38,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
 
   const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
   if (existingJob) {
-    console.log(`Incoming job - existing jobs found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`, existingJob);
+    console.error(`Incoming job - existing jobs found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`, existingJob);
     return res.status(400).json({
       error: `Duplicate Job found`
     });
