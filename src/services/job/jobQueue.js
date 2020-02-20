@@ -39,6 +39,23 @@ class JobQueue {
     };
   }
 
+  async addStatusAndContextToJob(chainId, jobId, {status, context}) {
+    const job = this.getJobForId(chainId, jobId);
+    const newContext = {
+      ...job.context,
+      [status]: context
+    };
+
+    console.log(newContext);
+
+    // TODO - update context on job
+    // await this.getJobsCollectionRef(chainId)
+    //   .doc(jobId)
+    //   .set({
+    //     context: newContext
+    //   }, {merge: true});
+  }
+
   async getJobForId(chainId, jobId) {
     console.log('Get job', {chainId, jobId});
 

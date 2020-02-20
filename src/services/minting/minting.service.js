@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const {getContractAddressFromTruffleConf} = require('../../utils/truffle');
 const EscrowContractTruffleConf = require('../../truffleconf/escrow/TrustedNftEscrow');
 
@@ -13,22 +14,17 @@ class MintingService {
       throw new Error('Minting service - processJob() - job does not exist or database error');
     }
 
-    // get context from previous status - METADATA_CREATED
+    // get context from previous status - ACCEPTED and METADATA_CREATED
     const {context, tokenId} = job;
-    const {METADATA_CREATED} = context;
+    const {ACCEPTED, METADATA_CREATED} = context;
 
-  //   function mintToken(
-  //     uint256 _tokenId,
-  //     address _recipient,
-  //     string calldata _productCode,
-  //     string calldata _ipfsHash
-  // ) external onlyWhitelisted returns (bool success)
-
-    // TODO - prep minting params
+    // prep minting params
     const recipient = getContractAddressFromTruffleConf(EscrowContractTruffleConf, chainId);
     const mintArgs = [
       tokenId,
-      recipient
+      recipient,
+      ACCEPTED.product_code,
+      METADATA_CREATED.metadata_ipfs_hash
     ];
 
     // TODO - change status to SENDING_TRANSACTION and new context

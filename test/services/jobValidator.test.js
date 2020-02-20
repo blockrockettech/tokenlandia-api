@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {jobValidator} = require('../../src/services');
+const {jobValidator, jobQueue} = require('../../src/services');
 
 describe('Job validation tests', function () {
 
@@ -25,6 +25,13 @@ describe('Job validation tests', function () {
       'b'
     ],
   };
+
+  it.skip('temp', async function() {
+    const statusContext = {
+
+    };
+    await jobQueue.addStatusAndContextToJob()
+  });
 
   it('should fail if empty', async function () {
     const results = await jobValidator.isValidCreateTokenJob({});

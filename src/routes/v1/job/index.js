@@ -46,12 +46,14 @@ job.post('/submit/createtoken/general', async function (req, res) {
   }
 
   const {coo, artist_initials, series, design} = rawJobData;
+  const product_code = `${coo}-${artist_initials}-${series}-${design}`;
 
   // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
     type: 'PHYSICAL_ASSET',
-    product_id: `${coo}-${artist_initials}-${series}-${design}-${token_id}`
+    product_id: `${product_code}-${token_id}`,
+    product_code
   };
 
   // accept job
