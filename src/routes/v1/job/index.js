@@ -64,34 +64,6 @@ job.post('/submit/createtoken/general', async function (req, res) {
     .json(jobDetails);
 });
 
-job.put('/cancel/:jobId', async function (req, res) {
-
-  const {jobId, chainId} = req.params;
-  const jobDetails = await jobQueue.getJobForId(chainId, jobId);
-
-  if (!jobDetails) {
-    return res
-      .status(400)
-      .json({
-        error: `Unable to find job [${jobId}] on chain [${chainId}]`
-      });
-  }
-
-  // only remove jobs which are not in flight
-  if (jobDetails.status !== JOB_STATUS.CREATED) {
-    return res
-      .status(400)
-      .json({
-        error: `Unable to cancel job which is being worked - job ID [${jobId}]`,
-        details: jobDetails
-      });
-  }
-
-  return res
-    .status(202)
-    .json(jobDetails);
-});
-
 job.get('/details/:jobId', async function (req, res) {
   const {chainId, jobId} = req.params;
   const jobDetails = await jobQueue.getJobForId(chainId, jobId);

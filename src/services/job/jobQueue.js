@@ -16,13 +16,13 @@ class JobQueue {
       // Job data
       chainId: _.toString(chainId),
       tokenId: _.toString(token_id),
-      status: JOB_STATUS.CREATED,
+      status: JOB_STATUS.ACCEPTED,
       jobType: jobType,
       createdDate: Date.now(),
 
       // The actual payload
       context: {
-        [JOB_STATUS.CREATED]: {
+        [JOB_STATUS.ACCEPTED]: {
           ...jobData
         }
       }

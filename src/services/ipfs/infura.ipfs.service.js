@@ -3,13 +3,8 @@ const axios = require('axios');
 
 class InfuraIpfsService {
 
-  constructor(baseIpfsUrl, ipfsClient) {
-    this.baseIpfsUrl = baseIpfsUrl;
+  constructor(ipfsClient) {
     this.ipfs = ipfsClient;
-  }
-
-  getBaseUrl() {
-    return this.baseIpfsUrl;
   }
 
   async uploadImageToIpfs(url) {

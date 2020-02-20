@@ -55,7 +55,7 @@ describe.only('Metadata creation', function () {
       }
     };
 
-    const ipfsService = new IpfsService('https://ipfs.infura.io/ipfs', ipfsClient);
+    const ipfsService = new IpfsService(ipfsClient);
     const metadataCreationService = new MetadataCreationService(mockJobQueue, ipfsService);
 
     await metadataCreationService.processJob(chainId, jobId);

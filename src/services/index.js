@@ -11,7 +11,7 @@ const db = require('./database');
 
 const jobQueue = new JobQueue(db);
 
-const ipfsService = new IpfsService('https://ipfs.infura.io/ipfs', ipfsClient);
+const ipfsService = new IpfsService(ipfsClient);
 
 module.exports = {
   newTokenLandiaService: chainId => new TokenLandia(chainId),

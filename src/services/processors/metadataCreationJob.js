@@ -1,9 +1,8 @@
-const IJobProcessor = require('./IJobProcessor');
+const BASE_IPFS_URL = 'https://ipfs.infura.io/ipfs';
 
-class MetadataCreationJob extends IJobProcessor {
+class MetadataCreationJob  {
 
   constructor(jobQueue, ipfsService) {
-    super();
     this.jobQueue = jobQueue;
     this.ipfsService = ipfsService;
   }
@@ -12,6 +11,9 @@ class MetadataCreationJob extends IJobProcessor {
 
   async processJob(chainId, jobId) {
     const job = await this.jobQueue.getJobForId(chainId, jobId);
+
+    // TODO validate job in the right state
+    // TODO accept jon by updating status
 
     // TODO move this check the controller
     if (!job) {
@@ -28,7 +30,7 @@ class MetadataCreationJob extends IJobProcessor {
     const erc721Metadata = {
       name,
       description,
-      image: `${this.ipfsService.getBaseUrl()}/${imageIpfsHash}`,
+      image: `${BASE_IPFS_URL}/${imageIpfsHash}`,
       type,
       created: Math.floor(Date.now() / 1000),
       attributes: {
@@ -39,7 +41,7 @@ class MetadataCreationJob extends IJobProcessor {
 
     // Use ipfs service to push 721 JSON and store IPFS hash
     const metadataIpfsHash = await this.ipfsService.pushJsonToIpfs(erc721Metadata);
-    console.log(`${this.ipfsService.getBaseUrl()}/${metadataIpfsHash}`);
+    console.log(`${BASE_IPFS_URL}/${metadataIpfsHash}`);
 
     // TODO - move job onto the next stage?
 
