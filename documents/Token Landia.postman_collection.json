@@ -8,10 +8,91 @@
 		{
 			"name": "Submit Create Token Job",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer craig-wright-is-not-satoshi",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token_id\": 103,\n    \"coo\": \"USA\",\n    \"artist_initials\": \"RSA\",\n    \"series\": 2,\n    \"design\": 3,\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"http://test.test.com\",\n    \"artist\": \"artist\",\n    \"artist_assistant\": \"assistant\",\n    \"brand\": \"brand\",\n    \"model\": \"model\",\n    \"purchase_location\": \"london\",\n    \"purchase_date\": \"2020-02-01\",\n    \"customization_location\": \"tokyo\",\n    \"customization_date\": \"2020-02-06\",\n    \"materials_used\": [\n      \"a\",\n      \"b\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/v1/network/:chainId/job/submit/createtoken/general",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"network",
+						":chainId",
+						"job",
+						"submit",
+						"createtoken",
+						"general"
+					],
+					"variable": [
+						{
+							"key": "chainId",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Details",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer craig-wright-is-not-satoshi",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v1/network/:chainId/job/details/:jobId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"network",
+						":chainId",
+						"job",
+						"details",
+						":jobId"
+					],
+					"variable": [
+						{
+							"key": "chainId",
+							"value": "4"
+						},
+						{
+							"key": "jobId",
+							"value": "q5g7qZRhEv1N9XcRNO4a"
+						}
+					]
 				}
 			},
 			"response": []
