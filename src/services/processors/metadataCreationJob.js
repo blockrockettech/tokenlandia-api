@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const BASE_IPFS_URL = 'https://ipfs.infura.io/ipfs';
 
 class MetadataCreationJob  {

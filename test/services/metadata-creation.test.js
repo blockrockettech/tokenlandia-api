@@ -3,9 +3,9 @@ chai.should();
 
 const ipfsClient = require('../../src/services/ipfs/ipfsClient');
 const IpfsService = require('../../src/services/ipfs/infura.ipfs.service');
-const MetadataCreationService = require('../../src/services/processors/metadata-creation.service');
+const MetadataCreationService = require('../../src/services/processors/metadataCreationJob');
 
-describe.only('Metadata creation', function () {
+describe('Metadata creation', function () {
 
   beforeEach(() => {
   });

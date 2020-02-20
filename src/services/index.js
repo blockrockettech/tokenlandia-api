@@ -5,7 +5,7 @@ const jobValidator = require('./job/jobValidator');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
-const MetadataCreationService = require('./processors/metadata-creation.service');
+const MetadataCreationService = require('./processors/metadataCreationJob');
 
 const db = require('./database');
 
