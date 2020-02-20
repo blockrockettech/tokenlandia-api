@@ -26,13 +26,6 @@ describe('Job validation tests', function () {
     ],
   };
 
-  it.skip('temp', async function() {
-    const statusContext = {
-
-    };
-    await jobQueue.addStatusAndContextToJob()
-  });
-
   it('should fail if empty', async function () {
     const results = await jobValidator.isValidCreateTokenJob({});
     results.should.be.deep.equal({

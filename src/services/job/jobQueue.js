@@ -39,21 +39,23 @@ class JobQueue {
     };
   }
 
-  async addStatusAndContextToJob(chainId, jobId, {status, context}) {
+  async addStatusAndContextToJob(chainId, jobId, status, context) {
+    this.assertChainJobIdValid(chainId, jobId);
     const job = this.getJobForId(chainId, jobId);
+    if (!job) {
+      throw new Error(`Job cannot be found for job ID [${jobId}] and chain ID [${chainId}]`);
+    }
+
     const newContext = {
       ...job.context,
       [status]: context
     };
 
-    console.log(newContext);
-
-    // TODO - update context on job
-    // await this.getJobsCollectionRef(chainId)
-    //   .doc(jobId)
-    //   .set({
-    //     context: newContext
-    //   }, {merge: true});
+    await this.getJobsCollectionRef(chainId)
+      .doc(jobId)
+      .set({
+        context: newContext
+      }, {merge: true});
   }
 
   async getNextJobForProcessing(chainId, statuses) {
@@ -80,7 +82,7 @@ class JobQueue {
   }
 
   async getJobForId(chainId, jobId) {
-    console.log('Get job', {chainId, jobId});
+    this.assertChainJobIdValid(chainId, jobId);
 
     return this.getJobsCollectionRef(chainId)
       .doc(jobId)
@@ -127,6 +129,12 @@ class JobQueue {
       .collection('job-queue')
       .doc(_.toString(chainId))
       .collection('jobs');
+  }
+
+  assertChainJobIdValid(chainId, jobId) {
+    if (!chainId || typeof chainId !== 'string' || !jobId || typeof jobId !== 'string') {
+      throw new Error(`Chain ID [${chainId}] and or job ID [${jobId}] are not valid strings.`);
+    }
   }
 }
 
