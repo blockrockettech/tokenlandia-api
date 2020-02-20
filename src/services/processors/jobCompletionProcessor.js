@@ -8,9 +8,14 @@ class JobCompletionProcessor {
 
   async processJob(job) {
 
+    const {context, tokenId, jobId, chainId} = job;
+    const {TRANSACTION_SENT} = context;
+    const {tx} = TRANSACTION_SENT;
+
     // check transaction status
     // update DB
   }
+
 }
 
 module.exports = JobCompletionProcessor;
