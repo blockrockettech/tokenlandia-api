@@ -14,7 +14,7 @@ class JobQueue {
   }
 
   async addJobToQueue(chainId, jobType, jobData) {
-    console.log('Adding job to queue', {chainId, jobType}, jobData);
+    console.log('Adding job to queue', {chainId, jobType});
 
     const {token_id} = jobData;
 
@@ -39,7 +39,7 @@ class JobQueue {
     const createdDocRef = await this.getJobsCollectionRef(chainId)
       .add(newJob);
 
-    console.log(`Job created`, newJob, createdDocRef);
+    console.log(`Job created for token ID [${token_id}] chain ID [${chainId}] and type [${jobType}] - document ID [${createdDocRef.id}]`);
 
     return {
       jobId: createdDocRef.id,
@@ -48,7 +48,7 @@ class JobQueue {
   }
 
   async addStatusAndContextToJob(chainId, jobId, status, context) {
-    console.log('Adding status context to job', {chainId, jobId, status}, context);
+    console.log('Adding status context to job', {chainId, jobId, status});
 
     const job = await this.getJobForId(chainId, jobId);
     if (!job) {

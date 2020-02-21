@@ -12,8 +12,6 @@ const isCountryCodeValid = (value, helpers) => {
     return shortCode === value.toUpperCase();
   });
 
-  console.log('countryData', countryData);
-
   if (!!countryData) {
     return helpers.error('any.invalid');
   }
