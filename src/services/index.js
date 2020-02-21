@@ -10,7 +10,7 @@ const MetadataCreationProcessor = require('./processors/metadataCreationProcesso
 
 const MintingProcessor = require('./processors/mintingProcessor');
 
-const JobCompletionProcessor = require('./processors/JobCompletionProcessor');
+const JobCompletionProcessor = require('./processors/jobCompletionProcessor');
 
 const db = require('./database');
 
