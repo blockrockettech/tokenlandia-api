@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const {getHttpProvider} = require('../../web3/provider');
+const {JOB_STATUS} = require('../../services/job/jobConstants');
 
 class JobCompletionProcessor {
 
@@ -40,7 +41,7 @@ class JobCompletionProcessor {
       };
 
       const jobStatus = receipt.status === 1
-        ? JOB_STATUS.TRANSACTION_SENT
+        ? JOB_STATUS.JOB_COMPLETE
         : JOB_STATUS.TRANSACTION_FAILED;
 
       console.log(`Moving job [${jobId}] on chain [${chainId}] to new status of [${jobStatus}]`, newContext);

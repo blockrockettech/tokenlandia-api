@@ -18,7 +18,7 @@ const CREATE_TOKEN_SCHEMA = Joi.object({
   series: Joi.number().integer().min(1).max(999).required(),
 
   // TODO pad to 0001
-  design: Joi.number().integer().min(1).max(9990).required(),
+  design: Joi.number().integer().min(1).max(9999).required(),
 
   name: Joi.string().min(1).max(125).required(),
 
