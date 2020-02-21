@@ -14,9 +14,9 @@ class JobQueue {
   }
 
   async addJobToQueue(chainId, jobType, jobData) {
-    console.log('Adding job to queue', {chainId, jobType});
-
     const {token_id} = jobData;
+
+    console.log('Adding job to queue', {chainId, jobType, token_id});
 
     const newJob = {
       // Job data
@@ -75,13 +75,13 @@ class JobQueue {
     return this.getJobForId(chainId, jobId);
   }
 
-  async getNextJobForProcessing(chainId, statuses) {
+  async getNextJobForProcessing(chainId, statuses, limit = 1) {
     console.log(`Get next job for processing for chain [${chainId}]`);
 
     return this.getJobsCollectionRef(chainId)
       .where('status', 'in', statuses)
-      .orderBy('createdDate', 'desc')
-      .limit(1)
+      .orderBy('createdDate', 'asc')
+      .limit(limit)
       .get()
       .then((snapshot) => {
 
@@ -90,11 +90,22 @@ class JobQueue {
           return null;
         }
 
-        const document = snapshot.docs[0];
-        return {
-          jobId: document.id,
-          ...document.data()
-        };
+        // Single job
+        if (limit === 2) {
+          const document = snapshot.docs[0];
+          return {
+            jobId: document.id,
+            ...document.data()
+          };
+        }
+
+        // Multiple job
+        const jobs = [];
+        snapshot.forEach(doc => jobs.push({
+          jobId: doc.id,
+          ...doc.data()
+        }));
+        return jobs;
       });
   }
 

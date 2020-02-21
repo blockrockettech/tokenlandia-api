@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const job = require('express').Router({mergeParams: true});
 
 const {
@@ -44,9 +46,10 @@ job.post('/submit/createtoken/general', async function (req, res) {
 
   const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
   if (existingJob) {
-    console.error(`Incoming job - existing jobs found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`, existingJob);
+    console.error(`Incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`);
     return res.status(400).json({
-      error: `Duplicate Job found`
+      error: `Duplicate Job found`,
+      existingJob
     });
   }
 
@@ -63,7 +66,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
 
   // accept job
   const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.CREATE_TOKEN, jobData);
-  console.log(`Job [${JOB_TYPES.CREATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`, jobDetails);
+  console.log(`Job [${JOB_TYPES.CREATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`);
 
   // return job details
   return res
@@ -96,9 +99,9 @@ job.get('/details/:jobId', async function (req, res) {
  */
 job.get('/process/metadata', async function (req, res) {
   const {chainId} = req.params;
-  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED]);
+  const jobs = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED], 2);
 
-  if (!job) {
+  if (!jobs) {
     return res
       .status(202)
       .json({
@@ -106,16 +109,22 @@ job.get('/process/metadata', async function (req, res) {
       });
   }
 
-  const processedJob = await metadataCreationProcessor.processJob(job);
+  const workingJobs = _.map(jobs, (job) => metadataCreationProcessor.processJob(job));
+
+  const results = Promise.all(workingJobs);
 
   return res
     .status(200)
     .json({
-      msg: `Processing job [${job.jobId}]`,
-      chainId: chainId,
-      tokenId: processedJob.tokenId,
-      jobId: processedJob.jobId,
-      status: processedJob.status
+      results: _.map(results, (processedJob) => {
+        return {
+          msg: `Processing job [${processedJob.jobId}]`,
+          chainId: chainId,
+          tokenId: processedJob.tokenId,
+          jobId: processedJob.jobId,
+          status: processedJob.status
+        };
+      })
     });
 });
 
@@ -152,9 +161,9 @@ job.get('/process/transaction', async function (req, res) {
  */
 job.get('/process/completions', async function (req, res) {
   const {chainId} = req.params;
-  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
+  const jobs = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT], 3);
 
-  if (!job) {
+  if (_.size(jobs) === 0) {
     return res
       .status(202)
       .json({
@@ -162,16 +171,24 @@ job.get('/process/completions', async function (req, res) {
       });
   }
 
-  const processedJob = await jobCompletionProcessor.processJob(job);
+  const workingJobs = _.map(jobs, (job) => {
+    return jobCompletionProcessor.processJob(job);
+  });
+
+  const results = Promise.all(workingJobs);
 
   return res
     .status(200)
     .json({
-      msg: `Processing job [${processedJob.jobId}]`,
-      chainId: chainId,
-      tokenId: processedJob.tokenId,
-      jobId: processedJob.jobId,
-      status: processedJob.status
+      results: _.map(results, (processedJob) => {
+        return {
+          msg: `Processing job [${processedJob.jobId}]`,
+          chainId: chainId,
+          tokenId: processedJob.tokenId,
+          jobId: processedJob.jobId,
+          status: processedJob.status
+        };
+      })
     });
 });
 

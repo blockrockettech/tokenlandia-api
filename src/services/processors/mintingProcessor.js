@@ -39,11 +39,13 @@ class MintingProcessor {
         recipient
       };
 
+      console.log(`Transaction sent for job [${jobId}] on chain [${chainId}] for token [${tokenId}]`, hash);
+
       // change status to TRANSACTION_SENT and new context including TX hash
       return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, newContext);
 
     } catch (e) {
-      
+
       console.log(`Failed to send minting transaction`, e);
       return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, e);
     }

@@ -72,7 +72,7 @@ async function processJobs() {
   console.log('Test API Script started!\n');
 
   // Fire create requests
-  for(let i = 600; i <= 605; i++) {
+  for(let i = 620; i <= 640; i++) {
     await addCreateJobToQueue(i);
   }
 
@@ -80,4 +80,5 @@ async function processJobs() {
 
   // Set time out for method that processes jobs
   setInterval(processJobs, 60000);
+  processJobs();
 })();
