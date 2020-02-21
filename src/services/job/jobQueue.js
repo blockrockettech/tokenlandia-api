@@ -56,7 +56,10 @@ class JobQueue {
 
     await this.getJobsCollectionRef(chainId)
       .doc(jobId)
-      .set({context: newContext, status}, {merge: true});
+      .set({
+        context: newContext,
+        status
+      }, {merge: true});
 
     // Return the newly updated job
     return this.getJobForId(chainId, jobId);

@@ -38,7 +38,7 @@ class MintingProcessor {
     };
 
     // change status to TRANSACTION_SENT and new context including TX hash
-    await this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, newContext);
+    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, newContext);
   }
 }
 

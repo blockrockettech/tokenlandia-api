@@ -106,12 +106,16 @@ job.get('/process/metadata', async function (req, res) {
       });
   }
 
-  await metadataCreationProcessor.processJob(job);
+  const processedJob = await metadataCreationProcessor.processJob(job);
 
   return res
     .status(200)
     .json({
-      msg: `Processing job [${job.jobId}]`
+      msg: `Processing job [${job.jobId}]`,
+      chainId: chainId,
+      tokenId: processedJob.tokenId,
+      jobId: processedJob.jobId,
+      status: processedJob.status
     });
 });
 
@@ -126,16 +130,20 @@ job.get('/process/transaction', async function (req, res) {
     return res
       .status(204)
       .json({
-        msg: `No jobs found for processing for chain ID [${chainId}]`
+        msg: `No jobs found for processing for chain ID [${chainId}]`,
       });
   }
 
-  await mintingProcessor(chainId).processJob(job);
+  const processedJob = await mintingProcessor(chainId).processJob(job);
 
   return res
     .status(200)
     .json({
-      msg: `Processing job [${job.jobId}]`
+      msg: `Processing job [${processedJob.jobId}]`,
+      chainId: chainId,
+      tokenId: processedJob.tokenId,
+      jobId: processedJob.jobId,
+      status: processedJob.status
     });
 });
 
@@ -154,12 +162,16 @@ job.get('/process/completions', async function (req, res) {
       });
   }
 
-  await jobCompletionProcessor.processJob(job);
+  const processedJob = await jobCompletionProcessor.processJob(job);
 
   return res
     .status(200)
     .json({
-      msg: `Processing job [${job.jobId}]`
+      msg: `Processing job [${processedJob.jobId}]`,
+      chainId: chainId,
+      tokenId: processedJob.tokenId,
+      jobId: processedJob.jobId,
+      status: processedJob.status
     });
 });
 

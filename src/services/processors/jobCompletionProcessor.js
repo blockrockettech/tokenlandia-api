@@ -48,7 +48,7 @@ class JobCompletionProcessor {
     }
 
     console.log(`Job [${jobId}] on chain [${chainId}] no confirmed yet`);
-    return false;
+    return job;
   }
 
 }
