@@ -5,20 +5,35 @@ const Joi = require('@hapi/joi');
 
 const YYYY_MM_DD_PATTERN = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/;
 
+const isCountryCodeValid = (value, helpers) => {
+
+  const countryData = _.find(countryCodes, (countryData) => {
+    const shortCode = countryData['alpha-3'];
+    return shortCode === value.toUpperCase();
+  });
+
+  console.log('countryData', countryData);
+
+  if (!!countryData) {
+    return helpers.error('any.invalid');
+  }
+
+  // Return the value unchanged if valid
+  return value;
+};
+
 const CREATE_TOKEN_SCHEMA = Joi.object({
 
   token_id: Joi.number().integer().min(0).required(),
 
-  // TODO validate COO against country codes
+  // TODO validate COO
   coo: Joi.string().min(3).max(3).case('upper').required(),
 
   artist_initials: Joi.string().alphanum().min(1).max(4).required(),
 
-  // TODO pad to 001
-  series: Joi.number().integer().min(1).max(999).required(),
+  series: Joi.string().min(3).max(3).required(),
 
-  // TODO pad to 0001
-  design: Joi.number().integer().min(1).max(9999).required(),
+  design: Joi.string().min(4).max(4).required(),
 
   name: Joi.string().min(1).max(125).required(),
 
@@ -63,14 +78,6 @@ const isValidCreateTokenJob = async (jobData) => {
     };
   }
   return {valid: true};
-};
-
-const isCountryCodeValid = (countryCode) => {
-  const countryData = _.find(countryCodes, (countryData) => {
-    const shortCode = countryData['alpha-3'];
-    return shortCode === countryCode.toUpperCase();
-  });
-  return !!countryData;
 };
 
 module.exports = {
