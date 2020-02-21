@@ -91,7 +91,7 @@ class JobQueue {
         }
 
         // Single job
-        if (limit === 2) {
+        if (limit === 1) {
           const document = snapshot.docs[0];
           return {
             jobId: document.id,

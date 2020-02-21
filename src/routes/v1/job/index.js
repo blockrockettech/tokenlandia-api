@@ -101,7 +101,7 @@ job.get('/process/metadata', async function (req, res) {
   const {chainId} = req.params;
   const jobs = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED], 2);
 
-  if (!jobs) {
+  if (_.size(jobs) === 0) {
     return res
       .status(202)
       .json({
@@ -109,7 +109,9 @@ job.get('/process/metadata', async function (req, res) {
       });
   }
 
-  const workingJobs = _.map(jobs, (job) => metadataCreationProcessor.processJob(job));
+  const workingJobs = _.map(jobs, (job) => {
+    return metadataCreationProcessor.processJob(job);
+  });
 
   const results = Promise.all(workingJobs);
 
