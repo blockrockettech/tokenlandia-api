@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {jobValidator, jobQueue} = require('../../src/services');
+const {jobValidator} = require('../../src/services');
 
 describe('Job validation tests', function () {
 

@@ -19,7 +19,7 @@ class JobCompletionProcessor {
     const provider = getHttpProvider(chainId);
 
     const receipt = await provider.getTransactionReceipt(hash);
-    console.log(receipt);
+    // console.log(receipt);
 
     // Only set if the tx is confirmed either way
     const transactionIsConfirmed = receipt && receipt.blockNumber > 0;
@@ -44,7 +44,7 @@ class JobCompletionProcessor {
         ? JOB_STATUS.JOB_COMPLETE
         : JOB_STATUS.TRANSACTION_FAILED;
 
-      console.log(`Moving job [${jobId}] on chain [${chainId}] to new status of [${jobStatus}]`, newContext);
+      console.log(`Moving job [${jobId}] on chain [${chainId}] to new status of [${jobStatus}]`);
       return this.jobQueue.addStatusAndContextToJob(chainId, jobId, jobStatus, newContext);
     }
 

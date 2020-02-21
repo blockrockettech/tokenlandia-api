@@ -18,27 +18,35 @@ class MintingProcessor {
 
     const recipient = getEscrowContractAddress(chainId);
 
-    const {
-      hash,
-      from,
-      to,
-      nonce,
-      gasPrice,
-      gasLimit
-    } = await this.tokenlandiaService.mint(tokenId, recipient, ACCEPTED.product_code, METADATA_CREATED.metadataHash);
+    try {
 
-    const newContext = {
-      hash,
-      from,
-      to,
-      nonce,
-      gasPrice: gasPrice.toString(),
-      gasLimit: gasLimit.toString(),
-      recipient
-    };
+      const {
+        hash,
+        from,
+        to,
+        nonce,
+        gasPrice,
+        gasLimit
+      } = await this.tokenlandiaService.mint(tokenId, recipient, ACCEPTED.product_code, METADATA_CREATED.metadataHash);
 
-    // change status to TRANSACTION_SENT and new context including TX hash
-    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, newContext);
+      const newContext = {
+        hash,
+        from,
+        to,
+        nonce,
+        gasPrice: gasPrice.toString(),
+        gasLimit: gasLimit.toString(),
+        recipient
+      };
+
+      // change status to TRANSACTION_SENT and new context including TX hash
+      return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, newContext);
+
+    } catch (e) {
+      
+      console.log(`Failed to send minting transaction`, e);
+      return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, e);
+    }
   }
 }
 
