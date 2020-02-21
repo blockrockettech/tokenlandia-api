@@ -8,7 +8,7 @@ class JobQueue {
   }
 
   async addJobToQueue(chainId, jobType, jobData) {
-    console.log('Add job to queue', {chainId, jobType}, jobData);
+    console.log('Adding job to queue', {chainId, jobType}, jobData);
 
     const {token_id} = jobData;
 
@@ -30,7 +30,9 @@ class JobQueue {
 
     // generate Joc ID and place in DB queue
     // /process-queue/${chain_id}/jobs/${job}
-    const createdDocRef = await this.getJobsCollectionRef(chainId).add(newJob);
+    const createdDocRef = await this.getJobsCollectionRef(chainId)
+      .add(newJob);
+
     console.log(`Job created`, newJob, createdDocRef);
 
     return {
@@ -40,7 +42,7 @@ class JobQueue {
   }
 
   async addStatusAndContextToJob(chainId, jobId, status, context) {
-    this.assertChainJobIdValid(chainId, jobId);
+    console.log('Adding status context to job', {chainId, jobId, status}, context);
 
     const job = this.getJobForId(chainId, jobId);
     if (!job) {
@@ -84,7 +86,7 @@ class JobQueue {
   }
 
   async getJobForId(chainId, jobId) {
-    this.assertChainJobIdValid(chainId, jobId);
+    console.log('Getting job details', {chainId, jobId});
 
     return this.getJobsCollectionRef(chainId)
       .doc(jobId)
@@ -102,7 +104,7 @@ class JobQueue {
   }
 
   async getJobsForTokenId(chainId, tokenId, jobType) {
-    console.log('Get jobs for token', {chainId: chainId, tokenId: tokenId, jobType: jobType});
+    console.log('Get jobs for token', {chainId, tokenId, jobType});
 
     return this.getJobsCollectionRef(chainId)
       .where('tokenId', '==', _.toString(tokenId))
@@ -133,11 +135,6 @@ class JobQueue {
       .collection('jobs');
   }
 
-  assertChainJobIdValid(chainId, jobId) {
-    if (!chainId || typeof chainId !== 'string' || !jobId || typeof jobId !== 'string') {
-      throw new Error(`Chain ID [${chainId}] and or job ID [${jobId}] are not valid strings.`);
-    }
-  }
 }
 
 module.exports = JobQueue;

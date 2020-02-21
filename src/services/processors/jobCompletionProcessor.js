@@ -15,14 +15,15 @@ class JobCompletionProcessor {
     const {TRANSACTION_SENT} = context;
     const {hash} = TRANSACTION_SENT;
 
-
     const provider = getHttpProvider(chainId);
 
     const receipt = await provider.getTransactionReceipt(hash);
     console.log(receipt);
 
     // Only set if the tx is confirmed either way
-    if (receipt && receipt.blockNumber > 0) {
+    const transactionIsConfirmed = receipt && receipt.blockNumber > 0;
+
+    if (transactionIsConfirmed) {
 
       const {status, to, from, blockHash, blockNumber, confirmations, gasUsed, transactionHash, transactionIndex} = receipt;
 
@@ -47,6 +48,7 @@ class JobCompletionProcessor {
     }
 
     console.log(`Job [${jobId}] on chain [${chainId}] no confirmed yet`);
+    return false;
   }
 
 }

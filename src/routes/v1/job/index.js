@@ -12,6 +12,9 @@ const {
 
 const {JOB_STATUS, JOB_TYPES} = jobConstants;
 
+/**
+ * Submit a new Job to create a new token
+ */
 job.post('/submit/createtoken/general', async function (req, res) {
 
   const {chainId} = req.params;
@@ -68,6 +71,9 @@ job.post('/submit/createtoken/general', async function (req, res) {
     .json(jobDetails);
 });
 
+/**
+ * Get Job Details for JobId
+ */
 job.get('/details/:jobId', async function (req, res) {
   const {chainId, jobId} = req.params;
   const jobDetails = await jobQueue.getJobForId(chainId, jobId);
@@ -85,6 +91,9 @@ job.get('/details/:jobId', async function (req, res) {
     .json(jobDetails);
 });
 
+/**
+ * Process the next available IPFS metadata push
+ */
 job.get('/process/metadata', async function (req, res) {
   const {chainId} = req.params;
   const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED]);
@@ -106,6 +115,9 @@ job.get('/process/metadata', async function (req, res) {
     });
 });
 
+/**
+ * Process the next available transaction
+ */
 job.get('/process/transaction', async function (req, res) {
   const {chainId} = req.params;
   const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.METADATA_CREATED]);
@@ -127,6 +139,9 @@ job.get('/process/transaction', async function (req, res) {
     });
 });
 
+/**
+ * Process the next available competition job
+ */
 job.get('/process/completions', async function (req, res) {
   const {chainId} = req.params;
   const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
