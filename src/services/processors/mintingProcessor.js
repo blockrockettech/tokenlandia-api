@@ -12,7 +12,7 @@ class MintingProcessor {
   async processJob(job) {
 
     const {context, tokenId, jobId, chainId} = job;
-    console.log(`MintingProcessor - job [${jobId}] on chain [${chainId}]`);
+    console.log(`MintingProcessor - token [${tokenId}] job [${jobId}] on chain [${chainId}]`);
 
     const {ACCEPTED, METADATA_CREATED} = context;
 

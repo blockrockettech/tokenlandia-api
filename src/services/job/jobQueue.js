@@ -1,6 +1,12 @@
 const _ = require('lodash');
 const {JOB_STATUS} = require('./jobConstants');
 
+const NEXT_STATES = {
+  [JOB_STATUS.ACCEPTED]: [JOB_STATUS.METADATA_CREATED],
+  [JOB_STATUS.METADATA_CREATED]: [JOB_STATUS.TRANSACTION_SENT],
+  [JOB_STATUS.TRANSACTION_SENT]: [JOB_STATUS.JOB_COMPLETE, JOB_STATUS.TRANSACTION_FAILED]
+};
+
 class JobQueue {
 
   constructor(db) {
@@ -44,9 +50,13 @@ class JobQueue {
   async addStatusAndContextToJob(chainId, jobId, status, context) {
     console.log('Adding status context to job', {chainId, jobId, status}, context);
 
-    const job = this.getJobForId(chainId, jobId);
+    const job = await this.getJobForId(chainId, jobId);
     if (!job) {
       throw new Error(`Job cannot be found for job ID [${jobId}] and chain ID [${chainId}]`);
+    }
+
+    if (!_.includes(NEXT_STATES[job.status], status)) {
+      throw new Error(`Invalid state transition for job id [${jobId}] on chain ID [${chainId}]. Attempting to go from ${job.status} -> ${status}`);
     }
 
     const newContext = {
