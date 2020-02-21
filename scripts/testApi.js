@@ -37,7 +37,7 @@ async function addCreateJobToQueue(tokenId) {
   const chainId = 4;
   console.log('---Firing create job---');
   const response = await axios
-    .post(`http://localhost:8080/v1/network/${chainId}/job/submit/createtoken/general`, createPayload)
+    .post(`https://api-56b6el2v7a-uc.a.run.app/v1/network/${chainId}/job/submit/createtoken/general?key=${process.env.API_ACCESS_KEY}`, createPayload)
     .catch(e => {
       if (e.response) {
         console.log(`Could not create. Failed with ${e.response.status} - ${e.response.data.error}`);
@@ -72,13 +72,13 @@ async function processJobs() {
   console.log('Test API Script started!\n');
 
   // Fire create requests
-  for(let i = 620; i <= 640; i++) {
+  for(let i = 640; i <= 700; i++) {
     await addCreateJobToQueue(i);
   }
 
   console.log('Processing will take place now every minute...\n');
 
   // Set time out for method that processes jobs
-  setInterval(processJobs, 60000);
-  processJobs();
+  // setInterval(processJobs, 60000);
+  // processJobs();
 })();

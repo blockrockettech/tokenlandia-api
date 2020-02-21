@@ -145,6 +145,15 @@ job.get('/process/transaction', async function (req, res) {
       });
   }
 
+  const inflightJob = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
+  if (inflightJob) {
+    return res
+      .status(202)
+      .json({
+        msg: `Inflight transaction found, waiting for job [${inflightJob.id}] to complete`,
+      });
+  }
+
   const processedJob = await mintingProcessor(chainId).processJob(job);
 
   return res
@@ -163,9 +172,9 @@ job.get('/process/transaction', async function (req, res) {
  */
 job.get('/process/completions', async function (req, res) {
   const {chainId} = req.params;
-  const jobs = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT], 3);
+  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
 
-  if (_.size(jobs) === 0) {
+  if (!job) {
     return res
       .status(202)
       .json({
@@ -173,24 +182,16 @@ job.get('/process/completions', async function (req, res) {
       });
   }
 
-  const workingJobs = _.map(jobs, (job) => {
-    return jobCompletionProcessor.processJob(job);
-  });
-
-  const results = await Promise.all(workingJobs);
+  const processedJob = await jobCompletionProcessor.processJob(job);
 
   return res
     .status(200)
     .json({
-      results: _.map(results, (processedJob) => {
-        return {
-          msg: `Processing job [${processedJob.jobId}]`,
-          chainId: chainId,
-          tokenId: processedJob.tokenId,
-          jobId: processedJob.jobId,
-          status: processedJob.status
-        };
-      })
+      msg: `Processing job [${processedJob.jobId}]`,
+      chainId: chainId,
+      tokenId: processedJob.tokenId,
+      jobId: processedJob.jobId,
+      status: processedJob.status
     });
 });
 

@@ -8,7 +8,7 @@ const isValid = (token) => {
 
 module.exports = (req, res, next) => {
 
-  if (isValid(req.token)) {
+  if (req.query && isValid(req.query.key)) {
     return next();
   }
 
