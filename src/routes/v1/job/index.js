@@ -100,7 +100,7 @@ job.get('/process/metadata', async function (req, res) {
 
   if (!job) {
     return res
-      .status(204)
+      .status(202)
       .json({
         msg: `No jobs found for processing for chain ID [${chainId}]`
       });
@@ -128,7 +128,7 @@ job.get('/process/transaction', async function (req, res) {
 
   if (!job) {
     return res
-      .status(204)
+      .status(202)
       .json({
         msg: `No jobs found for processing for chain ID [${chainId}]`,
       });
@@ -156,7 +156,7 @@ job.get('/process/completions', async function (req, res) {
 
   if (!job) {
     return res
-      .status(204)
+      .status(202)
       .json({
         msg: `No jobs found for processing for chain ID [${chainId}]`
       });
