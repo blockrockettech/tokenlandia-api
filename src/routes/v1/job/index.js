@@ -113,7 +113,7 @@ job.get('/process/metadata', async function (req, res) {
     return metadataCreationProcessor.processJob(job);
   });
 
-  const results = Promise.all(workingJobs);
+  const results = await Promise.all(workingJobs);
 
   return res
     .status(200)
@@ -177,7 +177,7 @@ job.get('/process/completions', async function (req, res) {
     return jobCompletionProcessor.processJob(job);
   });
 
-  const results = Promise.all(workingJobs);
+  const results = await Promise.all(workingJobs);
 
   return res
     .status(200)
@@ -192,6 +192,12 @@ job.get('/process/completions', async function (req, res) {
         };
       })
     });
+});
+
+job.get('/summary', async function (req, res) {
+  const {chainId} = req.params;
+  return res.status(200)
+    .json(await jobQueue.getJobTypeSummaryForChainId(chainId, JOB_TYPES.CREATE_TOKEN));
 });
 
 module.exports = job;
