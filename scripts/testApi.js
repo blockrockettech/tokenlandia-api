@@ -13,26 +13,27 @@ if (process.env.NODE_ENV === 'test') {
 
 async function addCreateJobToQueue(tokenId) {
   const createPayload = {
-    "token_id": tokenId.toString(),
-    "coo": "USA",
-    "artist_initials": "RSA",
-    "series": "002",
-    "design": "0003",
-    "name": `token ${tokenId}`,
-    "description": `token ${tokenId} description`,
-    "image": "http://preview.tokenlandia.com/wp-content/uploads/2019/11/b8e4d509cb644e254fbc16eb6a53fd48_listingImg_IOznWUjgk6.jpg",
-    "artist": "artist",
-    "artist_assistant": "assistant",
-    "brand": "brand",
-    "model": "model",
-    "purchase_location": "london",
-    "purchase_date": "2020-02-01",
-    "customization_location": "tokyo",
-    "customization_date": "2020-02-06",
-    "materials_used": [
-    "a",
-    "b"
-  ]};
+    'token_id': tokenId.toString(),
+    'coo': 'USA',
+    'artist_initials': 'RSA',
+    'series': '002',
+    'design': '0003',
+    'name': `token ${tokenId}`,
+    'description': `token ${tokenId} description`,
+    'image': 'http://preview.tokenlandia.com/wp-content/uploads/2019/11/b8e4d509cb644e254fbc16eb6a53fd48_listingImg_IOznWUjgk6.jpg',
+    'artist': 'artist',
+    'artist_assistant': 'assistant',
+    'brand': 'brand',
+    'model': 'model',
+    'purchase_location': 'london',
+    'purchase_date': '2020-02-01',
+    'customization_location': 'tokyo',
+    'customization_date': '2020-02-06',
+    'materials_used': [
+      'a',
+      'b'
+    ]
+  };
 
   const chainId = 4;
   console.log('---Firing create job---');
@@ -72,7 +73,7 @@ async function processJobs() {
   console.log('Test API Script started!\n');
 
   // Fire create requests
-  for(let i = 640; i <= 700; i++) {
+  for (let i = 640; i <= 700; i++) {
     await addCreateJobToQueue(i);
   }
 
