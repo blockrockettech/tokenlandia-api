@@ -91,9 +91,9 @@ The functions are designed to validate and accept large batches of jobs however 
 
 This API is currently split into 3 parts, below I will go over each endpoint:
 
-* Submit Job - add a new job to the queue to be processed
-* Get Job Status - get the status of the job in the queue
-* Get Queue Summary - get the total number of outstanding jobs in the queue
+* [Submit Job](#submit-job) - add a new job to the queue to be processed
+* [Get Job Status](#get-job-status) - get the status of the job in the queue
+* [Get Queue Summary](#get-queue-summary) - get the total number of outstanding jobs in the queue
 
 When jobs are processed they go through a set of finite states which as seen below.
 
