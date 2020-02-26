@@ -90,7 +90,7 @@ job.get('/details/:jobId', async function (req, res) {
   }
 
   return res
-    .status(202)
+    .status(200)
     .json(jobDetails);
 });
 
@@ -139,7 +139,7 @@ job.get('/process/transaction', async function (req, res) {
 
   if (!job) {
     return res
-      .status(202)
+      .status(200)
       .json({
         msg: `No jobs found for processing for chain ID [${chainId}]`,
       });
@@ -148,7 +148,7 @@ job.get('/process/transaction', async function (req, res) {
   const inflightJob = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
   if (inflightJob) {
     return res
-      .status(202)
+      .status(200)
       .json({
         msg: `Inflight transaction found, waiting for job [${inflightJob.id}] to complete`,
       });
@@ -176,7 +176,7 @@ job.get('/process/completions', async function (req, res) {
 
   if (!job) {
     return res
-      .status(202)
+      .status(200)
       .json({
         msg: `No jobs found for processing for chain ID [${chainId}]`
       });
