@@ -1,8 +1,8 @@
 const {ethers, constants, utils} = require('ethers');
-const TokenLandiaTruffleConf = require('../truffleconf/token/Tokenlandia');
-const {getContractAddressFromTruffleConf} = require('../utils/truffle');
+const TokenLandiaTruffleConf = require('../../truffleconf/token/Tokenlandia');
+const {getContractAddressFromTruffleConf} = require('../../utils/truffle');
 const {getNetworkName} = require('@blockrocket/utils');
-const {getHttpProvider} = require('../web3/provider');
+const {getWallet, getHttpProvider} = require('../../web3/provider');
 
 function getBaseUrl(domain, networkName) {
   if (networkName !== 'mainnet') {
@@ -17,6 +17,7 @@ class TokenLandia {
     this.chainId = chainId;
 
     try {
+      this.signer = getWallet(chainId);
       this.provider = getHttpProvider(chainId);
     } catch (e) {
       throw new Error(`Invalid chain ID '${chainId}'`);
@@ -31,7 +32,7 @@ class TokenLandia {
     this.contract = new ethers.Contract(
       this.contractAddress,
       TokenLandiaTruffleConf.abi,
-      this.provider
+      this.signer
     );
   }
 
@@ -54,6 +55,16 @@ class TokenLandia {
     return await this.contract.attributes(tokenId);
   }
 
+  async tokenExists(tokenId) {
+    try {
+      // method call reverts for non exitance token ID
+      await this.contract.productCode(tokenId);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async tokenIdForProductId(productId) {
     return await this.contract.tokenIdForProductId(productId);
   }
@@ -74,6 +85,10 @@ class TokenLandia {
 
   async totalSupply() {
     return await this.contract.totalSupply();
+  }
+
+  async mint(tokenId, recipient, productCode, ipfsHash) {
+    return this.contract.mintToken(tokenId, recipient, productCode, ipfsHash);
   }
 }
 

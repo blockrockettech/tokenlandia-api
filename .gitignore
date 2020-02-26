@@ -1,3 +1,4 @@
+.DS_Store
 node_modules/
 
 # Created by https://www.gitignore.io/api/intellij+all
@@ -90,3 +91,6 @@ modules.xml
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/intellij+all
+/.env
+/src/_keys/
+/src/_keys/tokenlandia-admin-eff5ebee14d7.json
