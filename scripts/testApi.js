@@ -73,7 +73,7 @@ async function processJobs() {
   console.log('Test API Script started!\n');
 
   // Fire create requests
-  for (let i = 640; i <= 700; i++) {
+  for (let i = 700; i <= 800; i++) {
     await addCreateJobToQueue(i);
   }
 
