@@ -191,7 +191,7 @@ If any of these things fail a HTTP `400` will be returned with the reason for th
 
 This API can be used to get the status about a specific job which has been previously accepted.
 
-`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/submit/details/${JOB_ID}?key={uuid-key}`
+`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/details/${JOB_ID}?key={uuid-key}`
 
 ```
 {
