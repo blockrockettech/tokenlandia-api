@@ -164,13 +164,30 @@ Sample successful job created `JSON` response
 
 --------------------
 
-Sample failure - HTTP status 400
+* Failure - Invalid Token Data - `HTTP` status `400`
+```
+{
+    "error": "Invalid job data",
+    "details": [
+	    ...a list of errors found
+    ]
+}
+```
+
+* Failure - Token already created - `HTTP` status `400`
+```
+{
+    "error": "Token already created"
+}
+```
+
+* Failure - Duplicate Job - `HTTP` status `400`
 ```
 {
     "error": "Duplicate Job found",
-    "existingJob": [
-	...
-    ]
+    "existingJob": {
+	    ...the exsiting job
+    }
 }
 ```
 
