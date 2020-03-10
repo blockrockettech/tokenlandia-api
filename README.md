@@ -133,10 +133,7 @@ Sample request body
     'purchase_date': '2020-02-01',
     'customization_location': 'tokyo',
     'customization_date': '2020-02-06',
-    'materials_used': [
-      'a',
-      'b'
-    ]
+    'material_1': 'a' // Can have up to 5 materials (all optional)
 }
 ```
 

@@ -44,10 +44,8 @@ describe.skip('Metadata creation', function () {
             purchase_date: '2020-02-01',
             customization_location: 'tokyo',
             customization_date: '2020-02-06',
-            materials_used: [
-              'a',
-              'b'
-            ],
+            material_1: 'a',
+            material_2: 'b',
             type: 'PHYSICAL_ASSET',
             product_id: 'USA-RSA-002-0003-100'
           }
