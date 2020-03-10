@@ -23,7 +23,7 @@ const CREATE_TOKEN_SCHEMA = Joi.object({
 
   token_id: Joi.number().integer().min(0).required(),
 
-  coo: Joi.string().min(3).max(3).case('upper').required().custom(countryCodeValidator, "custom validation"),
+  coo: Joi.string().min(3).max(3).case('upper').required().custom(countryCodeValidator, "COO is not valid country code"),
 
   artist_initials: Joi.string().alphanum().min(1).max(4).required(),
 

@@ -60,6 +60,20 @@ describe('Job validation tests', function () {
   it('should fail if token_id is not a number', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
+      'coo': 'AAA',
+    });
+    results.should.be.deep.equal({
+      valid: false,
+      errors: [
+        {message: '"coo" contains an invalid value', type: 'any.invalid'},
+      ]
+    });
+  });
+
+
+  it('should fail for invalid country code', async function () {
+    const results = await jobValidator.isValidCreateTokenJob({
+      ...validPayload,
       'token_id': 'abc',
     });
     results.should.be.deep.equal({
