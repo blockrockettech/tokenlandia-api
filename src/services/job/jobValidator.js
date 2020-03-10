@@ -5,18 +5,17 @@ const Joi = require('@hapi/joi');
 
 const YYYY_MM_DD_PATTERN = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/;
 
-const isCountryCodeValid = (value, helpers) => {
-
-  const countryData = _.find(countryCodes, (countryData) => {
+const isCountryCodeValid = (value) => {
+  return _.find(countryCodes, (countryData) => {
     const shortCode = countryData['alpha-3'];
     return shortCode === value.toUpperCase();
   });
+};
 
-  if (!!countryData) {
+const countryCodeValidator = (value, helpers) => {
+  if (!isCountryCodeValid(value)) {
     return helpers.error('any.invalid');
   }
-
-  // Return the value unchanged if valid
   return value;
 };
 
@@ -24,8 +23,7 @@ const CREATE_TOKEN_SCHEMA = Joi.object({
 
   token_id: Joi.number().integer().min(0).required(),
 
-  // TODO validate COO
-  coo: Joi.string().min(3).max(3).case('upper').required(),
+  coo: Joi.string().min(3).max(3).case('upper').required().custom(countryCodeValidator, "custom validation"),
 
   artist_initials: Joi.string().alphanum().min(1).max(4).required(),
 
@@ -37,24 +35,31 @@ const CREATE_TOKEN_SCHEMA = Joi.object({
 
   description: Joi.string().min(1).max(300).required(),
 
-  image: Joi.string().uri().required(),
+  image: Joi.string().min(1).max(125).uri().required(),
 
-  artist: Joi.string().required(),
+  artist: Joi.string().min(1).max(125).required(),
 
-  artist_assistant: Joi.string().alphanum().optional(),
+  artist_assistant: Joi.string().alphanum().min(1).max(125).optional(),
 
-  brand: Joi.string().required(),
+  brand: Joi.string().min(1).max(125).required(),
 
-  model: Joi.string().required(),
+  model: Joi.string().min(1).max(125).required(),
 
-  purchase_location: Joi.string().optional(),
-  purchase_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
-  customization_location: Joi.string().optional(),
+  ///////////////////////////
+  // Optional fields below //
+  ///////////////////////////
+
+  purchase_location: Joi.string().min(0).max(125).optional(),
+  purchase_date: Joi.string().min(0).max(125).optional().pattern(YYYY_MM_DD_PATTERN),
+
+  customization_location: Joi.string().min(0).max(125).optional(),
   customization_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
 
-  materials_used: Joi.array().items(
-    Joi.string().alphanum().min(1).max(40)
-  ).optional().min(0).max(5),
+  material_1: Joi.string().alphanum().min(1).max(40).optional(),
+  material_2: Joi.string().alphanum().min(1).max(40).optional(),
+  material_3: Joi.string().alphanum().min(1).max(40).optional(),
+  material_4: Joi.string().alphanum().min(1).max(40).optional(),
+  material_5: Joi.string().alphanum().min(1).max(40).optional(),
 
 });
 

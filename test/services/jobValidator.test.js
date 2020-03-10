@@ -7,8 +7,8 @@ describe('Job validation tests', function () {
     'token_id': 1,
     'coo': 'USA',
     'artist_initials': 'RSA',
-    'series': "002",
-    'design': "0003",
+    'series': '002',
+    'design': '0003',
     'name': 'token 1',
     'description': 'token 1 description',
     'image': 'http://test.test.com',
@@ -20,10 +20,8 @@ describe('Job validation tests', function () {
     'purchase_date': '2020-02-01',
     'customization_location': 'tokyo',
     'customization_date': '2020-02-06',
-    'materials_used': [
-      'a',
-      'b'
-    ],
+    'material_1': 'a',
+    'material_2': 'b',
   };
 
   it('should fail if empty', async function () {
@@ -79,7 +77,11 @@ describe('Job validation tests', function () {
         'purchase_date',
         'customization_location',
         'customization_date',
-        'materials_used'
+        'material_1',
+        'material_2',
+        'material_3',
+        'material_4',
+        'material_5',
       ])
     });
     results.should.be.deep.equal({
