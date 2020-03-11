@@ -20,7 +20,7 @@ describe('Metadata Creation Processor - ', async function () {
     this.clock.restore();
   });
 
-  describe('Creating new token data to IPFS', async function () {
+  describe('Creating new token data and pushing to IPFS', async function () {
 
     it('Should upload image and push to IPFS', async function () {
 
