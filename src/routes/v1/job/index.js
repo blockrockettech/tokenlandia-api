@@ -244,7 +244,7 @@ job.get('/process/completions', async function (req, res) {
       });
   }
 
-  const processedJob = await jobCompletionProcessor.processJob(job);
+  const processedJob = await jobCompletionProcessor(chainId).processJob(job);
 
   return res
     .status(200)

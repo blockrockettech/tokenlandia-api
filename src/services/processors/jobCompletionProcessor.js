@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const {getHttpProvider} = require('../../web3/provider');
 const {JOB_STATUS} = require('../../services/job/jobConstants');
 
 class JobCompletionProcessor {
 
-  constructor(jobQueue) {
+  constructor(provider, jobQueue) {
     this.jobQueue = jobQueue;
+    this.provider = provider;
   }
 
   async processJob(job) {
@@ -16,9 +16,7 @@ class JobCompletionProcessor {
     const {TRANSACTION_SENT} = context;
     const {hash} = TRANSACTION_SENT;
 
-    const provider = getHttpProvider(chainId);
-
-    const receipt = await provider.getTransactionReceipt(hash);
+    const receipt = await this.provider.getTransactionReceipt(hash);
     // console.log(receipt);
 
     // Only set if the tx is confirmed either way
@@ -48,7 +46,7 @@ class JobCompletionProcessor {
       return this.jobQueue.addStatusAndContextToJob(chainId, jobId, jobStatus, newContext);
     }
 
-    console.log(`Job [${jobId}] on chain [${chainId}] no confirmed yet`);
+    console.log(`Job [${jobId}] on chain [${chainId}] no confirmation yet`);
     return job;
   }
 

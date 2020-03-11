@@ -5,6 +5,7 @@ const jobValidator = require('./job/jobValidator');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
+const {getHttpProvider} = require('../web3/provider');
 
 const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
 
@@ -27,5 +28,5 @@ module.exports = {
   ipfsService: ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
   transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, new TokenLandia(chainId)),
-  jobCompletionProcessor: new JobCompletionProcessor(jobQueue),
+  jobCompletionProcessor: (chainId) => new JobCompletionProcessor(getHttpProvider(chainId), jobQueue),
 };

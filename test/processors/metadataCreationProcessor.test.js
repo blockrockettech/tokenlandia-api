@@ -8,7 +8,7 @@ const {JOB_STATUS} = require('../../src/services/job/jobConstants');
 
 const MetadataCreationProcessor = require('../../src/services/processors/metadataCreationProcessor');
 
-describe('Metadata Creation Processor - ', async function () {
+describe('Metadata Creation Processor', async function () {
 
   beforeEach(function () {
     this.now = Date.now();
@@ -20,9 +20,9 @@ describe('Metadata Creation Processor - ', async function () {
     this.clock.restore();
   });
 
-  describe('Creating new token data and pushing to IPFS', async function () {
+  describe('Creating new token data and push to IPFS', async function () {
 
-    it('Should upload image and push to IPFS', async function () {
+    it('should upload image and push to IPFS', async function () {
 
       const jobQueue = {
         addStatusAndContextToJob: sinon.stub().onCall(0).resolves('success')
@@ -114,7 +114,7 @@ describe('Metadata Creation Processor - ', async function () {
 
   });
 
-  describe('Pushing updated token data to IPFS', async function () {
+  describe('Pushing updated token data and push to IPFS', async function () {
 
     it('should merge attributes and push to IPFS', async function () {
 
