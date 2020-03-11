@@ -20,7 +20,7 @@ class TokenLandia {
       this.signer = getWallet(chainId);
       this.provider = getHttpProvider(chainId);
     } catch (e) {
-      throw new Error(`Invalid chain ID '${chainId}'`);
+      throw new Error(`Invalid chain ID [${chainId}]`);
     }
 
     this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);

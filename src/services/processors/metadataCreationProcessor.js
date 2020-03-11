@@ -17,7 +17,7 @@ class MetadataCreationProcessor {
   async pushCreateTokenJob(job) {
 
     const {context, chainId, jobId} = job;
-    console.log(`MetadataCreationProcessor - job [${jobId}] on chain [${chainId}]`);
+    console.log(`MetadataCreationProcessor - create token job [${jobId}] on chain [${chainId}]`);
 
     const acceptedJobContext = context[JOB_STATUS.ACCEPTED];
     const {name, description, image, type, ...restOfData} = acceptedJobContext;
@@ -51,7 +51,7 @@ class MetadataCreationProcessor {
   async pushUpdateTokenJob(job) {
 
     const {context, chainId, jobId} = job;
-    console.log(`MetadataCreationProcessor - job [${jobId}] on chain [${chainId}]`);
+    console.log(`MetadataCreationProcessor - update token job [${jobId}] on chain [${chainId}]`);
 
     const acceptedJobContext = context[JOB_STATUS.ACCEPTED];
     const {token_id, type, ...updatedAttributes} = acceptedJobContext;
