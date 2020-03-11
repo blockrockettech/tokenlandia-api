@@ -12,12 +12,10 @@ describe('Job Completion Processor', async function () {
 
   beforeEach(function () {
     this.now = Date.now();
-    this.clock = sinon.useFakeTimers(this.now);
   });
 
   afterEach(function () {
     sinon.restore();
-    this.clock.restore();
   });
 
   describe('Completing a job', async function () {
