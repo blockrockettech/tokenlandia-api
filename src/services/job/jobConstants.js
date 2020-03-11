@@ -11,7 +11,7 @@ const JOB_STATUS = Object.freeze({
   // Stage 1 - accept job
   ACCEPTED: 'ACCEPTED',
 
-  // Stage 2 - push Metadata to IPFS
+  // Stage 2 - push Metadata to IPFS (create or update action)
   METADATA_CREATED: 'METADATA_CREATED',
 
   // Stage 3 - submit txs to network

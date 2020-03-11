@@ -4,6 +4,7 @@ const {jobValidator} = require('../../src/services');
 describe('Job validation - Update Token', function () {
 
   const validPayload = {
+    'token_id': 1,
     'purchase_location': 'london',
     'purchase_date': '2020-02-01',
     'customization_location': 'tokyo',
@@ -17,6 +18,7 @@ describe('Job validation - Update Token', function () {
     results.should.be.deep.equal({
       valid: false,
       errors: [
+        {message: '"token_id" is required', type: 'any.required'},
         {message: '"purchase_location" is required', type: 'any.required'},
         {message: '"purchase_date" is required', type: 'any.required'},
         {message: '"customization_location" is required', type: 'any.required'},
@@ -46,5 +48,16 @@ describe('Job validation - Update Token', function () {
     });
   });
 
-
+  it('should fail if token_id is not a number', async function () {
+    const results = await jobValidator.isValidUpdateTokenJob({
+      ...validPayload,
+      'token_id': 'abc',
+    });
+    results.should.be.deep.equal({
+      valid: false,
+      errors: [
+        {message: '"token_id" must be a number', type: 'number.base'},
+      ]
+    });
+  });
 });

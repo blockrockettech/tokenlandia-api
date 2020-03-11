@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {JOB_STATUS} = require('./jobConstants');
+const {JOB_STATUS, JOB_TYPES} = require('./jobConstants');
 
 const NEXT_STATES = {
   [JOB_STATUS.ACCEPTED]: [JOB_STATUS.METADATA_CREATED],
@@ -152,61 +152,69 @@ class JobQueue {
       });
   }
 
-  async getJobTypeSummaryForChainId(chainId, jobType) {
-    const numOfJobsForJobType = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+  async getJobTypeSummaryForChainId(chainId) {
 
-    const numOfAcceptedJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.ACCEPTED)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+    const getSummaryInfo = async (jobType) => {
+      const numOfJobsForJobType = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfMetadataCreatedJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.METADATA_CREATED)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfAcceptedJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.ACCEPTED)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfTransactionSentJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.TRANSACTION_SENT)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfMetadataCreatedJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.METADATA_CREATED)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfJobCompleteJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.JOB_COMPLETE)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfTransactionSentJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.TRANSACTION_SENT)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfTransactionFailedJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.TRANSACTION_FAILED)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfJobCompleteJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.JOB_COMPLETE)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+
+      const numOfTransactionFailedJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.TRANSACTION_FAILED)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+
+      return {
+        numOfJobsForJobType,
+        numOfAcceptedJobs,
+        numOfMetadataCreatedJobs,
+        numOfTransactionSentJobs,
+        numOfJobCompleteJobs,
+        numOfTransactionFailedJobs
+      };
+    };
 
     return {
-      numOfJobsForJobType,
-      numOfAcceptedJobs,
-      numOfMetadataCreatedJobs,
-      numOfTransactionSentJobs,
-      numOfJobCompleteJobs,
-      numOfTransactionFailedJobs
+      [JOB_TYPES.CREATE_TOKEN]: await getSummaryInfo(JOB_TYPES.CREATE_TOKEN),
+      [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN)
     };
   }
 

@@ -7,7 +7,7 @@ const {
   jobValidator,
   jobConstants,
   newTokenLandiaService,
-  mintingProcessor,
+  transactionProcessor,
   metadataCreationProcessor,
   jobCompletionProcessor
 } = require('../../../services/index');
@@ -75,18 +75,18 @@ job.post('/submit/createtoken/general', async function (req, res) {
 });
 
 /**
- * Submit a new Job to create a new token
+ * Submit a new Job to update a new token
  */
-job.post('/submit/createtoken/general', async function (req, res) {
+job.post('/submit/updatetoken/general', async function (req, res) {
 
   const {chainId} = req.params;
   const rawJobData = req.body;
 
-  const {valid, errors} = await jobValidator.isValidCreateTokenJob(rawJobData);
-  console.log(`Incoming job found to be valid [${valid}] for chainId [${chainId}]`);
+  const {valid, errors} = await jobValidator.isValidUpdateTokenJob(rawJobData);
+  console.log(`Incoming update job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {
-    console.error(`Errors found in job`, errors);
+    console.error(`Errors found in update job`, errors);
     return res.status(400).json({
       error: `Invalid job data`,
       details: errors
@@ -97,36 +97,31 @@ job.post('/submit/createtoken/general', async function (req, res) {
 
   const tokenLandiaService = newTokenLandiaService(chainId);
   const tokenExists = await tokenLandiaService.tokenExists(token_id);
-  if (tokenExists) {
-    console.error(`Incoming job - token exists [${tokenExists}] for tokenId [${token_id}] and chainId [${chainId}]`);
+  if (!tokenExists) {
+    console.error(`Incoming update job - token does not exists [${tokenExists}] for tokenId [${token_id}] and chainId [${chainId}]`);
     return res.status(400).json({
-      error: `Token already created`,
+      error: `Token not created`,
     });
   }
 
-  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN);
+  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.UPDATE_TOKEN);
   if (existingJob) {
-    console.error(`Incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`);
+    console.error(`Incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.UPDATE_TOKEN}]`);
     return res.status(400).json({
       error: `Duplicate Job found`,
       existingJob
     });
   }
 
-  const {coo, artist_initials, series, design} = rawJobData;
-  const product_code = `${coo}-${artist_initials}-${series}-${design}`;
-
   // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
     type: 'PHYSICAL_ASSET',
-    product_id: `${product_code}-${token_id}`,
-    product_code
   };
 
-  // accept job
-  const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.CREATE_TOKEN, jobData);
-  console.log(`Job [${JOB_TYPES.CREATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`);
+  // Accept job
+  const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.UPDATE_TOKEN, jobData);
+  console.log(`Job [${JOB_TYPES.UPDATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`);
 
   // return job details
   return res
@@ -170,7 +165,14 @@ job.get('/process/metadata', async function (req, res) {
   }
 
   const workingJobs = _.map(jobs, (job) => {
-    return metadataCreationProcessor.processJob(job);
+    switch (job.jobType) {
+      case JOB_TYPES.CREATE_TOKEN:
+        return metadataCreationProcessor.pushCreateTokenJob(job);
+      case JOB_TYPES.UPDATE_TOKEN:
+        return metadataCreationProcessor.pushUpdateTokenJob(job);
+      default:
+        console.error('Unknown job type', job);
+    }
   });
 
   const results = await Promise.all(workingJobs);
@@ -214,7 +216,7 @@ job.get('/process/transaction', async function (req, res) {
       });
   }
 
-  const processedJob = await mintingProcessor(chainId).processJob(job);
+  const processedJob = await transactionProcessor(chainId).processJob(job);
 
   return res
     .status(200)
@@ -261,7 +263,7 @@ job.get('/process/completions', async function (req, res) {
 job.get('/summary', async function (req, res) {
   const {chainId} = req.params;
   return res.status(200)
-    .json(await jobQueue.getJobTypeSummaryForChainId(chainId, JOB_TYPES.CREATE_TOKEN));
+    .json(await jobQueue.getJobTypeSummaryForChainId(chainId));
 });
 
 module.exports = job;

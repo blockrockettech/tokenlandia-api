@@ -5,6 +5,8 @@ const YYYY_MM_DD_PATTERN = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$
 
 module.exports = Joi.object({
 
+  token_id: Joi.number().integer().min(0).required(),
+
   purchase_location: Joi.string().min(0).max(125).required(),
   purchase_date: Joi.string().min(0).max(125).required().pattern(YYYY_MM_DD_PATTERN),
 

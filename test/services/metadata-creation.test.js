@@ -56,6 +56,6 @@ describe.skip('Metadata creation', function () {
     const ipfsService = new IpfsService(ipfsClient);
     const metadataCreationProcessor = new MetadataCreationProcessor(mockJobQueue, ipfsService);
 
-    await metadataCreationProcessor.processJob(chainId, jobId);
+    await metadataCreationProcessor.pushCreateTokenJob(chainId, jobId);
   });
 });
