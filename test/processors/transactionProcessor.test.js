@@ -4,14 +4,9 @@ const sinon = require('sinon');
 const dotenv = require('dotenv');
 dotenv.config({path: `./.env.test`, debug: true});
 
-const {JOB_STATUS} = require('../../src/services/job/jobConstants');
+const {JOB_STATUS, JOB_TYPES} = require('../../src/services/job/jobConstants');
 
 const TransactionProcessor = require('../../src/services/processors/transactionProcessor');
-
-const {
-  givenAJobQueue,
-  givenATokenlandiaService,
-} = require('processorTestHelper');
 
 describe.only('Transaction Processor - ', async function () {
 
@@ -46,10 +41,30 @@ describe.only('Transaction Processor - ', async function () {
 
       const chainId = 4;
       const jobId = 'abc-123-def-456';
+      const tokenId = 1;
       const job = {
         chainId,
         jobId,
+        tokenId,
+        jobType: JOB_TYPES.CREATE_TOKEN,
         context: {
+          [JOB_STATUS.ACCEPTED]: {
+            'token_id': 1,
+            'coo': 'USA',
+            'artist_initials': 'RSA',
+            'series': '002',
+            'design': '0003',
+            'name': 'token 1',
+            'description': 'token 1 description',
+            'image': '',
+            'artist': 'artist',
+            'artist_assistant': 'assistant',
+            'brand': 'brand',
+            'model': 'model',
+            'type': 'PHYSICAL_ASSET',
+            'product_id': 'USA-RSA-002-0003-113',
+            'product_code': 'USA-RSA-002-0003'
+          },
           [JOB_STATUS.METADATA_CREATED]: {
             metadataHash: 'QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9',
             metadata: {
@@ -76,7 +91,32 @@ describe.only('Transaction Processor - ', async function () {
       };
 
       const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService);
+      const result = await transactionProcessor.processJob(job);
 
+      result.should.be.deep.equal('success');
+
+      // sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.METADATA_CREATED, {
+      //   metadata: {
+      //     attributes: {
+      //       artist: 'artist',
+      //       artist_assistant: 'assistant',
+      //       artist_initials: 'RSA',
+      //       brand: 'brand',
+      //       coo: 'USA',
+      //       design: '0003',
+      //       model: 'model',
+      //       product_id: 'USA-RSA-002-0003-113',
+      //       series: '002',
+      //       token_id: 1
+      //     },
+      //     created: Math.floor(this.now / 1000),
+      //     description: 'token 1 description',
+      //     image: 'https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf',
+      //     name: 'token 1',
+      //     type: 'PHYSICAL_ASSET'
+      //   },
+      //   metadataHash: 'QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9'
+      // });
     });
   });
 
