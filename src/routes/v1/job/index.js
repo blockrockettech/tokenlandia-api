@@ -100,7 +100,7 @@ job.post('/submit/updatetoken/general', async function (req, res) {
   if (!tokenExists) {
     console.error(`Incoming update job - token does not exists [${tokenExists}] for tokenId [${token_id}] and chainId [${chainId}]`);
     return res.status(400).json({
-      error: `Token not created`,
+      error: `Token does not exist`,
     });
   }
 

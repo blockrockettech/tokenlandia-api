@@ -5,9 +5,6 @@ const JOB_TYPES = Object.freeze({
 });
 
 const JOB_STATUS = Object.freeze({
-  // Stage 0 - no job
-  NO_JOB: 'NO_JOB',
-
   // Stage 1 - accept job
   ACCEPTED: 'ACCEPTED',
 
@@ -22,7 +19,16 @@ const JOB_STATUS = Object.freeze({
   TRANSACTION_FAILED: 'TRANSACTION_FAILED',
 });
 
+const NEXT_STATES = {
+  [JOB_STATUS.ACCEPTED]: [JOB_STATUS.METADATA_CREATED],
+  [JOB_STATUS.METADATA_CREATED]: [JOB_STATUS.TRANSACTION_SENT],
+  [JOB_STATUS.TRANSACTION_SENT]: [JOB_STATUS.JOB_COMPLETE, JOB_STATUS.TRANSACTION_FAILED],
+  [JOB_STATUS.JOB_COMPLETE]: [], // No valid transition
+  [JOB_STATUS.TRANSACTION_FAILED]: [], // No valid transition
+};
+
 module.exports = {
   JOB_TYPES,
-  JOB_STATUS
+  JOB_STATUS,
+  NEXT_STATES
 };

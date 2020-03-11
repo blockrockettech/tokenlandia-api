@@ -1,11 +1,5 @@
 const _ = require('lodash');
-const {JOB_STATUS, JOB_TYPES} = require('./jobConstants');
-
-const NEXT_STATES = {
-  [JOB_STATUS.ACCEPTED]: [JOB_STATUS.METADATA_CREATED],
-  [JOB_STATUS.METADATA_CREATED]: [JOB_STATUS.TRANSACTION_SENT],
-  [JOB_STATUS.TRANSACTION_SENT]: [JOB_STATUS.JOB_COMPLETE, JOB_STATUS.TRANSACTION_FAILED]
-};
+const {JOB_STATUS, JOB_TYPES, NEXT_STATES} = require('./jobConstants');
 
 class JobQueue {
 
