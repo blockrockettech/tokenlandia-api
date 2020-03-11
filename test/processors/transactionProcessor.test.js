@@ -8,7 +8,7 @@ const {JOB_STATUS, JOB_TYPES} = require('../../src/services/job/jobConstants');
 
 const TransactionProcessor = require('../../src/services/processors/transactionProcessor');
 
-describe.only('Transaction Processor - ', async function () {
+describe('Transaction Processor - ', async function () {
 
   beforeEach(function () {
     this.now = Date.now();
