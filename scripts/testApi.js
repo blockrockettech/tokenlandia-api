@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const _ = require('lodash');
 const axios = require('axios');
 
 if (process.env.NODE_ENV === 'test') {
@@ -29,10 +30,11 @@ async function addCreateJobToQueue(tokenId) {
     'purchase_date': '2020-02-01',
     'customization_location': 'tokyo',
     'customization_date': '2020-02-06',
-    'materials_used': [
-      'a',
-      'b'
-    ]
+    'material_1': 'a',
+    'material_2': 'b',
+    'material_3': 'c',
+    'material_4': 'd',
+    'material_5': 'e',
   };
 
   const chainId = 4;
@@ -41,10 +43,17 @@ async function addCreateJobToQueue(tokenId) {
     .post(`https://api-56b6el2v7a-uc.a.run.app/v1/network/${chainId}/job/submit/createtoken/general?key=${process.env.API_ACCESS_KEY}`, createPayload)
     .catch(e => {
       if (e.response) {
-        console.log(`Could not create. Failed with ${e.response.status} - ${e.response.data.error}`);
+        console.log(`Could not create token [${createPayload.token_id}]. Failed with ${e.response.status} - ${e.response.data.error}`);
       }
     });
-  console.log(response ? response.data.msg : 'No response');
+
+  if (response && response.data.msg) {
+    console.log(`TokenID [${createPayload.token_id}] - Msg`, response.data.msg);
+  }
+  if (response && response.data.jobId) {
+    console.log(`TokenID [${createPayload.token_id}] - JOb ID`, response.data.jobId);
+  }
+
   console.log('---Done create job---\n');
 }
 
@@ -73,7 +82,7 @@ async function processJobs() {
   console.log('Test API Script started!\n');
 
   // Fire create requests
-  for (let i = 700; i <= 800; i++) {
+  for (let i = 514; i <= 515; i++) {
     await addCreateJobToQueue(i);
   }
 
