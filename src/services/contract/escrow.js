@@ -37,6 +37,7 @@ class EscrowService {
     try {
       return await this.contract.isTokenEscrowed(this.nftContractAddress, tokenId);
     } catch (e) {
+      console.log(e);
       return false;
     }
   }

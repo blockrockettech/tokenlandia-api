@@ -18,6 +18,7 @@ class TransactionProcessor {
 
     const exceedsGasLimit = !(await this.gasStation.isWithinGasThreshold(chainId));
     if (exceedsGasLimit) {
+      console.error('Skipping job as GAS exceeds limit');
       return job;
     }
 
