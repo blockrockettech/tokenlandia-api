@@ -109,11 +109,11 @@ A breakdown of each state is as follows:
 
 Three types of job exist, each one preforming a different blockchain actions.
 
-* Creating new tokens - [docs](/documents/CREATE_TOKEN_DOCS.md)
+* Creating new tokens - [docs](/documents/token/create/CREATE_TOKEN_DOCS.md)
 
-* Updating token metadata - [docs](/documents/UPDATE_TOKEN_DOCS.md)
+* Updating token metadata - [docs](/documents/token/update/UPDATE_TOKEN_DOCS.md)
 
-* Transferring token - [docs](/documents/TRANSFER_TOKEN_DOCS.md)
+* Transferring token - [docs](/documents/token/transfer/TRANSFER_TOKEN_DOCS.md)
 
 ### Get Job Status
 

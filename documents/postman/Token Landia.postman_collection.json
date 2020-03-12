@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6352d170-db29-4954-8e1a-133d13760e87",
+		"_postman_id": "12ac8f6c-4df9-43d6-afaf-08cbc8092b50",
 		"name": "Token Landia",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -12,33 +12,24 @@
 					"name": "Trigger Next Pre-process",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "1c483cf5-e4ad-4a5f-a81a-9f6d06ca5b7b",
-								"type": "text",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/process/metadata?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/process/preprocess?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
 								":chainId",
 								"job",
 								"process",
-								"metadata"
+								"preprocess"
 							],
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [
@@ -55,20 +46,12 @@
 					"name": "Trigger Next Transaction",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer craig-wright-is-not-satoshi"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/process/transaction?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/process/transaction?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
@@ -80,7 +63,7 @@
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [
@@ -97,20 +80,12 @@
 					"name": "Complete Job",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer craig-wright-is-not-satoshi"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/process/completions?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/process/completions?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
@@ -122,7 +97,7 @@
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [
@@ -152,11 +127,6 @@
 								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer craig-wright-is-not-satoshi",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -169,12 +139,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/submit/createtoken/general?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/submit/createtoken/general?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
@@ -187,7 +155,7 @@
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [
@@ -210,11 +178,6 @@
 								"name": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer craig-wright-is-not-satoshi"
 							}
 						],
 						"body": {
@@ -227,12 +190,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/submit/updatetoken/general?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/submit/updatetoken/general?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
@@ -245,7 +206,57 @@
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Transfer Token Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token_id\": 1,\n    \"recipient\": \"0x12D062B19a2DF1920eb9FC28Bd6E9A7E936de4c2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/network/:chainId/job/submit/transfer?key={{api_key}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"job",
+								"submit",
+								"transfer"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [
@@ -262,20 +273,12 @@
 					"name": "Get Job Details",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer craig-wright-is-not-satoshi",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/details/:jobId?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/details/:jobId?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
@@ -287,7 +290,7 @@
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [
@@ -308,32 +311,23 @@
 					"name": "Get Queue Summary",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer craig-wright-is-not-satoshi"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job//summary?key=craig-wright-is-not-satoshi",
-							"protocol": "http",
+							"raw": "{{host}}/v1/network/:chainId/job/summary?key={{api_key}}",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"v1",
 								"network",
 								":chainId",
 								"job",
-								"",
 								"summary"
 							],
 							"query": [
 								{
 									"key": "key",
-									"value": "craig-wright-is-not-satoshi"
+									"value": "{{api_key}}"
 								}
 							],
 							"variable": [

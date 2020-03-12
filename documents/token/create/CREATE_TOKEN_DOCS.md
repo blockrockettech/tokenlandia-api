@@ -91,4 +91,4 @@ If any of these things fail a HTTP `400` will be returned with the reason for th
 * No existing token should already exist with that ID
 * The post body should be valid
 
-![Job Accepted Flow](job_accepted_flow.png)
+![Job Accepted Flow](Create Job State Flow.png)
