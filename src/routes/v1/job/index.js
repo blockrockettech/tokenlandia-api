@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {utils} = require('ethers');
+const {isValidAddress} = require('../../../services/contract/utils');
 
 const job = require('express').Router({mergeParams: true});
 
@@ -15,15 +15,6 @@ const {
 } = require('../../../services/index');
 
 const {JOB_STATUS, JOB_TYPES} = jobConstants;
-
-function isValidAddress(address) {
-  try {
-    utils.getAddress(address);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
 
 /**
  * Submit a new Job to create a new token
@@ -144,7 +135,7 @@ job.post('/submit/transfer', async function (req, res) {
   const rawJobData = req.body;
 
   const {valid, errors} = await jobValidator.isValidTransferTokenJob(rawJobData);
-  console.log(`Incoming update job found to be valid [${valid}] for chainId [${chainId}]`);
+  console.log(`Incoming transfer job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {
     console.error(`Errors found in transfer job`, errors);
@@ -175,7 +166,6 @@ job.post('/submit/transfer', async function (req, res) {
     });
   }
 
-
   const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN);
   if (existingJob) {
     console.error(`Rejecting incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
@@ -186,32 +176,16 @@ job.post('/submit/transfer', async function (req, res) {
   }
 
   // Accept job
-  const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.TRANSFER_TOKEN, rawJobData);
+  let jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.TRANSFER_TOKEN, rawJobData);
+
+  // Skip metadata creation for these job types
+  jobDetails = jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {});
+
   console.log(`Job [${JOB_TYPES.TRANSFER_TOKEN}] created for tokenId [${token_id}] and chainId [${chainId}]`);
 
   // return job details
   return res
     .status(202)
-    .json(jobDetails);
-});
-
-/**
- * Get Job Details for JobId
- */
-job.get('/details/:jobId', async function (req, res) {
-  const {chainId, jobId} = req.params;
-  const jobDetails = await jobQueue.getJobForId(chainId, jobId);
-
-  if (!jobDetails) {
-    return res
-      .status(400)
-      .json({
-        error: `Unable to find job [${jobId}] on chain [${chainId}]`
-      });
-  }
-
-  return res
-    .status(200)
     .json(jobDetails);
 });
 
@@ -237,8 +211,8 @@ job.get('/process/preprocess', async function (req, res) {
       case JOB_TYPES.UPDATE_TOKEN:
         return metadataCreationProcessor.pushUpdateTokenJob(job);
       case JOB_TYPES.TRANSFER_TOKEN:
-        // Skip metadata creation
-        return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, null);
+        // Skip metadata creation for these job types
+        return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {});
       default:
         console.error('Unknown job type', job);
     }
@@ -324,6 +298,27 @@ job.get('/process/completions', async function (req, res) {
       jobId: processedJob.jobId,
       status: processedJob.status
     });
+});
+
+
+/**
+ * Get Job Details for JobId
+ */
+job.get('/details/:jobId', async function (req, res) {
+  const {chainId, jobId} = req.params;
+  const jobDetails = await jobQueue.getJobForId(chainId, jobId);
+
+  if (!jobDetails) {
+    return res
+      .status(400)
+      .json({
+        error: `Unable to find job [${jobId}] on chain [${chainId}]`
+      });
+  }
+
+  return res
+    .status(200)
+    .json(jobDetails);
 });
 
 /**

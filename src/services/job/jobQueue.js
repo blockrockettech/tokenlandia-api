@@ -7,7 +7,7 @@ class JobQueue {
     this.db = db;
   }
 
-  async addJobToQueue(chainId, jobType, jobData) {
+  async addJobToQueue(chainId, jobType, jobData, initialState = JOB_STATUS.ACCEPTED) {
     const {token_id} = jobData;
 
     console.log('Adding job to queue', {chainId, jobType, token_id});
@@ -16,13 +16,13 @@ class JobQueue {
       // Job data
       chainId: _.toString(chainId),
       tokenId: _.toString(token_id),
-      status: JOB_STATUS.ACCEPTED,
+      status: initialState,
       jobType: jobType,
       createdDate: Date.now(),
 
       // The actual payload
       context: {
-        [JOB_STATUS.ACCEPTED]: {
+        [initialState]: {
           ...jobData
         }
       }
