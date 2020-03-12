@@ -38,7 +38,7 @@ class TransactionProcessor {
 
     } catch (e) {
       console.error(`Failed to send transaction...`, e);
-      return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, e);
+      return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, e.message);
     }
   }
 

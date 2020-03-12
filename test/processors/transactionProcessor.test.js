@@ -258,7 +258,7 @@ describe.only('Transaction Processor - ', async function () {
 
       result.should.be.deep.equal('success');
 
-      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, `Error: Unknown job type [null]`);
+      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, 'Unknown job type [null]');
     });
   })
 
