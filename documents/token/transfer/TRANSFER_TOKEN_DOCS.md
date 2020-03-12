@@ -86,4 +86,4 @@ If any of these things fail a HTTP `400` will be returned with the reason for th
 * Token should be held in escrow
 * Recipient should be a valid Ethereum address
 
-![Job Accepted Flow](documents/job_accepted_flow.png)
+![Job Accepted Flow](TransferToken.png)
