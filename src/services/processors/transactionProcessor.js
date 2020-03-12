@@ -4,16 +4,22 @@ const {getEscrowContractAddress} = require('../../utils/truffle');
 
 class TransactionProcessor {
 
-  constructor(jobQueue, tokenlandiaService, escrowService) {
+  constructor(jobQueue, tokenlandiaService, escrowService, gasStation) {
     this.jobQueue = jobQueue;
     this.tokenlandiaService = tokenlandiaService;
     this.escrowService = escrowService;
+    this.gasStation = gasStation;
   }
 
   async processJob(job) {
 
     const {context, tokenId, jobId, chainId, jobType} = job;
     console.log(`TransactionProcessor - token [${tokenId}] job [${jobId}] on chain [${chainId}]`);
+
+    const exceedsGasLimit = !(await this.gasStation.isWithinGasThreshold(chainId));
+    if (exceedsGasLimit) {
+      return job;
+    }
 
     const {ACCEPTED, PRE_PROCESSING_COMPLETE} = context;
 

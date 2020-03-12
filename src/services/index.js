@@ -7,6 +7,7 @@ const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
 const {getHttpProvider} = require('../web3/provider');
+const gasStation = require('../web3/gasStation.service');
 
 const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
 
@@ -21,7 +22,7 @@ const jobQueue = new JobQueue(db);
 const ipfsService = new IpfsService(ipfsClient);
 
 const newTokenLandiaService = (chainId) => new TokenLandia(chainId);
-const newEscrowService =  (chainId) => new EscrowContract(chainId);
+const newEscrowService = (chainId) => new EscrowContract(chainId);
 
 module.exports = {
   newTokenLandiaService,
@@ -32,6 +33,6 @@ module.exports = {
   chainUtils,
   ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
-  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, newTokenLandiaService(chainId), newEscrowService(chainId)),
+  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, newTokenLandiaService(chainId), newEscrowService(chainId), gasStation),
   jobCompletionProcessor: (chainId) => new JobCompletionProcessor(getHttpProvider(chainId), jobQueue),
 };
