@@ -255,7 +255,7 @@ job.get('/process/transaction', async function (req, res) {
     return res
       .status(200)
       .json({
-        msg: `Inflight transaction found, waiting for job [${inflightJob.id}] to complete`,
+        msg: `Inflight transaction found, waiting for job [${inflightJob.jobId}] to complete`,
       });
   }
 
