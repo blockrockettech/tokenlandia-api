@@ -1,8 +1,8 @@
 ## Creating New Tokens
 
-#### Submit Job
+This API allows you to create new tokens
 
-Submit a new token creation job e.g.
+#### Submit Job
 
 * `HTTP` `POST` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/submit/createtoken/general?key={uuid-key}`
 
@@ -87,50 +87,8 @@ Before a job is accepted several things are validated.
 
 If any of these things fail a HTTP `400` will be returned with the reason for the failure.
 
-* No existing job should exist for that token given token
+* No existing create job should exist for that token
 * No existing token should already exist with that ID
 * The post body should be valid
-* If its not valid we will tell you what's wrong with the data
 
-![Job Accepted Flow](documents/job_accepted_flow.png)
-
-### Get Job Status
-
-This API can be used to get the status about a specific job which has been previously accepted.
-
-`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/details/${JOB_ID}?key={uuid-key}`
-
-```
-{
-    "jobId": "PXVA3FsAwzPlmvT10QJf",
-    "createdDate": 1582292771324,
-    "chainId": "4",
-    "status": "TRANSACTION_SENT",
-    "jobType": "CREATE_TOKEN",
-    "tokenId": "616",
-    "context": {
-      	… the job data
-    }
-}
-```
-
-One a job has been accepted you can poll this endpoint to see its progress through the processing queue, each token 
-can take a few minutes to process.
-
-
-### Get Queue Summary
-
-This API gives you details on how many jobs are at each stage of the processing queue.
-
-`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/summary?key={uuid-key}`
-
-```
-{
-    "numOfJobsForJobType": 102,
-    "numOfAcceptedJobs": 0,
-    "numOfMetadataCreatedJobs": 14,
-    "numOfTransactionSentJobs": 0,
-    "numOfJobCompleteJobs": 88,
-    "numOfTransactionFailedJobs": 0
-}
-```
+![Job Accepted Flow](job_accepted_flow.png)

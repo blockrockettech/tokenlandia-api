@@ -1,32 +1,19 @@
 ## Creating New Tokens
 
+This API allows you to transfer the token to a new address from the escrow contract
+
 #### Submit Job
 
 Submit a new token creation job e.g.
 
-* `HTTP` `POST` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/submit/createtoken/general?key={uuid-key}`
+* `HTTP` `POST` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/submit/transfer?key={uuid-key}`
 
 Sample request body
 
 ```
 {
     'token_id': ${tokenId},
-    'coo': 'USA',
-    'artist_initials': 'RSA',
-    'series': '002',
-    'design': '0003',
-    'name': `a name`,
-    'description': `a description`,
-    'image': 'http://preview.tokenlandia.com/wp-content/uploads/2019/11/b8e4d509cb644e254fbc16eb6a53fd48_listingImg_IOznWUjgk6.jpg',
-    'artist': 'artist',
-    'artist_assistant': 'assistant',
-    'brand': 'brand',
-    'model': 'model',
-    'purchase_location': 'london',
-    'purchase_date': '2020-02-01',
-    'customization_location': 'tokyo',
-    'customization_date': '2020-02-06',
-    'material_1': 'a' // Can have up to 5 materials (all optional)
+    'recipient': '0x9474CE90A96Ca3907428F22F202F72C55559df4a'
 }
 ```
 
@@ -64,10 +51,17 @@ Sample successful job created `JSON` response
 }
 ```
 
-* Failure - Token already created - `HTTP` status `400`
+* Failure - Token not help in escrow - `HTTP` status `400`
 ```
 {
-    "error": "Token already created"
+    "error": "`Rejecting incoming job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`"
+}
+```
+
+* Failure - Invalid recipient provided - `HTTP` status `400`
+```
+{
+    "error": "Rejecting incoming job - recipient [${recipient}] is not a valid web3 address"
 }
 ```
 
@@ -87,10 +81,10 @@ Before a job is accepted several things are validated.
 
 If any of these things fail a HTTP `400` will be returned with the reason for the failure.
 
-* No existing job should exist for that token given token
-* No existing token should already exist with that ID
 * The post body should be valid
-* If its not valid we will tell you what's wrong with the data
+* No existing transfer job should exist for that token
+* Token should be held in escrow
+* Recipient should be a valid Ethereum address
 
 ![Job Accepted Flow](documents/job_accepted_flow.png)
 

@@ -117,11 +117,7 @@ job.post('/submit/updatetoken/general', async function (req, res) {
 
   const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.UPDATE_TOKEN);
   if (existingJob) {
-    console.error(`Incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.UPDATE_TOKEN}]`);
-    return res.status(400).json({
-      error: `Duplicate Job found`,
-      existingJob
-    });
+    console.warn(`Incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.UPDATE_TOKEN}]`);
   }
 
   // Build full job data from composite properties
