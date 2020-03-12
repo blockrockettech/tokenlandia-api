@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const {utils} = require('ethers');
 
 const job = require('express').Router({mergeParams: true});
 
@@ -7,12 +8,22 @@ const {
   jobValidator,
   jobConstants,
   newTokenLandiaService,
+  newEscrowService,
   transactionProcessor,
   metadataCreationProcessor,
   jobCompletionProcessor
 } = require('../../../services/index');
 
 const {JOB_STATUS, JOB_TYPES} = jobConstants;
+
+function isValidAddress(address) {
+  try {
+    utils.getAddress(address);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 
 /**
  * Submit a new Job to create a new token
@@ -122,6 +133,65 @@ job.post('/submit/updatetoken/general', async function (req, res) {
   // Accept job
   const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.UPDATE_TOKEN, jobData);
   console.log(`Job [${JOB_TYPES.UPDATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`);
+
+  // return job details
+  return res
+    .status(202)
+    .json(jobDetails);
+});
+
+/**
+ * Submit a new Job to transfer a token
+ */
+job.post('/submit/transfer', async function (req, res) {
+  const {chainId} = req.params;
+  const rawJobData = req.body;
+
+  const {valid, errors} = await jobValidator.isValidUpdateTokenJob(rawJobData);
+  console.log(`Incoming update job found to be valid [${valid}] for chainId [${chainId}]`);
+
+  if (!valid) {
+    console.error(`Errors found in transfer job`, errors);
+    return res.status(400).json({
+      error: `Invalid job data`,
+      details: errors
+    });
+  }
+
+  const {token_id, recipient} = rawJobData;
+
+  const escrowService = newEscrowService(chainId);
+  const isEscrowed = await escrowService.isTokenEscrowed();
+  if (!isEscrowed) {
+    const errorMsg = `Rejecting incoming job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`;
+    console.error(errorMsg);
+    return res.status(400).json({
+      error: errorMsg
+    });
+  }
+
+  const isRecipientValid = isValidAddress(recipient);
+  if (!isRecipientValid) {
+    const errorMsg = `Rejecting incoming job - recipient [${recipient}] is not a valid web3 address`;
+    console.error(errorMsg);
+    return res.status(400).json({
+      error: errorMsg
+    });
+  }
+
+
+  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN);
+  if (existingJob) {
+    console.error(`Rejecting incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
+    return res.status(400).json({
+      error: `Duplicate Job found`,
+      existingJob
+    });
+  }
+
+  // Accept job
+  const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.TRANSFER_TOKEN, rawJobData);
+  console.log(`Job [${JOB_TYPES.TRANSFER_TOKEN}] created for tokenId [${token_id}] and chainId [${chainId}]`);
 
   // return job details
   return res
