@@ -229,6 +229,7 @@ job.get('/process/preprocess', async function (req, res) {
           chainId: chainId,
           tokenId: processedJob.tokenId,
           jobId: processedJob.jobId,
+          jobType: processedJob.jobType,
           status: processedJob.status
         };
       })
@@ -268,7 +269,8 @@ job.get('/process/transaction', async function (req, res) {
       chainId: chainId,
       tokenId: processedJob.tokenId,
       jobId: processedJob.jobId,
-      status: processedJob.status
+      status: processedJob.status,
+      jobType: processedJob.jobType,
     });
 });
 
