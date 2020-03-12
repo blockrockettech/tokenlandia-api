@@ -147,11 +147,29 @@ This API gives you details on how many jobs are at each stage of the processing 
 
 ```
 {
-    "numOfJobsForJobType": 102,
-    "numOfAcceptedJobs": 0,
-    "numOfMetadataCreatedJobs": 14,
-    "numOfTransactionSentJobs": 0,
-    "numOfJobCompleteJobs": 88,
-    "numOfTransactionFailedJobs": 0
+    "CREATE_TOKEN": {
+        "numOfJobsForJobType": 153,
+        "numOfAcceptedJobs": 0,
+        "numOfPreProcessingCompleteJobs": 0,
+        "numOfTransactionSentJobs": 0,
+        "numOfJobCompleteJobs": 153,
+        "numOfTransactionFailedJobs": 0
+    },
+    "UPDATE_TOKEN": {
+        "numOfJobsForJobType": 1,
+        "numOfAcceptedJobs": 0,
+        "numOfPreProcessingCompleteJobs": 0,
+        "numOfTransactionSentJobs": 0,
+        "numOfJobCompleteJobs": 1,
+        "numOfTransactionFailedJobs": 0
+    },
+    "TRANSFER_TOKEN": {
+        "numOfJobsForJobType": 1,
+        "numOfAcceptedJobs": 0,
+        "numOfPreProcessingCompleteJobs": 0,
+        "numOfTransactionSentJobs": 0,
+        "numOfJobCompleteJobs": 1,
+        "numOfTransactionFailedJobs": 0
+    }
 }
 ```
