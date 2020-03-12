@@ -92,7 +92,7 @@ describe('Transaction Processor - ', async function () {
         }
       };
 
-      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService);
+      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService, null);
       const result = await transactionProcessor.processJob(job);
 
       result.should.be.deep.equal('success');
@@ -179,7 +179,7 @@ describe('Transaction Processor - ', async function () {
         }
       };
 
-      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService);
+      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService, null);
       const result = await transactionProcessor.processJob(job);
 
       result.should.be.deep.equal('success');
@@ -253,7 +253,7 @@ describe('Transaction Processor - ', async function () {
         }
       };
 
-      const transactionProcessor = new TransactionProcessor(jobQueue, null);
+      const transactionProcessor = new TransactionProcessor(jobQueue, null, null);
       const result = await transactionProcessor.processJob(job);
 
       result.should.be.deep.equal('success');

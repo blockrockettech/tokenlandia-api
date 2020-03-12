@@ -20,15 +20,18 @@ const jobQueue = new JobQueue(db);
 
 const ipfsService = new IpfsService(ipfsClient);
 
+const newTokenLandiaService = (chainId) => new TokenLandia(chainId);
+const newEscrowService =  (chainId) => new EscrowContract(chainId);
+
 module.exports = {
-  newTokenLandiaService: (chainId) => new TokenLandia(chainId),
-  newEscrowService: (chainId) => new EscrowContract(chainId),
-  jobQueue: jobQueue,
-  jobValidator: jobValidator,
-  jobConstants: jobConstants,
-  chainUtils: chainUtils,
-  ipfsService: ipfsService,
+  newTokenLandiaService,
+  newEscrowService,
+  jobQueue,
+  jobValidator,
+  jobConstants,
+  chainUtils,
+  ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
-  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, new TokenLandia(chainId)),
+  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, newTokenLandiaService(chainId), newEscrowService(chainId)),
   jobCompletionProcessor: (chainId) => new JobCompletionProcessor(getHttpProvider(chainId), jobQueue),
 };

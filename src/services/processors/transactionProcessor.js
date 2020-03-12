@@ -4,9 +4,10 @@ const {getEscrowContractAddress} = require('../../utils/truffle');
 
 class TransactionProcessor {
 
-  constructor(jobQueue, tokenlandiaService) {
+  constructor(jobQueue, tokenlandiaService, escrowService) {
     this.jobQueue = jobQueue;
     this.tokenlandiaService = tokenlandiaService;
+    this.escrowService = escrowService;
   }
 
   async processJob(job) {
@@ -25,7 +26,7 @@ class TransactionProcessor {
           case JOB_TYPES.UPDATE_TOKEN:
             return this._updateTokenMetaData(tokenId, PRE_PROCESSING_COMPLETE.metadataHash);
           case JOB_TYPES.TRANSFER_TOKEN:
-            //todo
+            return this._transferToken(tokenId, ACCEPTED.recipient);
           default:
             throw new Error(`Unknown job type [${jobType}]`);
         }
@@ -71,6 +72,20 @@ class TransactionProcessor {
       gasPrice: gasPrice.toString(),
       gasLimit: gasLimit.toString(),
       metadataHash
+    };
+  }
+
+  async _transferToken(tokenId, recipient) {
+    const {hash, from, to, nonce, gasPrice, gasLimit} = await this.escrowService.transferOwnership(tokenId, recipient);
+
+    return {
+      hash,
+      from,
+      to,
+      nonce,
+      gasPrice: gasPrice.toString(),
+      gasLimit: gasLimit.toString(),
+      recipient
     };
   }
 }
