@@ -25,7 +25,7 @@ class TransactionProcessor {
           case JOB_TYPES.UPDATE_TOKEN:
             return this._updateTokenMetaData(tokenId, METADATA_CREATED.metadataHash);
           default:
-            console.error('Unknown job type', job);
+            throw new Error(`Unknown job type [${jobType}]`);
         }
       };
 
@@ -37,8 +37,7 @@ class TransactionProcessor {
       return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_SENT, newContext);
 
     } catch (e) {
-
-      console.log(`Failed to send minting transaction`, e);
+      console.error(`Failed to send transaction...`, e);
       return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, e);
     }
   }
