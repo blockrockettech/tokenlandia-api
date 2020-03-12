@@ -106,8 +106,8 @@ job.post('/submit/updatetoken/general', async function (req, res) {
     });
   }
 
-  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.UPDATE_TOKEN);
-  if (existingJob) {
+  const existingJobs = await jobQueue.getJobsInFlightForTokenId(chainId, token_id, JOB_TYPES.UPDATE_TOKEN);
+  if (existingJobs) {
     console.warn(`Incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.UPDATE_TOKEN}]`);
   }
 
@@ -166,12 +166,12 @@ job.post('/submit/transfer', async function (req, res) {
     });
   }
 
-  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN);
-  if (existingJob) {
+  const existingJobs = await jobQueue.getJobsInFlightForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN);
+  if (existingJobs) {
     console.error(`Rejecting incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
     return res.status(400).json({
       error: `Duplicate Job found`,
-      existingJob
+      existingJobs
     });
   }
 
