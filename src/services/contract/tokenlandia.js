@@ -20,7 +20,7 @@ class TokenLandia {
       this.signer = getWallet(chainId);
       this.provider = getHttpProvider(chainId);
     } catch (e) {
-      throw new Error(`Invalid chain ID '${chainId}'`);
+      throw new Error(`Invalid chain ID [${chainId}]`);
     }
 
     this.contractAddress = getContractAddressFromTruffleConf(TokenLandiaTruffleConf, this.chainId);
@@ -69,6 +69,10 @@ class TokenLandia {
     return await this.contract.tokenIdForProductId(productId);
   }
 
+  async tokenURI(tokenId) {
+    return await this.contract.tokenURI(tokenId);
+  }
+
   async getBirthTransaction(tokenId) {
     // From Zero for token ID
     const filter = this.contract.filters.Transfer(constants.AddressZero, null, new utils.BigNumber(tokenId).toHexString());
@@ -89,6 +93,10 @@ class TokenLandia {
 
   async mint(tokenId, recipient, productCode, ipfsHash) {
     return this.contract.mintToken(tokenId, recipient, productCode, ipfsHash);
+  }
+
+  async updateIpfsHash(tokenId, ipfsHash) {
+    return this.contract.updateIpfsHash(tokenId, ipfsHash);
   }
 }
 

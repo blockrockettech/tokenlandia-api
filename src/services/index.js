@@ -1,14 +1,16 @@
 const TokenLandia = require('./contract/tokenlandia');
+const EscrowContract = require('./contract/escrow');
 const JobQueue = require('./job/jobQueue');
 const jobConstants = require('./job/jobConstants');
 const jobValidator = require('./job/jobValidator');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
+const {getHttpProvider} = require('../web3/provider');
 
 const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
 
-const MintingProcessor = require('./processors/mintingProcessor');
+const TransactionProcessor = require('./processors/transactionProcessor');
 
 const JobCompletionProcessor = require('./processors/jobCompletionProcessor');
 
@@ -18,14 +20,18 @@ const jobQueue = new JobQueue(db);
 
 const ipfsService = new IpfsService(ipfsClient);
 
+const newTokenLandiaService = (chainId) => new TokenLandia(chainId);
+const newEscrowService =  (chainId) => new EscrowContract(chainId);
+
 module.exports = {
-  newTokenLandiaService: chainId => new TokenLandia(chainId),
-  jobQueue: jobQueue,
-  jobValidator: jobValidator,
-  jobConstants: jobConstants,
-  chainUtils: chainUtils,
-  ipfsService: ipfsService,
+  newTokenLandiaService,
+  newEscrowService,
+  jobQueue,
+  jobValidator,
+  jobConstants,
+  chainUtils,
+  ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
-  mintingProcessor: (chainId) => new MintingProcessor(jobQueue, new TokenLandia(chainId)),
-  jobCompletionProcessor: new JobCompletionProcessor(jobQueue),
+  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, newTokenLandiaService(chainId), newEscrowService(chainId)),
+  jobCompletionProcessor: (chainId) => new JobCompletionProcessor(getHttpProvider(chainId), jobQueue),
 };

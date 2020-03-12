@@ -1,4 +1,5 @@
 const EscrowContractTruffleConf = require('../../truffleconf/escrow/TrustedNftEscrow');
+const TokenlandiaConf = require('../../truffleconf/token/Tokenlandia');
 
 function getContractAddressFromTruffleConf(truffleConf, chainId) {
   if (!truffleConf || !chainId) return '';
@@ -16,7 +17,12 @@ const getEscrowContractAddress = (chainId) => {
   return getContractAddressFromTruffleConf(EscrowContractTruffleConf, chainId);
 };
 
+const getTokenLandiaContractAddress = (chainId) => {
+  return getContractAddressFromTruffleConf(TokenlandiaConf, chainId);
+};
+
 module.exports = {
   getContractAddressFromTruffleConf,
-  getEscrowContractAddress
+  getEscrowContractAddress,
+  getTokenLandiaContractAddress,
 };

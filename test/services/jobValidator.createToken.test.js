@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const {jobValidator} = require('../../src/services');
 
-describe('Job validation tests', function () {
+describe('Job validation - Create Token', function () {
 
   const validPayload = {
     'token_id': 1,
@@ -57,7 +57,7 @@ describe('Job validation tests', function () {
     });
   });
 
-  it('should fail if token_id is not a number', async function () {
+    it('should fail for invalid country code', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       'coo': 'AAA',
@@ -71,7 +71,7 @@ describe('Job validation tests', function () {
   });
 
 
-  it('should fail for invalid country code', async function () {
+  it('should fail if token_id is not a number', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       'token_id': 'abc',

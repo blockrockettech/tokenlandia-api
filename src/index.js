@@ -11,7 +11,6 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 const express = require('express');
-const bearerToken = require('express-bearer-token');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -35,7 +34,6 @@ const corsOptions = {
 };
 
 app.use('*', cors(corsOptions));
-app.use(bearerToken());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 

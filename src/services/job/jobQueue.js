@@ -1,11 +1,5 @@
 const _ = require('lodash');
-const {JOB_STATUS} = require('./jobConstants');
-
-const NEXT_STATES = {
-  [JOB_STATUS.ACCEPTED]: [JOB_STATUS.METADATA_CREATED],
-  [JOB_STATUS.METADATA_CREATED]: [JOB_STATUS.TRANSACTION_SENT],
-  [JOB_STATUS.TRANSACTION_SENT]: [JOB_STATUS.JOB_COMPLETE, JOB_STATUS.TRANSACTION_FAILED]
-};
+const {JOB_STATUS, JOB_TYPES, NEXT_STATES} = require('./jobConstants');
 
 class JobQueue {
 
@@ -13,7 +7,7 @@ class JobQueue {
     this.db = db;
   }
 
-  async addJobToQueue(chainId, jobType, jobData) {
+  async addJobToQueue(chainId, jobType, jobData, initialState = JOB_STATUS.ACCEPTED) {
     const {token_id} = jobData;
 
     console.log('Adding job to queue', {chainId, jobType, token_id});
@@ -22,13 +16,13 @@ class JobQueue {
       // Job data
       chainId: _.toString(chainId),
       tokenId: _.toString(token_id),
-      status: JOB_STATUS.ACCEPTED,
+      status: initialState,
       jobType: jobType,
       createdDate: Date.now(),
 
       // The actual payload
       context: {
-        [JOB_STATUS.ACCEPTED]: {
+        [initialState]: {
           ...jobData
         }
       }
@@ -152,61 +146,70 @@ class JobQueue {
       });
   }
 
-  async getJobTypeSummaryForChainId(chainId, jobType) {
-    const numOfJobsForJobType = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+  async getJobTypeSummaryForChainId(chainId) {
 
-    const numOfAcceptedJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.ACCEPTED)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+    const getSummaryInfo = async (jobType) => {
+      const numOfJobsForJobType = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfMetadataCreatedJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.METADATA_CREATED)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfAcceptedJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.ACCEPTED)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfTransactionSentJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.TRANSACTION_SENT)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfPreProcessingCompleteJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.PRE_PROCESSING_COMPLETE)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfJobCompleteJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.JOB_COMPLETE)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfTransactionSentJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.TRANSACTION_SENT)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
 
-    const numOfTransactionFailedJobs = await this.getJobsCollectionRef(chainId)
-      .where('jobType', '==', _.toString(jobType))
-      .where('status', '==', JOB_STATUS.TRANSACTION_FAILED)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
+      const numOfJobCompleteJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.JOB_COMPLETE)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+
+      const numOfTransactionFailedJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.TRANSACTION_FAILED)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+
+      return {
+        numOfJobsForJobType,
+        numOfAcceptedJobs,
+        numOfPreProcessingCompleteJobs,
+        numOfTransactionSentJobs,
+        numOfJobCompleteJobs,
+        numOfTransactionFailedJobs
+      };
+    };
 
     return {
-      numOfJobsForJobType,
-      numOfAcceptedJobs,
-      numOfMetadataCreatedJobs,
-      numOfTransactionSentJobs,
-      numOfJobCompleteJobs,
-      numOfTransactionFailedJobs
+      [JOB_TYPES.CREATE_TOKEN]: await getSummaryInfo(JOB_TYPES.CREATE_TOKEN),
+      [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
+      [JOB_TYPES.TRANSFER_TOKEN]: await getSummaryInfo(JOB_TYPES.TRANSFER_TOKEN),
     };
   }
 
