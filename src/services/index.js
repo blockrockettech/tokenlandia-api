@@ -1,4 +1,5 @@
 const TokenLandia = require('./contract/tokenlandia');
+const EscrowContract = require('./contract/escrow');
 const JobQueue = require('./job/jobQueue');
 const jobConstants = require('./job/jobConstants');
 const jobValidator = require('./job/jobValidator');
@@ -21,6 +22,7 @@ const ipfsService = new IpfsService(ipfsClient);
 
 module.exports = {
   newTokenLandiaService: (chainId) => new TokenLandia(chainId),
+  newEscrowService: (chainId) => new EscrowContract(chainId),
   jobQueue: jobQueue,
   jobValidator: jobValidator,
   jobConstants: jobConstants,
