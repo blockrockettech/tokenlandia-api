@@ -45,7 +45,7 @@ class MetadataCreationProcessor {
       metadata
     };
 
-    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.METADATA_CREATED, newContext);
+    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext);
   }
 
   async pushUpdateTokenJob(job) {
@@ -80,7 +80,7 @@ class MetadataCreationProcessor {
       metadata
     };
 
-    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.METADATA_CREATED, newContext);
+    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext);
   }
 }
 

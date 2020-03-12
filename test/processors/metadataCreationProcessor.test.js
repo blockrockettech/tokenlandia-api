@@ -88,7 +88,7 @@ describe('Metadata Creation Processor', async function () {
         type: 'PHYSICAL_ASSET'
       });
 
-      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.METADATA_CREATED, {
+      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {
         metadata: {
           attributes: {
             artist: 'artist',
@@ -179,7 +179,7 @@ describe('Metadata Creation Processor', async function () {
         type: 'PHYSICAL_ASSET'
       });
 
-      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.METADATA_CREATED, {
+      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {
         metadata: {
           attributes: {
             artist: 'Token 1 Art',

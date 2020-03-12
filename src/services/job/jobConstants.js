@@ -8,8 +8,8 @@ const JOB_STATUS = Object.freeze({
   // Stage 1 - accept job
   ACCEPTED: 'ACCEPTED',
 
-  // Stage 2 - push Metadata to IPFS (create or update action)
-  METADATA_CREATED: 'METADATA_CREATED',
+  // Stage 2 - Pre processing such as generating metadata on IPFS has completed
+  PRE_PROCESSING_COMPLETE: 'PRE_PROCESSING_COMPLETE',
 
   // Stage 3 - submit txs to network
   TRANSACTION_SENT: 'TRANSACTION_SENT',
@@ -19,13 +19,13 @@ const JOB_STATUS = Object.freeze({
   TRANSACTION_FAILED: 'TRANSACTION_FAILED',
 });
 
-const NEXT_STATES = {
-  [JOB_STATUS.ACCEPTED]: [JOB_STATUS.METADATA_CREATED],
-  [JOB_STATUS.METADATA_CREATED]: [JOB_STATUS.TRANSACTION_SENT],
+const NEXT_STATES = Object.freeze({
+  [JOB_STATUS.ACCEPTED]: [JOB_STATUS.PRE_PROCESSING_COMPLETE],
+  [JOB_STATUS.PRE_PROCESSING_COMPLETE]: [JOB_STATUS.TRANSACTION_SENT],
   [JOB_STATUS.TRANSACTION_SENT]: [JOB_STATUS.JOB_COMPLETE, JOB_STATUS.TRANSACTION_FAILED],
   [JOB_STATUS.JOB_COMPLETE]: [], // No valid transition
   [JOB_STATUS.TRANSACTION_FAILED]: [], // No valid transition
-};
+});
 
 module.exports = {
   JOB_TYPES,

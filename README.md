@@ -100,9 +100,9 @@ When jobs are processed they go through a set of finite states which as seen bel
 A breakdown of each state is as follows:
 
 * `ACCEPTED`            - Job is valid and has been accepted
-* `METADATA_CREATED`    - Token metadata is being created and saved to IPFS
-* `TRANSACTION_SENT`    - Create token transaction has been sent to the blockchain
-* `JOB_COMPLETE`        - The token has been successfully minted to the blockchain
+* `PRE_PROCESSING_COMPLETE`    - Any pre processing such as generating token metadata and storing on IPFS is done at this stage
+* `TRANSACTION_SENT`    - Token transaction has been sent to the blockchain based on the job type
+* `JOB_COMPLETE`        - The transaction has been successfully been mined on the blockchain
 * `TRANSACTION_FAILED`  - Something has gone wrong and the job has failed
 
 ![Job State Flow](./documents/job_state_flow.png)

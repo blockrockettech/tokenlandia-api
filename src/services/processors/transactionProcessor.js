@@ -14,16 +14,18 @@ class TransactionProcessor {
     const {context, tokenId, jobId, chainId, jobType} = job;
     console.log(`TransactionProcessor - token [${tokenId}] job [${jobId}] on chain [${chainId}]`);
 
-    const {ACCEPTED, METADATA_CREATED} = context;
+    const {ACCEPTED, PRE_PROCESSING_COMPLETE} = context;
 
     try {
 
       const sendTransaction = async () => {
         switch (jobType) {
           case JOB_TYPES.CREATE_TOKEN:
-            return this._mintNewToken(chainId, tokenId, ACCEPTED.product_code, METADATA_CREATED.metadataHash);
+            return this._mintNewToken(chainId, tokenId, ACCEPTED.product_code, PRE_PROCESSING_COMPLETE.metadataHash);
           case JOB_TYPES.UPDATE_TOKEN:
-            return this._updateTokenMetaData(tokenId, METADATA_CREATED.metadataHash);
+            return this._updateTokenMetaData(tokenId, PRE_PROCESSING_COMPLETE.metadataHash);
+          case JOB_TYPES.TRANSFER_TOKEN:
+            //todo
           default:
             throw new Error(`Unknown job type [${jobType}]`);
         }

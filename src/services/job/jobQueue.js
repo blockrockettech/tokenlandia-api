@@ -164,9 +164,9 @@ class JobQueue {
           return snapshot.size;
         });
 
-      const numOfMetadataCreatedJobs = await this.getJobsCollectionRef(chainId)
+      const numOfPreProcessingCompleteJobs = await this.getJobsCollectionRef(chainId)
         .where('jobType', '==', _.toString(jobType))
-        .where('status', '==', JOB_STATUS.METADATA_CREATED)
+        .where('status', '==', JOB_STATUS.PRE_PROCESSING_COMPLETE)
         .get()
         .then(snapshot => {
           return snapshot.size;
@@ -199,7 +199,7 @@ class JobQueue {
       return {
         numOfJobsForJobType,
         numOfAcceptedJobs,
-        numOfMetadataCreatedJobs,
+        numOfPreProcessingCompleteJobs,
         numOfTransactionSentJobs,
         numOfJobCompleteJobs,
         numOfTransactionFailedJobs
@@ -208,7 +208,8 @@ class JobQueue {
 
     return {
       [JOB_TYPES.CREATE_TOKEN]: await getSummaryInfo(JOB_TYPES.CREATE_TOKEN),
-      [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN)
+      [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
+      [JOB_TYPES.TRANSFER_TOKEN]: await getSummaryInfo(JOB_TYPES.TRANSFER_TOKEN),
     };
   }
 

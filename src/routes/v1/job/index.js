@@ -170,6 +170,9 @@ job.get('/process/metadata', async function (req, res) {
         return metadataCreationProcessor.pushCreateTokenJob(job);
       case JOB_TYPES.UPDATE_TOKEN:
         return metadataCreationProcessor.pushUpdateTokenJob(job);
+      case JOB_TYPES.TRANSFER_TOKEN:
+        // Skip metadata creation
+        return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, null);
       default:
         console.error('Unknown job type', job);
     }
@@ -197,7 +200,7 @@ job.get('/process/metadata', async function (req, res) {
  */
 job.get('/process/transaction', async function (req, res) {
   const {chainId} = req.params;
-  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.METADATA_CREATED]);
+  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.PRE_PROCESSING_COMPLETE]);
 
   if (!job) {
     return res

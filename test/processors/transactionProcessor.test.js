@@ -67,7 +67,7 @@ describe('Transaction Processor - ', async function () {
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },
-          [JOB_STATUS.METADATA_CREATED]: {
+          [JOB_STATUS.PRE_PROCESSING_COMPLETE]: {
             metadataHash: 'QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9',
             metadata: {
               attributes: {
@@ -98,7 +98,7 @@ describe('Transaction Processor - ', async function () {
       result.should.be.deep.equal('success');
 
       const recipient = EscrowContractTruffleConf.networks[chainId.toString()].address;
-      sinon.assert.calledWith(tokenlandiaService.mint, tokenId, recipient, job.context[JOB_STATUS.ACCEPTED].product_code, job.context[JOB_STATUS.METADATA_CREATED].metadataHash);
+      sinon.assert.calledWith(tokenlandiaService.mint, tokenId, recipient, job.context[JOB_STATUS.ACCEPTED].product_code, job.context[JOB_STATUS.PRE_PROCESSING_COMPLETE].metadataHash);
 
       sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.TRANSACTION_SENT, {
         ...mockMintResponse,
@@ -154,7 +154,7 @@ describe('Transaction Processor - ', async function () {
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },
-          [JOB_STATUS.METADATA_CREATED]: {
+          [JOB_STATUS.PRE_PROCESSING_COMPLETE]: {
             metadataHash: 'QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9',
             metadata: {
               attributes: {
@@ -184,7 +184,7 @@ describe('Transaction Processor - ', async function () {
 
       result.should.be.deep.equal('success');
 
-      const metadataHash = job.context[JOB_STATUS.METADATA_CREATED].metadataHash;
+      const metadataHash = job.context[JOB_STATUS.PRE_PROCESSING_COMPLETE].metadataHash;
       sinon.assert.calledWith(tokenlandiaService.updateIpfsHash, tokenId, metadataHash);
 
       sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.TRANSACTION_SENT, {
@@ -228,7 +228,7 @@ describe('Transaction Processor - ', async function () {
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },
-          [JOB_STATUS.METADATA_CREATED]: {
+          [JOB_STATUS.PRE_PROCESSING_COMPLETE]: {
             metadataHash: 'QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9',
             metadata: {
               attributes: {
