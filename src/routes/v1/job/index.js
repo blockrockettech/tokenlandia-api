@@ -222,7 +222,7 @@ job.get('/details/:jobId', async function (req, res) {
 /**
  * Process the next available IPFS metadata push
  */
-job.get('/process/metadata', async function (req, res) {
+job.get('/process/preprocess', async function (req, res) {
   const {chainId} = req.params;
   const jobs = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED], 2);
 
@@ -255,7 +255,7 @@ job.get('/process/metadata', async function (req, res) {
     .json({
       results: _.map(results, (processedJob) => {
         return {
-          msg: `Processing job [${processedJob.jobId}]`,
+          msg: `Pre-processing successful for job [${processedJob.jobId}]`,
           chainId: chainId,
           tokenId: processedJob.tokenId,
           jobId: processedJob.jobId,
