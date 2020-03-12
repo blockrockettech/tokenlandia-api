@@ -10,7 +10,7 @@ const TransactionProcessor = require('../../src/services/processors/transactionP
 
 const EscrowContractTruffleConf = require('../../src/truffleconf/escrow/TrustedNftEscrow');
 
-describe.only('Transaction Processor - ', async function () {
+describe('Transaction Processor - ', async function () {
 
   beforeEach(function () {
     this.now = Date.now();
