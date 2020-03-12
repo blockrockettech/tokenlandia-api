@@ -146,6 +146,32 @@ class JobQueue {
       });
   }
 
+  async getJobsInFlightForTokenId(chainId, tokenId, jobType) {
+    console.log('Get jobs for token', {chainId, tokenId, jobType});
+
+    return this.getJobsCollectionRef(chainId)
+      .where('tokenId', '==', _.toString(tokenId))
+      .where('jobType', '==', _.toString(jobType))
+      .where('status', 'in', [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_COMPLETE, JOB_STATUS.TRANSACTION_SENT])
+      .get()
+      .then((snapshot) => {
+
+        if (snapshot.empty) {
+          console.log('No matching documents found', {chainId, tokenId, jobType});
+          return null;
+        }
+
+        const jobs = [];
+
+        snapshot.forEach(doc => jobs.push({
+          jobId: doc.id,
+          ...doc.data()
+        }));
+
+        return jobs;
+      });
+  }
+
   async getJobTypeSummaryForChainId(chainId) {
 
     const getSummaryInfo = async (jobType) => {
