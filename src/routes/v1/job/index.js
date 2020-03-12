@@ -147,7 +147,7 @@ job.post('/submit/transfer', async function (req, res) {
   const {chainId} = req.params;
   const rawJobData = req.body;
 
-  const {valid, errors} = await jobValidator.isValidUpdateTokenJob(rawJobData);
+  const {valid, errors} = await jobValidator.isValidTransferTokenJob(rawJobData);
   console.log(`Incoming update job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {
@@ -161,7 +161,7 @@ job.post('/submit/transfer', async function (req, res) {
   const {token_id, recipient} = rawJobData;
 
   const escrowService = newEscrowService(chainId);
-  const isEscrowed = await escrowService.isTokenEscrowed();
+  const isEscrowed = await escrowService.isTokenEscrowed(token_id);
   if (!isEscrowed) {
     const errorMsg = `Rejecting incoming job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`;
     console.error(errorMsg);

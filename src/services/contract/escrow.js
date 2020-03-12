@@ -34,7 +34,11 @@ class EscrowService {
   }
 
   async isTokenEscrowed(tokenId) {
-    return await this.contract.isTokenEscrowed(this.nftContractAddress, tokenId).call();
+    try {
+      return await this.contract.isTokenEscrowed(this.nftContractAddress, tokenId);
+    } catch (e) {
+      return false;
+    }
   }
 
   async transferOwnership(tokenId, recipient) {

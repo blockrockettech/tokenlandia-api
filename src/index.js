@@ -35,7 +35,6 @@ const corsOptions = {
 };
 
 app.use('*', cors(corsOptions));
-app.use(bearerToken());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
