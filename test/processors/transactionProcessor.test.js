@@ -10,7 +10,7 @@ const TransactionProcessor = require('../../src/services/processors/transactionP
 
 const EscrowContractTruffleConf = require('../../src/truffleconf/escrow/TrustedNftEscrow');
 
-describe('Transaction Processor - ', async function () {
+describe('Transaction Processor', async function () {
 
   beforeEach(function () {
     this.now = Date.now();
@@ -39,6 +39,10 @@ describe('Transaction Processor - ', async function () {
 
       const tokenlandiaService = {
         mint: sinon.stub().onCall(0).resolves(mockMintResponse),
+      };
+
+      const gasStation = {
+        isWithinGasThreshold: sinon.stub().onCall(0).resolves(true),
       };
 
       const chainId = 4;
@@ -92,7 +96,7 @@ describe('Transaction Processor - ', async function () {
         }
       };
 
-      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService, null);
+      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService, null, gasStation);
       const result = await transactionProcessor.processJob(job);
 
       result.should.be.deep.equal('success');
@@ -126,6 +130,10 @@ describe('Transaction Processor - ', async function () {
 
       const tokenlandiaService = {
         updateIpfsHash: sinon.stub().onCall(0).resolves(mockUpdateIpfsHashResponse),
+      };
+
+      const gasStation = {
+        isWithinGasThreshold: sinon.stub().onCall(0).resolves(true),
       };
 
       const chainId = 4;
@@ -179,7 +187,7 @@ describe('Transaction Processor - ', async function () {
         }
       };
 
-      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService, null);
+      const transactionProcessor = new TransactionProcessor(jobQueue, tokenlandiaService, null, gasStation);
       const result = await transactionProcessor.processJob(job);
 
       result.should.be.deep.equal('success');
@@ -200,6 +208,10 @@ describe('Transaction Processor - ', async function () {
     it('Moves job into TX failed status', async () => {
       const jobQueue = {
         addStatusAndContextToJob: sinon.stub().onCall(0).resolves('success')
+      };
+
+      const gasStation = {
+        isWithinGasThreshold: sinon.stub().onCall(0).resolves(true),
       };
 
       const chainId = 4;
@@ -253,13 +265,61 @@ describe('Transaction Processor - ', async function () {
         }
       };
 
-      const transactionProcessor = new TransactionProcessor(jobQueue, null, null);
+      const transactionProcessor = new TransactionProcessor(jobQueue, null, null, gasStation);
       const result = await transactionProcessor.processJob(job);
 
       result.should.be.deep.equal('success');
 
       sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.TRANSACTION_FAILED, 'Unknown job type [null]');
     });
-  })
+  });
+
+  describe('Skips jobs when to high', () => {
+    it('Returns same job with no state when threshold exceeded', async () => {
+      const jobQueue = {
+        addStatusAndContextToJob: sinon.stub().onCall(0).resolves('success')
+      };
+
+      const gasStation = {
+        isWithinGasThreshold: sinon.stub().onCall(0).resolves(false),
+      };
+
+      const chainId = 4;
+      const jobId = 'abc-123-def-456';
+      const tokenId = 1;
+      const job = {
+        chainId,
+        jobId,
+        tokenId,
+        jobType: null,
+        context: {
+          [JOB_STATUS.ACCEPTED]: {
+            'token_id': 1,
+            'coo': 'USA',
+            'artist_initials': 'RSA',
+            'series': '002',
+            'design': '0003',
+            'name': 'token 1',
+            'description': 'token 1 description',
+            'image': '',
+            'artist': 'artist',
+            'artist_assistant': 'assistant',
+            'brand': 'brand',
+            'model': 'model',
+            'type': 'PHYSICAL_ASSET',
+            'product_id': 'USA-RSA-002-0003-113',
+            'product_code': 'USA-RSA-002-0003'
+          },
+        }
+      };
+
+      const transactionProcessor = new TransactionProcessor(jobQueue, null, null, gasStation);
+      const result = await transactionProcessor.processJob(job);
+      result.should.be.deep.equal(job);
+
+      // No state change
+      jobQueue.addStatusAndContextToJob.called.should.be.eq(false);
+    });
+  });
 
 });
