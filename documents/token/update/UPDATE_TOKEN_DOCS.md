@@ -73,4 +73,4 @@ If any of these things fail a HTTP `400` will be returned with the reason for th
 * The post body should be valid
 * The token should already exist
 
-![Job Accepted Flow](documents/job_accepted_flow.png)
+![Job Accepted Flow](UpdateToken.png)
