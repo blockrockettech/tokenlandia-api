@@ -18,23 +18,15 @@ const API_HOST = `http://localhost:8080`;
 async function addJobToQueue(tokenId) {
   const payload = {
     'token_id': tokenId.toString(),
-    'purchase_location': 'manchester',
-    'purchase_date': '2020-03-11',
-    'customization_location': 'japan',
-    'customization_date': '2020-03-11',
-    'material_1': 'a1',
-    'material_2': 'b2',
-    'material_3': 'c3',
-    'material_4': 'd3',
-    'material_5': 'e3'
+    'recipient': '0x12D062B19a2DF1920eb9FC28Bd6E9A7E936de4c2'
   };
 
-  console.log('---Firing update job---');
+  console.log('---Firing transfer job---');
   const response = await axios
-    .post(`${API_HOST}/v1/network/${CHAIN_ID}/job/submit/updatetoken/general?key=${process.env.API_ACCESS_KEY}`, payload)
+    .post(`${API_HOST}/v1/network/${CHAIN_ID}/job/submit/transfer?key=${process.env.API_ACCESS_KEY}`, payload)
     .catch(e => {
       if (e.response) {
-        console.log(`Could not update token [${payload.token_id}]. Failed with ${e.response.status} - ${e.response.data.error}`);
+        console.log(`Could not transfer token [${payload.token_id}]. Failed with ${e.response.status} - ${e.response.data.error}`);
       }
     });
 

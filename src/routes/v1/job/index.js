@@ -241,6 +241,20 @@ job.get('/process/preprocess', async function (req, res) {
  */
 job.get('/process/transaction', async function (req, res) {
   const {chainId} = req.params;
+
+  const inflightJob = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
+  if (inflightJob) {
+    const mayBeCompleteJob = await jobCompletionProcessor(chainId).processJob(inflightJob);
+
+    if (mayBeCompleteJob.status === JOB_STATUS.TRANSACTION_SENT) {
+      return res
+        .status(200)
+        .json({
+          msg: `Inflight transaction found, waiting for job [${inflightJob.jobId}] to complete`,
+        });
+    }
+  }
+
   const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.PRE_PROCESSING_COMPLETE]);
 
   if (!job) {
@@ -248,15 +262,6 @@ job.get('/process/transaction', async function (req, res) {
       .status(200)
       .json({
         msg: `No jobs found for processing for chain ID [${chainId}]`,
-      });
-  }
-
-  const inflightJob = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
-  if (inflightJob) {
-    return res
-      .status(200)
-      .json({
-        msg: `Inflight transaction found, waiting for job [${inflightJob.jobId}] to complete`,
       });
   }
 
