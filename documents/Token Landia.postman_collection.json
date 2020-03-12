@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fa55b997-7cdd-417b-8947-11adec290406",
+		"_postman_id": "6352d170-db29-4954-8e1a-133d13760e87",
 		"name": "Token Landia",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,18 +9,19 @@
 			"name": "Processors",
 			"item": [
 				{
-					"name": "Metadata",
+					"name": "Trigger Next Pre-process",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer craig-wright-is-not-satoshi",
-								"type": "text"
+								"value": "1c483cf5-e4ad-4a5f-a81a-9f6d06ca5b7b",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/process/metadata",
+							"raw": "http://localhost:8080/v1/network/:chainId/job/process/metadata?key=craig-wright-is-not-satoshi",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -33,6 +34,12 @@
 								"job",
 								"process",
 								"metadata"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
 							],
 							"variable": [
 								{
@@ -45,18 +52,18 @@
 					"response": []
 				},
 				{
-					"name": "Mint",
+					"name": "Trigger Next Transaction",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer craig-wright-is-not-satoshi",
-								"type": "text"
+								"type": "text",
+								"value": "Bearer craig-wright-is-not-satoshi"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/process/metadata",
+							"raw": "http://localhost:8080/v1/network/:chainId/job/process/transaction?key=craig-wright-is-not-satoshi",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -68,7 +75,55 @@
 								":chainId",
 								"job",
 								"process",
-								"metadata"
+								"transaction"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer craig-wright-is-not-satoshi"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/network/:chainId/job/process/completions?key=craig-wright-is-not-satoshi",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"job",
+								"process",
+								"completions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
 							],
 							"variable": [
 								{
@@ -106,7 +161,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"token_id\": 103,\n    \"coo\": \"USA\",\n    \"artist_initials\": \"RSA\",\n    \"series\": 2,\n    \"design\": 3,\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"artist\": \"artist\",\n    \"artist_assistant\": \"assistant\",\n    \"brand\": \"brand\",\n    \"model\": \"model\",\n    \"purchase_location\": \"london\",\n    \"purchase_date\": \"2020-02-01\",\n    \"customization_location\": \"tokyo\",\n    \"customization_date\": \"2020-02-06\",\n    \"materials_used\": [\n      \"a\",\n      \"b\"\n    ]\n}",
+							"raw": "{\n    \"token_id\": 113,\n    \"coo\": \"USA\",\n    \"artist_initials\": \"RSA\",\n    \"series\": \"002\",\n    \"design\": \"0003\",\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"artist\": \"artist\",\n    \"artist_assistant\": \"assistant\",\n    \"brand\": \"brand\",\n    \"model\": \"model\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -114,7 +169,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/submit/createtoken/general",
+							"raw": "http://localhost:8080/v1/network/:chainId/job/submit/createtoken/general?key=craig-wright-is-not-satoshi",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -128,6 +183,70 @@
 								"submit",
 								"createtoken",
 								"general"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Update Token Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer craig-wright-is-not-satoshi"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token_id\": 1,\n    \"purchase_location\": \"manchester\",\n    \"purchase_date\": \"2020-03-11\",\n    \"customization_location\": \"japan\",\n    \"customization_date\": \"2020-03-11\",\n    \"material_1\": \"a1\",\n    \"material_2\": \"b2\",\n    \"material_3\": \"c3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/network/:chainId/job/submit/updatetoken/general?key=craig-wright-is-not-satoshi",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"job",
+								"submit",
+								"updatetoken",
+								"general"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
 							],
 							"variable": [
 								{
@@ -151,7 +270,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/v1/network/:chainId/job/details/:jobId",
+							"raw": "http://localhost:8080/v1/network/:chainId/job/details/:jobId?key=craig-wright-is-not-satoshi",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -165,6 +284,12 @@
 								"details",
 								":jobId"
 							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
+							],
 							"variable": [
 								{
 									"key": "chainId",
@@ -172,7 +297,49 @@
 								},
 								{
 									"key": "jobId",
-									"value": "M7ZsDpr5DK3sQ9g4CH4M"
+									"value": "WrrZIPsgCVvpn85G2QoF"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Queue Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer craig-wright-is-not-satoshi"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/network/:chainId/job//summary?key=craig-wright-is-not-satoshi",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"job",
+								"",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "craig-wright-is-not-satoshi"
+								}
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
 								}
 							]
 						}
