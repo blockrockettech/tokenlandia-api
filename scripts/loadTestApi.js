@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 const CHAIN_ID = 4;
-const API_HOST = `http://localhost:8080`;
+const API_HOST = `https://api-56b6el2v7a-uc.a.run.app`;
 
 async function addCreateJobToQueue(tokenId) {
   const payload = {
@@ -95,18 +95,18 @@ async function addTransferJobToQueue(tokenId) {
   console.log('Load Test API Script started!\n');
 
   // Fire create requests
-  for (let i = 2000; i < 2050; i++) {
-    await addCreateJobToQueue(i);
+  for (let i = 2051; i < 2100; i++) {
+    addCreateJobToQueue(i);
   }
 
 
   // Fire update requests
-  for (let i = 500; i <= 510; i++) {
-    await addUpdateJobToQueue(i);
+  for (let i = 2000; i < 2050; i++) {
+    addUpdateJobToQueue(i);
   }
 
   // Fire transfer requests
-  for (let i = 500; i <= 510; i++) {
-    await addTransferJobToQueue(i);
+  for (let i = 2000; i < 2050; i++) {
+    addTransferJobToQueue(i);
   }
 })();
