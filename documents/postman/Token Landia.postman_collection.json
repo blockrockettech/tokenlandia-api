@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "12ac8f6c-4df9-43d6-afaf-08cbc8092b50",
+		"_postman_id": "8e84f145-41c1-48cf-99da-12670461ad7e",
 		"name": "Token Landia",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -342,6 +342,17 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Balance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

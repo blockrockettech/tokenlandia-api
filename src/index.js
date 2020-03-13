@@ -1,13 +1,16 @@
 const dotenv = require('dotenv');
 
-if (process.env.NODE_ENV === 'test') {
-  console.log(`Applying dotenv config for [${process.env.NODE_ENV}]`);
-  const result = dotenv.config({path: `./.env.${process.env.NODE_ENV}`, debug: true});
-  if (result.error) throw result.error;
-} else {
-  console.log(`Applying default dotenv`);
-  const result = dotenv.config({path: './.env', debug: true});
-  if (result.error) throw result.error;
+switch(process.env.NODE_ENV) {
+  case 'prod':
+  case 'test':
+    console.log(`Applying dotenv config for [${process.env.NODE_ENV}]`);
+    const result = dotenv.config({path: `./.env.${process.env.NODE_ENV}`, debug: true});
+    if (result.error) throw result.error;
+    break;
+  default:
+    console.log(`Applying default dotenv`);
+    const defaultResult = dotenv.config({path: './.env', debug: true});
+    if (defaultResult.error) throw defaultResult.error;
 }
 
 const express = require('express');

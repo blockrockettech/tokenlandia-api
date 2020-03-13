@@ -22,7 +22,14 @@ class MetadataCreationProcessor {
     const acceptedJobContext = context[JOB_STATUS.ACCEPTED];
     const {name, description, image, type, ...restOfData} = acceptedJobContext;
 
-    const imageHash = await this.ipfsService.uploadImageToIpfs(image);
+    let imageHash;
+
+    try {
+      imageHash = await this.ipfsService.uploadImageToIpfs(image);
+    } catch (e) {
+      console.error(`Failed to upload image to IPFS for job ID [${jobId}] chain ID [${chainId}] due to`, e);
+      return job;
+    }
 
     // Generate 721 JSON metadata with name, image, type + attributes
     const metadata = {
@@ -38,7 +45,14 @@ class MetadataCreationProcessor {
     };
 
     // Use ipfs service to push 721 JSON and store IPFS hash
-    const metadataHash = await this.ipfsService.pushJsonToIpfs(metadata);
+    let metadataHash;
+
+    try {
+      metadataHash = await this.ipfsService.pushJsonToIpfs(metadata);
+    } catch (e) {
+      console.error(`Failed to upload metadata to IPFS for job ID [${jobId}] chain ID [${chainId}] due to`, e);
+      return job;
+    }
 
     const newContext = {
       metadataHash,
@@ -73,7 +87,14 @@ class MetadataCreationProcessor {
     };
 
     // Use ipfs service to push 721 JSON and store IPFS hash
-    const metadataHash = await this.ipfsService.pushJsonToIpfs(metadata);
+    let metadataHash;
+
+    try {
+      metadataHash = await this.ipfsService.pushJsonToIpfs(metadata);
+    } catch (e) {
+      console.error(`Failed to upload metadata to IPFS for job ID [${jobId}] chain ID [${chainId}] due to`, e);
+      return job;
+    }
 
     const newContext = {
       metadataHash,

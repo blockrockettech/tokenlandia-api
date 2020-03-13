@@ -91,6 +91,7 @@ modules.xml
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/intellij+all
-/.env
+.env
+.env.prod
 /src/_keys/
 /src/_keys/tokenlandia-admin-eff5ebee14d7.json

@@ -225,7 +225,7 @@ job.get('/process/preprocess', async function (req, res) {
     .json({
       results: _.map(results, (processedJob) => {
         return {
-          msg: `Pre-processing successful for job [${processedJob.jobId}]`,
+          msg: `Pre-processing job [${processedJob.jobId}]`,
           chainId: chainId,
           tokenId: processedJob.tokenId,
           jobId: processedJob.jobId,
