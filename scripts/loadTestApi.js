@@ -24,7 +24,7 @@ async function addCreateJobToQueue(tokenId) {
     'design': '0003',
     'name': `token ${tokenId}`,
     'description': `token ${tokenId} description`,
-    'image': 'http://preview.tokenlandia.com/wp-content/uploads/2019/11/b8e4d509cb644e254fbc16eb6a53fd48_listingImg_IOznWUjgk6.jpg',
+    'image': 'https://picsum.photos/5000/2000',
     'artist': 'artist',
     'artist_assistant': 'assistant',
     'brand': 'brand',
@@ -93,9 +93,10 @@ async function addTransferJobToQueue(tokenId) {
 
 (async function runScript() {
   console.log('Load Test API Script started!\n');
+  addCreateJobToQueue(2100);
 
   // Fire create requests
-  for (let i = 2051; i < 2100; i++) {
+  for (let i = 2150; i < 2200; i++) {
     addCreateJobToQueue(i);
   }
 

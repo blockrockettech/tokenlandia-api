@@ -141,6 +141,11 @@ Three types of job exist, each one preforming a different blockchain actions.
 
 * Transferring token - [docs](/documents/token/transfer/TRANSFER_TOKEN_DOCS.md)
 
+Using transactions executed on the `rinkeby` network, we have been able to determine that the above job types require the following amount of gas to execute:
+- Minting = 252,488 GAS
+- Updating token metadata = 37,823 GAS
+- Token transfer = 81,312 GAS
+
 ### Get Job Status
 
 This API can be used to get the status about a specific job which has been previously accepted.
