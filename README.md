@@ -29,11 +29,37 @@ If one is not provided an error response will be returned e.g. `?key={uuid-key}`
 
 ## API functions
 
-The API consists of several different endpoints allow different operations to be performed.
+The API consists of several different endpoints to allow different operations to be performed. Some operations require Ether (ETH), Ethereum's native currency, in order to be executed on the blockchain. These operations are:
+- Creating a token
+- Updating a token
+- Transferring a token
 
+As a result, the API has its own Ethereum account.
+
+## GET API ETH Balance
+
+You can hit the following `GET` endpoint:
+
+    /v1/network/{chainId}/account/balance
+
+Replacing `{chainId}` as appropriate.
+
+An example response is as follows:
+```
+{
+    "balance": "0.68750194 ETH",
+    "address": "0x1f5AB738A27C3c043072Aa7E06B8a8A433210a76",
+    "currentGasPrice": "24 GWEI",
+    "currentGasThreshold": "25 GWEI"
+}
+```
+
+This gives you the balance of the API as well as the public address for the specified network. This should make knowing which account to top up really easy.
+
+For your convenience, we have also included information about `mainnet` current GAS prices and the threshold above which, a transaction will not be executed.  
 ## GET token information
 
-You can then hit the following `GET` endpoint:
+You can hit the following `GET` endpoint:
 
     /v1/network/{chainId}/asset/{tokenIdOrProductId}
     
