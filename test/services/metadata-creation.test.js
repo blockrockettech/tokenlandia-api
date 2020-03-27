@@ -46,7 +46,7 @@ describe.skip('Metadata creation', function () {
             customization_date: '2020-02-06',
             material_1: 'a',
             material_2: 'b',
-            type: 'PHYSICAL_ASSET',
+            type: 'GENERAL_ASSET',
             product_id: 'USA-RSA-002-0003-100'
           }
         };

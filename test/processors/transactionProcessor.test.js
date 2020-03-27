@@ -67,7 +67,7 @@ describe('Transaction Processor', async function () {
             'artist_assistant': 'assistant',
             'brand': 'brand',
             'model': 'model',
-            'type': 'PHYSICAL_ASSET',
+            'type': 'GENERAL_ASSET',
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },
@@ -90,7 +90,7 @@ describe('Transaction Processor', async function () {
               description: 'token 1 description',
               image: 'https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf',
               name: 'token 1',
-              type: 'PHYSICAL_ASSET'
+              type: 'GENERAL_ASSET'
             }
           }
         }
@@ -158,7 +158,7 @@ describe('Transaction Processor', async function () {
             'artist_assistant': 'assistant',
             'brand': 'brand',
             'model': 'model',
-            'type': 'PHYSICAL_ASSET',
+            'type': 'GENERAL_ASSET',
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },
@@ -181,7 +181,7 @@ describe('Transaction Processor', async function () {
               description: 'token 1 description',
               image: 'https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf',
               name: 'token 1',
-              type: 'PHYSICAL_ASSET'
+              type: 'GENERAL_ASSET'
             }
           }
         }
@@ -236,7 +236,7 @@ describe('Transaction Processor', async function () {
             'artist_assistant': 'assistant',
             'brand': 'brand',
             'model': 'model',
-            'type': 'PHYSICAL_ASSET',
+            'type': 'GENERAL_ASSET',
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },
@@ -259,7 +259,7 @@ describe('Transaction Processor', async function () {
               description: 'token 1 description',
               image: 'https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf',
               name: 'token 1',
-              type: 'PHYSICAL_ASSET'
+              type: 'GENERAL_ASSET'
             }
           }
         }
@@ -306,7 +306,7 @@ describe('Transaction Processor', async function () {
             'artist_assistant': 'assistant',
             'brand': 'brand',
             'model': 'model',
-            'type': 'PHYSICAL_ASSET',
+            'type': 'GENERAL_ASSET',
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           },

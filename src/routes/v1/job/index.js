@@ -61,7 +61,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
   // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
-    type: 'PHYSICAL_ASSET',
+    type: 'GENERAL_ASSET',
     product_id: `${product_code}-${token_id}`,
     product_code
   };
@@ -114,7 +114,7 @@ job.post('/submit/updatetoken/general', async function (req, res) {
   // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
-    type: 'PHYSICAL_ASSET',
+    type: 'GENERAL_ASSET',
   };
 
   // Accept job

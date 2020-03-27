@@ -54,7 +54,7 @@ describe('Metadata Creation Processor', async function () {
             'artist_assistant': 'assistant',
             'brand': 'brand',
             'model': 'model',
-            'type': 'PHYSICAL_ASSET',
+            'type': 'GENERAL_ASSET',
             'product_id': 'USA-RSA-002-0003-113',
             'product_code': 'USA-RSA-002-0003'
           }
@@ -85,7 +85,7 @@ describe('Metadata Creation Processor', async function () {
         description: 'token 1 description',
         image: 'https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf',
         name: 'token 1',
-        type: 'PHYSICAL_ASSET'
+        type: 'GENERAL_ASSET'
       });
 
       sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {
@@ -106,7 +106,7 @@ describe('Metadata Creation Processor', async function () {
           description: 'token 1 description',
           image: 'https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf',
           name: 'token 1',
-          type: 'PHYSICAL_ASSET'
+          type: 'GENERAL_ASSET'
         },
         metadataHash: 'QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9'
       });
@@ -135,7 +135,7 @@ describe('Metadata Creation Processor', async function () {
         context: {
           [JOB_STATUS.ACCEPTED]: {
             'token_id': 1,
-            'type': 'PHYISCAL_ASSET',
+            'type': 'GENERAL_ASSET',
             'purchase_location': 'london',
             'purchase_date': '2020-02-01',
             'customization_location': 'tokyo',
