@@ -37,7 +37,6 @@ describe('Job validation - Create Token', function () {
         {message: '"name" is required', type: 'any.required'},
         {message: '"description" is required', type: 'any.required'},
         {message: '"image" is required', type: 'any.required'},
-        {message: '"artist" is required', type: 'any.required'},
         {message: '"brand" is required', type: 'any.required'},
         {message: '"model" is required', type: 'any.required'},
       ]
