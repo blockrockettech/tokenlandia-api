@@ -79,6 +79,7 @@ describe('Physical asset token routes', () => {
         'token_id': tokenId,
         open_sea_link: 'opensea',
         etherscan_link: 'etherscan',
+        transaction_hash: '0x123abc',
         'etherscan_transaction_hash': 'transaction_hash/0x123abc',
         ...fakeInfuraResponse
       });

@@ -56,7 +56,7 @@ token.get('/info/:tokenIdOrProductId', async function (req, res) {
   const ipfsResponse = await axios.get(token_uri);
 
   res.status(200)
-    .header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+    .header('Cache-Control', 'public, max-age=3600, s-maxage=3600') // 1hr cache
     .json({
       product_code,
       product_id,
@@ -64,6 +64,7 @@ token.get('/info/:tokenIdOrProductId', async function (req, res) {
       token_uri,
       open_sea_link,
       etherscan_link,
+      transaction_hash: transactionHash,
       etherscan_transaction_hash: tokenlandia.etherscanUrlForTransaction(transactionHash),
       contract_address: tokenlandia.contractAddress,
       ...ipfsResponse.data
