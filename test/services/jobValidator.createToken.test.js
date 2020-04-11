@@ -56,7 +56,7 @@ describe('Job validation - Create Token', function () {
     });
   });
 
-    it('should fail for invalid country code', async function () {
+  it('should fail for invalid country code', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
       'coo': 'AAA',
@@ -109,5 +109,203 @@ describe('Job validation - Create Token', function () {
     });
   });
 
+  describe('artist initials field checks', async function () {
+
+    it('fails if less then 3 characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        artist_initials: 'AA'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {message: '"artist_initials" length must be at least 3 characters long', type: 'string.min'},
+        ]
+      });
+    });
+
+    it('fails if more then 3 characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        artist_initials: 'AAAA'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {message: '"artist_initials" length must be less than or equal to 3 characters long', type: 'string.max'},
+        ]
+      });
+    });
+
+    it('fails if not A-Z', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        artist_initials: 'AA7'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"artist_initials" with value "AA7" fails to match the required pattern: /^[a-zA-Z]*$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+    it('fails if has numbers in', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        artist_initials: 'AA!'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"artist_initials" with value "AA!" fails to match the required pattern: /^[a-zA-Z]*$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+  });
+
+  describe('series field checks', async function () {
+
+    it('should fail if less than 3 characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        series: '01'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"series" length must be 3 characters long',
+            type: 'string.length'
+          },
+        ]
+      });
+    });
+
+    it('should fail if more than 3 characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        series: '0110'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"series" length must be 3 characters long',
+            type: 'string.length'
+          },
+        ]
+      });
+    });
+
+    it('should fail if not a number', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        series: '0A1'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"series" with value "0A1" fails to match the required pattern: /^\\d+$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+    it('should fail if contains special characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        series: '10!'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"series" with value "10!" fails to match the required pattern: /^\\d+$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+  });
+
+  describe('design field checks', async function () {
+
+    it('should fail if less than 3 characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        design: '011'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"design" length must be 4 characters long',
+            type: 'string.length'
+          },
+        ]
+      });
+    });
+
+    it('should fail if more than 3 characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        design: '011'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"design" length must be 4 characters long',
+            type: 'string.length'
+          },
+        ]
+      });
+    });
+
+    it('should fail if not a number', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        design: '0A11'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"design" with value "0A11" fails to match the required pattern: /^\\d+$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+    it('should fail if contains special characters', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        design: '100!'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"design" with value "100!" fails to match the required pattern: /^\\d+$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+
+  });
 
 });

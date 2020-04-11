@@ -25,11 +25,11 @@ module.exports = Joi.object({
 
   coo: Joi.string().min(3).max(3).case('upper').required().custom(countryCodeValidator, 'COO is not valid country code'),
 
-  artist_initials: Joi.string().alphanum().min(1).max(4).required(),
+  artist_initials: Joi.string().regex(/^[a-zA-Z]*$/).min(3).max(3).required(),
 
-  series: Joi.string().min(3).max(3).required(),
+  series: Joi.string().length(3).regex(/^\d+$/).required(),
 
-  design: Joi.string().min(4).max(4).required(),
+  design: Joi.string().length(4).regex(/^\d+$/).required(),
 
   name: Joi.string().min(1).max(125).required(),
 
