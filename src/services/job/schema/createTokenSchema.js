@@ -52,7 +52,7 @@ module.exports = Joi.object({
   ////////////////////////////////////
 
   purchase_location: Joi.string().min(0).max(125).optional(),
-  purchase_date: Joi.string().min(0).max(125).optional().pattern(YYYY_MM_DD_PATTERN),
+  purchase_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
 
   customization_location: Joi.string().min(0).max(125).optional(),
   customization_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
