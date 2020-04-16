@@ -21,7 +21,7 @@ const countryCodeValidator = (value, helpers) => {
 
 module.exports = Joi.object({
 
-  token_id: Joi.number().integer().min(0).required(),
+  token_id: Joi.number().integer().min(1).required(),
 
   coo: Joi.string().min(3).max(3).case('upper').required().custom(countryCodeValidator, 'COO is not valid country code'),
 

@@ -42,6 +42,19 @@ describe('Job validation - Create Token', function () {
     });
   });
 
+  it('should fail if token ID is less than 1', async function () {
+    const results = await jobValidator.isValidCreateTokenJob({
+      ...validPayload,
+      'token_id': 0,
+    });
+    results.should.be.deep.equal({
+      valid: false,
+      errors: [
+        {message: '"token_id" must be larger than or equal to 1', type: 'number.min'},
+      ]
+    });
+  });
+
   it('should fail if with unknown', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
