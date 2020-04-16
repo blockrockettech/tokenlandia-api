@@ -204,3 +204,16 @@ This API gives you details on how many jobs are at each stage of the processing 
     }
 }
 ```
+
+### Blockchain Data Fields Validation 
+
+When using fields relating to data stored on the blockchain or in relation to blockchain services, 
+the following rules defines some basic characteristics about each field:
+
+* `Token ID` - `number` - greater than 0 with no limits
+* `Contract address` - `string` of `hexadecimal` characters - `0-9 a-f A-F` - always starts with `0x`, 42 characters in length - a sample `regex` may look like this `/^0x([a-fA-F0-9]{40})$/`
+* `Transaction hash` - `string` of `hexadecimal` characters - `0-9 a-f A-F` - always starts with `0x`, 66 characters in length - a sample `regex` may look like this `/^0x([a-fA-F0-9]{64})$/`
+* `Date created` - a valid date in the format `YYYY-MM-DD`
+* `IPFS link` - a valid URL
+* `Etherscan link` - a valid URL
+* `OpenSea link` - a valid URL
