@@ -25,10 +25,12 @@ module.exports = Joi.object({
 
   coo: Joi.string().min(3).max(3).case('upper').required().custom(countryCodeValidator, 'COO is not valid country code'),
 
-  artist_initials: Joi.string().regex(/^[a-zA-Z]*$/).min(3).max(3).required(),
+  artist_initials: Joi.string().regex(/^[A-Z]*$/).min(3).max(3).required(),
 
+  // Any digit 0-9
   series: Joi.string().length(3).regex(/^\d+$/).required(),
 
+  // Any digit 0-9
   design: Joi.string().length(4).regex(/^\d+$/).required(),
 
   name: Joi.string().min(1).max(125).required(),
@@ -39,15 +41,15 @@ module.exports = Joi.object({
 
   artist: Joi.string().min(1).max(125).optional(),
 
-  artist_assistant: Joi.string().alphanum().min(1).max(125).optional(),
+  artist_assistant: Joi.string().min(1).max(125).optional(),
 
   brand: Joi.string().min(1).max(125).required(),
 
-  model: Joi.string().min(1).max(125).required(),
+  model: Joi.string().min(1).max(125).optional(),
 
-  ///////////////////////////
-  // Optional fields below //
-  ///////////////////////////
+  ////////////////////////////////////
+  // Fields which can updated later //
+  ////////////////////////////////////
 
   purchase_location: Joi.string().min(0).max(125).optional(),
   purchase_date: Joi.string().min(0).max(125).optional().pattern(YYYY_MM_DD_PATTERN),
@@ -55,10 +57,10 @@ module.exports = Joi.object({
   customization_location: Joi.string().min(0).max(125).optional(),
   customization_date: Joi.string().optional().pattern(YYYY_MM_DD_PATTERN),
 
-  material_1: Joi.string().alphanum().min(1).max(40).optional(),
-  material_2: Joi.string().alphanum().min(1).max(40).optional(),
-  material_3: Joi.string().alphanum().min(1).max(40).optional(),
-  material_4: Joi.string().alphanum().min(1).max(40).optional(),
-  material_5: Joi.string().alphanum().min(1).max(40).optional(),
+  material_1: Joi.string().min(1).max(40).optional(),
+  material_2: Joi.string().min(1).max(40).optional(),
+  material_3: Joi.string().min(1).max(40).optional(),
+  material_4: Joi.string().min(1).max(40).optional(),
+  material_5: Joi.string().min(1).max(40).optional(),
 
 });

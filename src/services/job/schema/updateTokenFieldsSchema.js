@@ -13,10 +13,10 @@ module.exports = Joi.object({
   customization_location: Joi.string().min(0).max(125).required(),
   customization_date: Joi.string().required().pattern(YYYY_MM_DD_PATTERN),
 
-  material_1: Joi.string().alphanum().min(1).max(40).required(),
-  material_2: Joi.string().alphanum().min(1).max(40).optional(),
-  material_3: Joi.string().alphanum().min(1).max(40).optional(),
-  material_4: Joi.string().alphanum().min(1).max(40).optional(),
-  material_5: Joi.string().alphanum().min(1).max(40).optional(),
+  material_1: Joi.string().min(1).max(40).required(),
+  material_2: Joi.string().min(1).max(40).optional(),
+  material_3: Joi.string().min(1).max(40).optional(),
+  material_4: Joi.string().min(1).max(40).optional(),
+  material_5: Joi.string().min(1).max(40).optional(),
 
 });

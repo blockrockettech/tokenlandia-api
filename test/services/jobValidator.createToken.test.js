@@ -38,7 +38,6 @@ describe('Job validation - Create Token', function () {
         {message: '"description" is required', type: 'any.required'},
         {message: '"image" is required', type: 'any.required'},
         {message: '"brand" is required', type: 'any.required'},
-        {message: '"model" is required', type: 'any.required'},
       ]
     });
   });
@@ -146,7 +145,7 @@ describe('Job validation - Create Token', function () {
         valid: false,
         errors: [
           {
-            message: '"artist_initials" with value "AA7" fails to match the required pattern: /^[a-zA-Z]*$/',
+            message: '"artist_initials" with value "AA7" fails to match the required pattern: /^[A-Z]*$/',
             type: 'string.pattern.base'
           },
         ]
@@ -162,7 +161,23 @@ describe('Job validation - Create Token', function () {
         valid: false,
         errors: [
           {
-            message: '"artist_initials" with value "AA!" fails to match the required pattern: /^[a-zA-Z]*$/',
+            message: '"artist_initials" with value "AA!" fails to match the required pattern: /^[A-Z]*$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+    it('fails if not upper case', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        artist_initials: 'aBC'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"artist_initials" with value "aBC" fails to match the required pattern: /^[A-Z]*$/',
             type: 'string.pattern.base'
           },
         ]
@@ -231,6 +246,22 @@ describe('Job validation - Create Token', function () {
         errors: [
           {
             message: '"series" with value "10!" fails to match the required pattern: /^\\d+$/',
+            type: 'string.pattern.base'
+          },
+        ]
+      });
+    });
+
+    it('should fail if is not number only', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        series: '10a'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {
+            message: '"series" with value "10a" fails to match the required pattern: /^\\d+$/',
             type: 'string.pattern.base'
           },
         ]
