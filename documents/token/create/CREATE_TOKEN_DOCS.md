@@ -92,3 +92,17 @@ If any of these things fail a HTTP `400` will be returned with the reason for th
 * The post body should be valid
 
 ![Job Accepted Flow](CreateToken.png)
+
+#### Deleting a Job
+
+You can delete/cancel jobs which are only at the stage "ACCEPTED".
+
+* `HTTP` `DELETE` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/cancel?key={uuid-key}`
+
+With body
+
+```json
+{
+    "job_id": "<job-id>"
+}
+```
