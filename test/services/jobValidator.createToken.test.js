@@ -82,33 +82,6 @@ describe('Job validation - Create Token', function () {
     });
   });
 
-  it('should fail with a blank image url', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
-      ...validPayload,
-      image: ''
-    });
-    results.should.be.deep.equal({
-      valid: false,
-      errors: [
-        {message: '"image" is not allowed to be empty', type: 'string.empty'},
-        {message: 'Image URL is not valid'}
-      ]
-    });
-  });
-
-  it('should fail with an invalid image url', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
-      ...validPayload,
-      image: 'http://127.0.0.1:3000/does/not/work'
-    });
-    results.should.be.deep.equal({
-      valid: false,
-      errors: [
-        {message: 'Image URL is not valid'}
-      ]
-    });
-  });
-
   it('should fail if token_id is not a number', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
       ...validPayload,
@@ -379,5 +352,71 @@ describe('Job validation - Create Token', function () {
     });
 
 
+  });
+
+  describe('image url checks', async function() {
+    it('should fail with a blank image url', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        image: ''
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {message: '"image" is not allowed to be empty', type: 'string.empty'},
+          {message: 'Image URL is not valid'}
+        ]
+      });
+    });
+
+    it('should fail with an invalid image url', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        image: 'http://127.0.0.1:3000/does/not/work'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {message: 'Image URL is not valid'}
+        ]
+      });
+    });
+
+    it('should fail with an image url that returns a 404', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        image: 'https://github.com/blockrockettechf'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {message: 'Image URL is not valid'}
+        ]
+      });
+    });
+
+    it('should fail with an image url that returns a 500', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        image: 'https://api.cryptokaiju.io/api/network/1/token/nfc/x'
+      });
+      results.should.be.deep.equal({
+        valid: false,
+        errors: [
+          {message: 'Image URL is not valid'}
+        ]
+      });
+    });
+
+    it('should pass with a redirect image url (with http 302 code)', async function () {
+      const results = await jobValidator.isValidCreateTokenJob({
+        ...validPayload,
+        image: 'https://cdn.knownorigin.io/cdn/images/network/1/edition/154200'
+      });
+      results.should.be.deep.equal({
+        valid: true,
+        errors: []
+      });
+    });
   });
 });
