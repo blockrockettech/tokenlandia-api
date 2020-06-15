@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const {JOB_STATUS, JOB_TYPES, canMoveToStatus} = require('./jobConstants');
 
-const IN_JOB_STATUSES = [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_COMPLETE, JOB_STATUS.TRANSACTION_SENT];
+const INFLIGHT_JOB_STATUSES = [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_COMPLETE, JOB_STATUS.TRANSACTION_SENT];
 
 class JobQueue {
 
@@ -154,7 +154,7 @@ class JobQueue {
     return this.getJobsCollectionRef(chainId)
       .where('tokenId', '==', _.toString(tokenId))
       .where('jobType', '==', _.toString(jobType))
-      .where('status', 'in', IN_JOB_STATUSES)
+      .where('status', 'in', INFLIGHT_JOB_STATUSES)
       .get()
       .then((snapshot) => {
 
@@ -255,7 +255,7 @@ class JobQueue {
     const getOpenJobsSummary = async (jobType) => {
       return this.getJobsCollectionRef(chainId)
         .where('jobType', '==', _.toString(jobType))
-        .where('status', 'in', IN_JOB_STATUSES)
+        .where('status', 'in', INFLIGHT_JOB_STATUSES)
         .get()
         .then(snapshot => {
           const jobs = [];
