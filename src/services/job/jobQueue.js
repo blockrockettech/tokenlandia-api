@@ -200,6 +200,14 @@ class JobQueue {
           return snapshot.size;
         });
 
+      const numOfPreProcessingFailedJobs = await this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', '==', JOB_STATUS.PRE_PROCESSING_FAILED)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+
       const numOfTransactionSentJobs = await this.getJobsCollectionRef(chainId)
         .where('jobType', '==', _.toString(jobType))
         .where('status', '==', JOB_STATUS.TRANSACTION_SENT)
@@ -224,10 +232,12 @@ class JobQueue {
           return snapshot.size;
         });
 
+
       return {
         numOfJobsForJobType,
         numOfAcceptedJobs,
         numOfPreProcessingCompleteJobs,
+        numOfPreProcessingFailedJobs,
         numOfTransactionSentJobs,
         numOfJobCompleteJobs,
         numOfTransactionFailedJobs
