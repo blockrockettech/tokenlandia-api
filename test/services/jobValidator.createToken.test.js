@@ -11,7 +11,7 @@ describe('Job validation - Create Token', function () {
     'design': '0003',
     'name': 'token 1',
     'description': 'token 1 description',
-    'image': 'http://test.test.com',
+    'image': 'http://test.test.com/',
     'artist': 'artist',
     'artist_assistant': 'assistant',
     'brand': 'brand',
@@ -38,6 +38,7 @@ describe('Job validation - Create Token', function () {
         {message: '"description" is required', type: 'any.required'},
         {message: '"image" is required', type: 'any.required'},
         {message: '"brand" is required', type: 'any.required'},
+        {message: 'Image URL is not valid'}
       ]
     });
   });
@@ -81,6 +82,32 @@ describe('Job validation - Create Token', function () {
     });
   });
 
+  it('should fail with a blank image url', async function () {
+    const results = await jobValidator.isValidCreateTokenJob({
+      ...validPayload,
+      image: ''
+    });
+    results.should.be.deep.equal({
+      valid: false,
+      errors: [
+        {message: '"image" is not allowed to be empty', type: 'string.empty'},
+        {message: 'Image URL is not valid'}
+      ]
+    });
+  });
+
+  it('should fail with an invalid image url', async function () {
+    const results = await jobValidator.isValidCreateTokenJob({
+      ...validPayload,
+      image: 'http://127.0.0.1:3000/does/not/work'
+    });
+    results.should.be.deep.equal({
+      valid: false,
+      errors: [
+        {message: 'Image URL is not valid'}
+      ]
+    });
+  });
 
   it('should fail if token_id is not a number', async function () {
     const results = await jobValidator.isValidCreateTokenJob({
@@ -110,6 +137,7 @@ describe('Job validation - Create Token', function () {
       ])
     });
     results.should.be.deep.equal({
+      errors: [],
       valid: true
     });
   });
@@ -117,6 +145,7 @@ describe('Job validation - Create Token', function () {
   it('should pass', async function () {
     const results = await jobValidator.isValidCreateTokenJob(validPayload);
     results.should.be.deep.equal({
+      errors: [],
       valid: true
     });
   });
@@ -351,5 +380,4 @@ describe('Job validation - Create Token', function () {
 
 
   });
-
 });
