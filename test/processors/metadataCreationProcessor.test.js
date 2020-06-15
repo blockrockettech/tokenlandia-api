@@ -215,4 +215,46 @@ describe('Metadata Creation Processor', async function () {
 
   });
 
+  describe('Attempting to push an invalid image URL marks the jobs as failed', async function () {
+
+    it('Job is marked as a failure if URL not valid', async function () {
+
+      const jobQueue = {
+        addStatusAndContextToJob: sinon.stub().onCall(0).resolves('success')
+      };
+
+      const ipfsService = {
+        uploadImageToIpfs: sinon.stub().onCall(0).throws(new Error("IMAGE_URL_INVALID")),
+        pushJsonToIpfs: sinon.stub()
+      };
+
+      const chainId = 4;
+      const jobId = 'abc-123-def-456';
+      const imageUrl = 'http://preview.tokenlandia.com/wp-content/uploads/2019/11/b8e4d509cb644e254fbc16eb6a53fd48_listingImg_IOznWUjgk6.jpg';
+
+      const job = {
+        chainId: chainId,
+        jobId: jobId,
+        context: {
+          [JOB_STATUS.ACCEPTED]: {
+            'token_id': 1,
+            'image': imageUrl,
+          }
+        }
+      };
+
+      const processor = new MetadataCreationProcessor(jobQueue, ipfsService);
+
+      const result = await processor.pushCreateTokenJob(job);
+      result.should.be.deep.equal('success');
+
+      sinon.assert.calledWith(ipfsService.uploadImageToIpfs, imageUrl);
+
+      // Expect not invoked as image URL failed
+      sinon.assert.notCalled(ipfsService.pushJsonToIpfs);
+
+      sinon.assert.calledWith(jobQueue.addStatusAndContextToJob, chainId, jobId, JOB_STATUS.PRE_PROCESSING_FAILED, 'IMAGE_URL_INVALID');
+    });
+  });
+
 });

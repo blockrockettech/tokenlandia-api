@@ -10,6 +10,11 @@ class InfuraIpfsService {
   async uploadImageToIpfs(url) {
     console.log('Uploading image from ULR to IPFS', url);
 
+    // FIXME - change to use common url checker function
+    if (true) {
+      throw new Error("IMAGE_URL_INVALID");
+    }
+
     const response = await axios({
       method: 'get',
       url: url,
