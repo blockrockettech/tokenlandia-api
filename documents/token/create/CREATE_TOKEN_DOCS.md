@@ -8,7 +8,7 @@ This API allows you to create new tokens
 
 Sample request body
 
-```
+```json
 {
     'token_id': ${tokenId},
     'coo': 'USA',
@@ -34,7 +34,7 @@ Sample request body
 
 Sample successful job created `JSON` response
 
-```
+```json
 {
     "jobId": "AoHZeOquKMZe9SFGnquD",
     "chainId": "4",
@@ -55,7 +55,7 @@ Sample successful job created `JSON` response
 --------------------
 
 * Failure - Invalid Token Data - `HTTP` status `400`
-```
+```json
 {
     "error": "Invalid job data",
     "details": [
@@ -65,14 +65,14 @@ Sample successful job created `JSON` response
 ```
 
 * Failure - Token already created - `HTTP` status `400`
-```
+```json
 {
     "error": "Token already created"
 }
 ```
 
 * Failure - Duplicate Job - `HTTP` status `400`
-```
+```json
 {
     "error": "Duplicate Job found",
     "existingJob": {
