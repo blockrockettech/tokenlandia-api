@@ -5,16 +5,20 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const app = require('../../../../src');
+const {JOB_STATUS} = require('../../../../src/services/job/jobConstants');
 
-function getBaseUrl(chainId) {
-  return `/v1/network/${chainId}/job`;
-}
+const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
 
 describe('Job processing route', () => {
 
+  beforeEach(function () {
+    this.now = Date.now();
+    this.clock = sinon.useFakeTimers(this.now);
+  });
+
   afterEach(function () {
     sinon.restore();
+    this.clock.restore();
   });
 
   describe('create token job', function () {
@@ -23,7 +27,7 @@ describe('Job processing route', () => {
       it('fails in invalid chain ID', async function () {
         const invalidChainId = 99;
 
-        const res = await chai.request(app)
+        const res = await chai.request(require('../../../../src'))
           .post(`${getBaseUrl(invalidChainId)}/submit/createtoken/general`)
           .send({});
 
@@ -41,7 +45,7 @@ describe('Job processing route', () => {
 
         const invalidAPiKey = 'invalid-key';
 
-        const res = await chai.request(app)
+        const res = await chai.request(require('../../../../src'))
           .post(`${getBaseUrl(chainId)}/submit/createtoken/general?key=${invalidAPiKey}`)
           .send({});
 
@@ -57,9 +61,7 @@ describe('Job processing route', () => {
       it('fails if token already exists', async function () {
         const chainId = 4;
 
-        const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
-
-        const res = await chai.request(app)
+        const res = await chai.request(require('../../../../src'))
           .post(`${getBaseUrl(chainId)}/submit/createtoken/general?key=${API_ACCESS_KEY}`)
           .send({
             'token_id': 1,
@@ -91,7 +93,7 @@ describe('Job processing route', () => {
       it('fails in invalid chain ID', async function () {
         const invalidChainId = 99;
 
-        const res = await chai.request(app)
+        const res = await chai.request(require('../../../../src'))
           .post(`${getBaseUrl(invalidChainId)}/submit/updatetoken/general`)
           .send({});
 
@@ -109,7 +111,7 @@ describe('Job processing route', () => {
 
         const invalidAPiKey = 'invalid-key';
 
-        const res = await chai.request(app)
+        const res = await chai.request(require('../../../../src'))
           .post(`${getBaseUrl(chainId)}/submit/updatetoken/general?key=${invalidAPiKey}`)
           .send({});
 
@@ -125,9 +127,7 @@ describe('Job processing route', () => {
       it('fails if token does not exists', async function () {
         const chainId = 4;
 
-        const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
-
-        const res = await chai.request(app)
+        const res = await chai.request(require('../../../../src'))
           .post(`${getBaseUrl(chainId)}/submit/updatetoken/general?key=${API_ACCESS_KEY}`)
           .send({
             'token_id': 9999999,
@@ -147,4 +147,80 @@ describe('Job processing route', () => {
     });
   });
 
+  describe('cancelling a job', async function () {
+
+    it('will cancel job when in the correct state', async function () {
+      const chainId = 4;
+      const jobId = `1234`;
+      const {jobQueue} = require('../../../../src/services');
+
+      sinon.stub(jobQueue, 'getJobForId').returns({
+        jobId: jobId,
+        status: JOB_STATUS.ACCEPTED
+      });
+
+      const updateStub = sinon.stub(jobQueue, 'addStatusAndContextToJob').returns('success');
+
+      const res = await chai.request(require('../../../../src'))
+        .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
+        .send({
+          'job_id': jobId,
+        });
+
+      res.should.not.be.empty;
+      res.status.should.be.equal(200);
+      res.body.should.be.deep.equal('success');
+
+      updateStub.called.should.be.true;
+      updateStub.args[0].should.be.deep.equal(['4', jobId, 'JOB_CANCELLED', {cancelled: this.now}]);
+    });
+
+    it('will reject change when in the correct state', async function () {
+      const chainId = 4;
+      const jobId = `1234`;
+      const {jobQueue} = require('../../../../src/services');
+
+      sinon.stub(jobQueue, 'getJobForId').returns({
+        status: JOB_STATUS.JOB_CANCELLED
+      });
+
+      const res = await chai.request(require('../../../../src'))
+        .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
+        .send({
+          'job_id': jobId,
+        });
+
+      res.should.not.be.empty;
+      res.status.should.be.equal(400);
+      res.body.should.be.deep.equal({
+        'error': `Unable to cancel job [${jobId}] on chain [${chainId}] with status [${JOB_STATUS.JOB_CANCELLED}]`
+      });
+    });
+
+    it('will reject change when job does not exist', async function () {
+      const chainId = 4;
+      const jobId = `1234`;
+
+      const {jobQueue} = require('../../../../src/services');
+
+      sinon.stub(jobQueue, 'getJobForId').returns(null);
+
+      const res = await chai.request(require('../../../../src'))
+        .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
+        .send({
+          'job_id': jobId,
+        });
+
+      res.should.not.be.empty;
+      res.status.should.be.equal(400);
+      res.body.should.be.deep.equal({
+        'error': `Unable to find job [${jobId}] on chain [${chainId}]`
+      });
+    });
+
+  });
+
+  function getBaseUrl(chainId) {
+    return `/v1/network/${chainId}/job`;
+  }
 });

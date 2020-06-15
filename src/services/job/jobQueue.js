@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {JOB_STATUS, JOB_TYPES, NEXT_STATES} = require('./jobConstants');
+const {JOB_STATUS, JOB_TYPES, canMoveToStatus} = require('./jobConstants');
 
 const IN_JOB_STATUSES = [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_COMPLETE, JOB_STATUS.TRANSACTION_SENT];
 
@@ -51,7 +51,7 @@ class JobQueue {
       throw new Error(`Job cannot be found for job ID [${jobId}] and chain ID [${chainId}]`);
     }
 
-    if (!_.includes(NEXT_STATES[job.status], status)) {
+    if (!canMoveToStatus(job.status, status)) {
       throw new Error(`Invalid state transition for job id [${jobId}] on chain ID [${chainId}]. Attempting to go from ${job.status} -> ${status}`);
     }
 

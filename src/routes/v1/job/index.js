@@ -14,7 +14,7 @@ const {
   jobCompletionProcessor
 } = require('../../../services/index');
 
-const {JOB_STATUS, JOB_TYPES} = jobConstants;
+const {JOB_STATUS, JOB_TYPES, canCancelJob} = jobConstants;
 
 /**
  * Submit a new Job to create a new token
@@ -307,7 +307,6 @@ job.get('/process/completions', async function (req, res) {
     });
 });
 
-
 /**
  * Get Job Details for JobId
  */
@@ -326,6 +325,41 @@ job.get('/details/:jobId', async function (req, res) {
   return res
     .status(200)
     .json(jobDetails);
+});
+
+/**
+ * Delete a pending Job
+ */
+job.delete('/cancel', async function (req, res) {
+  const {chainId} = req.params;
+  const {job_id} = req.body;
+  
+  const jobDetails = await jobQueue.getJobForId(chainId, job_id);
+
+  if (!job_id || !chainId || !jobDetails) {
+    return res
+      .status(400)
+      .json({
+        error: `Unable to find job [${job_id}] on chain [${chainId}]`
+      });
+  }
+
+  if (canCancelJob(jobDetails.status)) {
+    console.log(`Attempting to cancel job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`);
+    const updatedJob = await jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, JOB_STATUS.JOB_CANCELLED, {
+      cancelled: Date.now()
+    });
+
+    return res
+      .status(200)
+      .json(updatedJob);
+  }
+
+  return res
+    .status(400)
+    .json({
+      error: `Unable to cancel job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`
+    });
 });
 
 /**
