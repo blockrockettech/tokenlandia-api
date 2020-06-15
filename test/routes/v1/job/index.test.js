@@ -147,8 +147,4 @@ describe('Job processing route', () => {
     });
   });
 
-  describe('', () => {
-
-  });
-
 });

@@ -337,4 +337,13 @@ job.get('/summary', async function (req, res) {
     .json(await jobQueue.getJobTypeSummaryForChainId(chainId));
 });
 
+/**
+ * Get open jobs for chain
+ */
+job.get('/open/summary', async function (req, res) {
+  const {chainId} = req.params;
+  return res.status(200)
+    .json(await jobQueue.getIncompleteJobsForChainId(chainId));
+});
+
 module.exports = job;

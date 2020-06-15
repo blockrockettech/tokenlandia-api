@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const {JOB_STATUS, JOB_TYPES, NEXT_STATES} = require('./jobConstants');
 
+const IN_JOB_STATUSES = [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_COMPLETE, JOB_STATUS.TRANSACTION_SENT];
+
 class JobQueue {
 
   constructor(db) {
@@ -152,7 +154,7 @@ class JobQueue {
     return this.getJobsCollectionRef(chainId)
       .where('tokenId', '==', _.toString(tokenId))
       .where('jobType', '==', _.toString(jobType))
-      .where('status', 'in', [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_COMPLETE, JOB_STATUS.TRANSACTION_SENT])
+      .where('status', 'in', IN_JOB_STATUSES)
       .get()
       .then((snapshot) => {
 
@@ -236,6 +238,29 @@ class JobQueue {
       [JOB_TYPES.CREATE_TOKEN]: await getSummaryInfo(JOB_TYPES.CREATE_TOKEN),
       [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
       [JOB_TYPES.TRANSFER_TOKEN]: await getSummaryInfo(JOB_TYPES.TRANSFER_TOKEN),
+    };
+  }
+
+  async getIncompleteJobsForChainId(chainId) {
+    const getOpenJobsSummary = async (jobType) => {
+      return this.getJobsCollectionRef(chainId)
+        .where('jobType', '==', _.toString(jobType))
+        .where('status', 'in', IN_JOB_STATUSES)
+        .get()
+        .then(snapshot => {
+          const jobs = [];
+          snapshot.forEach(doc => jobs.push({
+            jobId: doc.id,
+            ...doc.data()
+          }));
+          return jobs;
+        });
+    };
+
+    return {
+      [JOB_TYPES.CREATE_TOKEN]: await getOpenJobsSummary(JOB_TYPES.CREATE_TOKEN),
+      [JOB_TYPES.UPDATE_TOKEN]: await getOpenJobsSummary(JOB_TYPES.UPDATE_TOKEN),
+      [JOB_TYPES.TRANSFER_TOKEN]: await getOpenJobsSummary(JOB_TYPES.TRANSFER_TOKEN),
     };
   }
 

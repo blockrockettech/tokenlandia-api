@@ -140,8 +140,6 @@ describe('Metadata Creation Processor', async function () {
             'purchase_date': '2020-02-01',
             'customization_location': 'tokyo',
             'customization_date': '2020-02-06',
-            'material_1': 'a',
-            'material_2': 'b',
           }
         }
       };
