@@ -80,9 +80,11 @@ class MetadataCreationProcessor {
     // Create new blob with updated fields
     const metadata = {
       ...data,
+      type,
       attributes: {
         ...existingAttributes,
-        ...updatedAttributes
+        ...updatedAttributes,
+        type
       }
     };
 
