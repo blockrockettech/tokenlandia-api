@@ -152,7 +152,7 @@ This API can be used to get the status about a specific job which has been previ
 
 `HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/details/${JOB_ID}?key={uuid-key}`
 
-```
+```json
 {
     "jobId": "PXVA3FsAwzPlmvT10QJf",
     "createdDate": 1582292771324,
@@ -176,7 +176,7 @@ This API gives you details on how many jobs are at each stage of the processing 
 
 `HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/summary?key={uuid-key}`
 
-```
+```json
 {
     "CREATE_TOKEN": {
         "numOfJobsForJobType": 153,
@@ -202,6 +202,50 @@ This API gives you details on how many jobs are at each stage of the processing 
         "numOfJobCompleteJobs": 1,
         "numOfTransactionFailedJobs": 0
     }
+}
+```
+
+### Get In Flight Jobs
+
+This API gives you details on jobs which are being processed by the job queue
+
+`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/open/summary?key={uuid-key}`
+
+```json
+{
+    "CREATE_TOKEN": [
+        {
+            "chainId": "4",
+            "context": {
+                "ACCEPTED": {
+                    "artist": "artist",
+                    "artist_assistant": "assistant",
+                    "artist_initials": "AFM",
+                    "brand": "brand",
+                    "coo": "COL",
+                    "description": "token description",
+                    "design": "0003",
+                    "image": "http://preview.tokenlandia.com/wp-content/uploads/2019/11/b8e4d509cb644e254fbc16eb6a53fd48_listingImg_IOznWUjgk6.jpg",
+                    "model": "model",
+                    "name": "tokenlandia test api",
+                    "product_code": "COL-AFM-002-0003",
+                    "product_id": "COL-AFM-002-0003-202006122034",
+                    "purchase_date": "2020-06-12",
+                    "purchase_location": "london",
+                    "series": "002",
+                    "token_id": "202006122034",
+                    "type": "GENERAL_ASSET"
+                }
+            },
+            "createdDate": 1591994056853,
+            "jobId": "2H62ksWAP8rK7yAUlNuI",
+            "jobType": "CREATE_TOKEN",
+            "status": "ACCEPTED",
+            "tokenId": "202006122034"
+        }
+    ],
+    "TRANSFER_TOKEN": [],
+    "UPDATE_TOKEN": []
 }
 ```
 

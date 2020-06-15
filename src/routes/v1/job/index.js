@@ -333,7 +333,7 @@ job.get('/details/:jobId', async function (req, res) {
 job.delete('/cancel', async function (req, res) {
   const {chainId} = req.params;
   const {job_id} = req.body;
-  
+
   const jobDetails = await jobQueue.getJobForId(chainId, job_id);
 
   if (!job_id || !chainId || !jobDetails) {
