@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const axios = require('axios');
 
+const imageUrlValidator = require('../imageUrlValidator');
+
 class InfuraIpfsService {
 
   constructor(ipfsClient) {
@@ -10,8 +12,8 @@ class InfuraIpfsService {
   async uploadImageToIpfs(url) {
     console.log('Uploading image from ULR to IPFS', url);
 
-    // FIXME - change to use common url checker function
-    if (true) {
+    const isUrlValid = await imageUrlValidator(axios, url);
+    if (!isUrlValid) {
       throw new Error("IMAGE_URL_INVALID");
     }
 

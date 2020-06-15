@@ -9,7 +9,7 @@ describe('Infura IPFS test', async function () {
     const client = new InfuraIpfsService();
     let result;
     try {
-      result = await client.uploadImageToIpfs('http://invalid.image');
+      result = await client.uploadImageToIpfs('http://127.0.0.1:3000/invalid');
     } catch (e) {
       e.message.should.equal('IMAGE_URL_INVALID');
     }
