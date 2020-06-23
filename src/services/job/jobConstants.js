@@ -44,6 +44,11 @@ const NEXT_STATES = Object.freeze({
   [JOB_STATUS.JOB_CANCELLED]: [], // No valid transition
 });
 
+const TOKEN_TYPE = Object.freeze({
+  TOKENLANDIA: 'TOKENLANDIA',
+  VIDEO_LATINO: 'VIDEO_LATINO',
+});
+
 const canCancelJob = (jobStatus) => _.includes([JOB_STATUS.ACCEPTED], jobStatus);
 
 const canMoveToStatus = (from, to) => _.includes(NEXT_STATES[from], to);
@@ -51,6 +56,7 @@ const canMoveToStatus = (from, to) => _.includes(NEXT_STATES[from], to);
 module.exports = {
   JOB_TYPES,
   JOB_STATUS,
+  TOKEN_TYPE,
   canCancelJob,
   canMoveToStatus
 };
