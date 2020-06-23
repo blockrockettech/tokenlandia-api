@@ -1,7 +1,7 @@
 const chai = require('chai');
 chai.should();
 
-const TokenLandiaTruffleConf = require('../../data/truffleconf/token/Tokenlandia');
+const TokenLandiaTruffleConf = require('../../../src/truffleconf/token/Tokenlandia');
 const {getContractAddressFromTruffleConf} = require('../../../src/utils/truffle');
 
 describe('truffle utils tests', () => {

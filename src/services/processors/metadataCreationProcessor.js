@@ -28,6 +28,12 @@ class MetadataCreationProcessor {
       imageHash = await this.ipfsService.uploadImageToIpfs(image);
     } catch (e) {
       console.error(`Failed to upload image to IPFS for job ID [${jobId}] chain ID [${chainId}] due to`, e);
+
+      if (e.message === 'IMAGE_URL_INVALID') {
+        console.log('Failing job as image URL invalid');
+        return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_FAILED, e.message);
+      }
+
       return job;
     }
 
@@ -80,9 +86,11 @@ class MetadataCreationProcessor {
     // Create new blob with updated fields
     const metadata = {
       ...data,
+      type,
       attributes: {
         ...existingAttributes,
-        ...updatedAttributes
+        ...updatedAttributes,
+        type
       }
     };
 

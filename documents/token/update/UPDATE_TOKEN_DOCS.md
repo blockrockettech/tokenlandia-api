@@ -8,7 +8,7 @@ This API allows you to update certain fields within a tokens metadata
 
 Sample request body
 
-```
+```json
 {
     "token_id": 1,
     "purchase_location": "manchester",
@@ -27,7 +27,7 @@ Sample request body
 
 Sample successful job created `JSON` response
 
-```
+```json
 {
     "jobId": "AoHZeOquKMZe9SFGnquD",
     "chainId": "4",
@@ -48,7 +48,7 @@ Sample successful job created `JSON` response
 --------------------
 
 * Failure - Invalid Token Data - `HTTP` status `400`
-```
+```json
 {
     "error": "Invalid job data",
     "details": [
@@ -58,7 +58,7 @@ Sample successful job created `JSON` response
 ```
 
 * Failure - Token does not exist - `HTTP` status `400`
-```
+```json
 {
     "error": "Token does not exist"
 }

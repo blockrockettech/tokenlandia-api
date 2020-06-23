@@ -37,7 +37,7 @@ module.exports = Joi.object({
 
   description: Joi.string().min(1).max(300).required(),
 
-  image: Joi.string().min(1).max(125).uri().required(),
+  image: Joi.string().min(1).uri().required(),
 
   artist: Joi.string().min(1).max(125).optional(),
 

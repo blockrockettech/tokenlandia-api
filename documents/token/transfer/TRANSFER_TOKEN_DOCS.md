@@ -10,7 +10,7 @@ Submit a new token creation job e.g.
 
 Sample request body
 
-```
+```json
 {
     'token_id': ${tokenId},
     'recipient': '0x9474CE90A96Ca3907428F22F202F72C55559df4a'
@@ -21,7 +21,7 @@ Sample request body
 
 Sample successful job created `JSON` response
 
-```
+```json
 {
     "jobId": "AoHZeOquKMZe9SFGnquD",
     "chainId": "4",
@@ -42,7 +42,7 @@ Sample successful job created `JSON` response
 --------------------
 
 * Failure - Invalid Token Data - `HTTP` status `400`
-```
+```json
 {
     "error": "Invalid job data",
     "details": [
@@ -52,21 +52,21 @@ Sample successful job created `JSON` response
 ```
 
 * Failure - Token not help in escrow - `HTTP` status `400`
-```
+```json
 {
     "error": "`Rejecting incoming job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`"
 }
 ```
 
 * Failure - Invalid recipient provided - `HTTP` status `400`
-```
+```json
 {
     "error": "Rejecting incoming job - recipient [${recipient}] is not a valid web3 address"
 }
 ```
 
 * Failure - Duplicate Job - `HTTP` status `400`
-```
+```json
 {
     "error": "Duplicate Job found",
     "existingJob": {
