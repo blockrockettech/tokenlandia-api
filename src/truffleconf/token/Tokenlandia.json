@@ -12724,8 +12724,7 @@
             }
           ],
           "name": "Approval",
-          "type": "event",
-          "signature": "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+          "type": "event"
         },
         "0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31": {
           "anonymous": false,
@@ -12750,8 +12749,7 @@
             }
           ],
           "name": "ApprovalForAll",
-          "type": "event",
-          "signature": "0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31"
+          "type": "event"
         },
         "0xb9f84b8e65164b14439ae3620df0a4d8786d896996c0282b683f9d8c08f046e8": {
           "anonymous": false,
@@ -12770,8 +12768,7 @@
             }
           ],
           "name": "RelayHubChanged",
-          "type": "event",
-          "signature": "0xb9f84b8e65164b14439ae3620df0a4d8786d896996c0282b683f9d8c08f046e8"
+          "type": "event"
         },
         "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
           "anonymous": false,
@@ -12796,8 +12793,7 @@
             }
           ],
           "name": "Transfer",
-          "type": "event",
-          "signature": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+          "type": "event"
         },
         "0x22380c05984257a1cb900161c713dd71d39e74820f1aea43bd3f1bdd20961299": {
           "anonymous": false,
@@ -12810,8 +12806,7 @@
             }
           ],
           "name": "WhitelistAdminAdded",
-          "type": "event",
-          "signature": "0x22380c05984257a1cb900161c713dd71d39e74820f1aea43bd3f1bdd20961299"
+          "type": "event"
         },
         "0x0a8eb35e5ca14b3d6f28e4abf2f128dbab231a58b56e89beb5d636115001e165": {
           "anonymous": false,
@@ -12824,8 +12819,7 @@
             }
           ],
           "name": "WhitelistAdminRemoved",
-          "type": "event",
-          "signature": "0x0a8eb35e5ca14b3d6f28e4abf2f128dbab231a58b56e89beb5d636115001e165"
+          "type": "event"
         },
         "0xee1504a83b6d4a361f4c1dc78ab59bfa30d6a3b6612c403e86bb01ef2984295f": {
           "anonymous": false,
@@ -12838,8 +12832,7 @@
             }
           ],
           "name": "WhitelistedAdded",
-          "type": "event",
-          "signature": "0xee1504a83b6d4a361f4c1dc78ab59bfa30d6a3b6612c403e86bb01ef2984295f"
+          "type": "event"
         },
         "0x270d9b30cf5b0793bbfd54c9d5b94aeb49462b8148399000265144a8722da6b6": {
           "anonymous": false,
@@ -12852,8 +12845,7 @@
             }
           ],
           "name": "WhitelistedRemoved",
-          "type": "event",
-          "signature": "0x270d9b30cf5b0793bbfd54c9d5b94aeb49462b8148399000265144a8722da6b6"
+          "type": "event"
         }
       },
       "links": {},
@@ -12885,8 +12877,7 @@
             }
           ],
           "name": "Approval",
-          "type": "event",
-          "signature": "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+          "type": "event"
         },
         "0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31": {
           "anonymous": false,
@@ -12911,8 +12902,7 @@
             }
           ],
           "name": "ApprovalForAll",
-          "type": "event",
-          "signature": "0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31"
+          "type": "event"
         },
         "0xb9f84b8e65164b14439ae3620df0a4d8786d896996c0282b683f9d8c08f046e8": {
           "anonymous": false,
@@ -12931,8 +12921,7 @@
             }
           ],
           "name": "RelayHubChanged",
-          "type": "event",
-          "signature": "0xb9f84b8e65164b14439ae3620df0a4d8786d896996c0282b683f9d8c08f046e8"
+          "type": "event"
         },
         "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
           "anonymous": false,
@@ -12957,8 +12946,7 @@
             }
           ],
           "name": "Transfer",
-          "type": "event",
-          "signature": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+          "type": "event"
         },
         "0x22380c05984257a1cb900161c713dd71d39e74820f1aea43bd3f1bdd20961299": {
           "anonymous": false,
@@ -12971,8 +12959,7 @@
             }
           ],
           "name": "WhitelistAdminAdded",
-          "type": "event",
-          "signature": "0x22380c05984257a1cb900161c713dd71d39e74820f1aea43bd3f1bdd20961299"
+          "type": "event"
         },
         "0x0a8eb35e5ca14b3d6f28e4abf2f128dbab231a58b56e89beb5d636115001e165": {
           "anonymous": false,
@@ -12985,8 +12972,7 @@
             }
           ],
           "name": "WhitelistAdminRemoved",
-          "type": "event",
-          "signature": "0x0a8eb35e5ca14b3d6f28e4abf2f128dbab231a58b56e89beb5d636115001e165"
+          "type": "event"
         },
         "0xee1504a83b6d4a361f4c1dc78ab59bfa30d6a3b6612c403e86bb01ef2984295f": {
           "anonymous": false,
@@ -12999,8 +12985,7 @@
             }
           ],
           "name": "WhitelistedAdded",
-          "type": "event",
-          "signature": "0xee1504a83b6d4a361f4c1dc78ab59bfa30d6a3b6612c403e86bb01ef2984295f"
+          "type": "event"
         },
         "0x270d9b30cf5b0793bbfd54c9d5b94aeb49462b8148399000265144a8722da6b6": {
           "anonymous": false,
@@ -13013,17 +12998,16 @@
             }
           ],
           "name": "WhitelistedRemoved",
-          "type": "event",
-          "signature": "0x270d9b30cf5b0793bbfd54c9d5b94aeb49462b8148399000265144a8722da6b6"
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0xD2d84c15Eda5E93aa15f9DDCAA029eaa3f524aDa",
-      "transactionHash": "0x16185318106c4c71ef2a090b1401a5e237c00ee9a510bde1b27472115a463938"
+      "address": "0x1507264696c07500CB4def01C682c406e97C8482",
+      "transactionHash": "0x770991b24d7f12a68b3e79ffc5c848e2c4aa2f9e5260914e30ba50653fdccf28"
     }
   },
-  "schemaVersion": "3.0.19",
-  "updatedAt": "2020-01-17T12:02:55.902Z",
+  "schemaVersion": "3.1.0",
+  "updatedAt": "2020-06-09T14:36:35.708Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {

@@ -209,7 +209,7 @@ job.get('/process/preprocess', async function (req, res) {
       case JOB_TYPES.CREATE_TOKEN:
         return metadataCreationProcessor.pushCreateTokenJob(job);
       case JOB_TYPES.UPDATE_TOKEN:
-        return metadataCreationProcessor.pushUpdateTokenJob(job);
+        return metadataCreationProcessor.pushUpdateTokenJob(job, newTokenLandiaService(chainId));
       case JOB_TYPES.TRANSFER_TOKEN:
         // Skip metadata creation for these job types
         return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {});

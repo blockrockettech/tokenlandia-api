@@ -68,7 +68,7 @@ class MetadataCreationProcessor {
     return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext);
   }
 
-  async pushUpdateTokenJob(job) {
+  async pushUpdateTokenJob(job, tokenService) {
 
     const {context, chainId, jobId} = job;
     console.log(`MetadataCreationProcessor - update token job [${jobId}] on chain [${chainId}]`);
@@ -76,8 +76,7 @@ class MetadataCreationProcessor {
     const acceptedJobContext = context[JOB_STATUS.ACCEPTED];
     const {token_id, type, ...updatedAttributes} = acceptedJobContext;
 
-    const tokenLandiaService = new TokenLandia(chainId);
-    const tokenURI = await tokenLandiaService.tokenURI(token_id);
+    const tokenURI = await tokenService.tokenURI(token_id);
 
     const {data} = await axios.get(tokenURI);
 

@@ -126,6 +126,12 @@ describe('Metadata Creation Processor', async function () {
         pushJsonToIpfs: sinon.stub().onCall(0).resolves('QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9')
       };
 
+      const tokenlandiaService = {
+        tokenURI() {
+          return 'https://ipfs.infura.io/ipfs/QmPPi7piLxpzhcPUX6LSSEBRttS5VSn2AgMAiUtjn5Run9';
+        }
+      };
+
       const chainId = 4;
       const jobId = 'abc-123-def-456';
 
@@ -146,7 +152,7 @@ describe('Metadata Creation Processor', async function () {
 
       const processor = new MetadataCreationProcessor(jobQueue, ipfsService);
 
-      const result = await processor.pushUpdateTokenJob(job);
+      const result = await processor.pushUpdateTokenJob(job, tokenlandiaService);
       result.should.be.deep.equal('success');
 
       sinon.assert.calledWith(ipfsService.pushJsonToIpfs, {
