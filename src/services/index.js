@@ -4,6 +4,7 @@ const EscrowContract = require('./contract/escrow');
 const JobQueue = require('./job/jobQueue');
 const jobConstants = require('./job/jobConstants');
 const tokenlandiaJobValidator = require('./job/validation/tokenlandia');
+const videoLatinoJobValidator = require('./job/validation/videoLatino');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
@@ -32,6 +33,7 @@ module.exports = {
   newEscrowService,
   jobQueue,
   tokenlandiaJobValidator,
+  videoLatinoJobValidator,
   jobConstants,
   chainUtils,
   ipfsService,

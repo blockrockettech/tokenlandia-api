@@ -6,18 +6,20 @@ const job = require('express').Router({mergeParams: true});
 const {
   jobQueue,
   tokenlandiaJobValidator,
+  videoLatinoJobValidator,
   jobConstants,
   newTokenLandiaService,
+  newVideoLatinoService,
   newEscrowService,
   transactionProcessor,
   metadataCreationProcessor,
   jobCompletionProcessor
 } = require('../../../services/index');
 
-const {JOB_STATUS, JOB_TYPES, canCancelJob} = jobConstants;
+const {JOB_STATUS, JOB_TYPES, TOKEN_TYPE, canCancelJob} = jobConstants;
 
 /**
- * Submit a new Job to create a new token
+ * Submit a new Job to create a new Tokenlandia token
  */
 job.post('/submit/createtoken/general', async function (req, res) {
 
@@ -25,8 +27,6 @@ job.post('/submit/createtoken/general', async function (req, res) {
   const rawJobData = req.body;
 
   const {valid, errors} = await tokenlandiaJobValidator.isValidCreateTokenJob(rawJobData);
-  console.log(`Incoming job found to be valid [${valid}] for chainId [${chainId}]`);
-
   if (!valid) {
     console.error(`Errors found in job`, errors);
     return res.status(400).json({
@@ -34,6 +34,8 @@ job.post('/submit/createtoken/general', async function (req, res) {
       details: errors
     });
   }
+
+  console.log(`Incoming tokenlandia create job found to be valid for chainId [${chainId}]`);
 
   const {token_id} = rawJobData;
 
@@ -77,7 +79,67 @@ job.post('/submit/createtoken/general', async function (req, res) {
 });
 
 /**
- * Submit a new Job to update a new token
+ * Submit a new Job to create a new Video Latino token
+ */
+job.post('/submit/createtoken/videolatino', async function (req, res) {
+
+  const {chainId} = req.params;
+  const rawJobData = req.body;
+
+  const {valid, errors} = await videoLatinoJobValidator.isValidCreateTokenJob(rawJobData);
+  if (!valid) {
+    console.error(`Errors found in job`, errors);
+    return res.status(400).json({
+      error: `Invalid job data`,
+      details: errors
+    });
+  }
+
+  console.log(`Incoming videolatino create job found to be valid for chainId [${chainId}]`);
+
+  const {token_id} = rawJobData;
+
+  const videoLatinoService = newVideoLatinoService(chainId);
+  const tokenExists = await videoLatinoService.tokenExists(token_id);
+  if (tokenExists) {
+    console.error(`Incoming videolatino create job - token exists [${tokenExists}] for tokenId [${token_id}] and chainId [${chainId}]`);
+    return res.status(400).json({
+      error: `Token already created`,
+    });
+  }
+
+  const existingJob = await jobQueue.getJobsForTokenId(chainId, token_id, JOB_TYPES.CREATE_TOKEN, TOKEN_TYPE.VIDEO_LATINO);
+  if (existingJob) {
+    console.error(`Incoming videolatino create job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.CREATE_TOKEN}]`);
+    return res.status(400).json({
+      error: `Duplicate Job found`,
+      existingJob
+    });
+  }
+
+  const {coo, celebrity_initials} = rawJobData;
+  const product_code = `${coo}-${celebrity_initials}`;
+
+  // Build full job data from composite properties
+  const jobData = {
+    ...rawJobData,
+    type: 'VIDEO_LATINO',
+    product_id: `${product_code}-${token_id}`, // product ID == video ID i.e unique identifier
+    product_code
+  };
+
+  // accept job
+  const jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.CREATE_TOKEN, jobData, TOKEN_TYPE.VIDEO_LATINO);
+  console.log(`Video latino job [${JOB_TYPES.CREATE_TOKEN}] created tokenId [${token_id}] and chainId [${chainId}]`);
+
+  // return job details
+  return res
+      .status(202)
+      .json(jobDetails);
+});
+
+/**
+ * Submit a new Job to update a new Tokenlandia token
  */
 job.post('/submit/updatetoken/general', async function (req, res) {
 
@@ -128,7 +190,7 @@ job.post('/submit/updatetoken/general', async function (req, res) {
 });
 
 /**
- * Submit a new Job to transfer a token
+ * Submit a new Job to transfer a Tokenlandia token
  */
 job.post('/submit/transfer', async function (req, res) {
   const {chainId} = req.params;
