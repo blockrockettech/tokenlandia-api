@@ -38,6 +38,6 @@ module.exports = {
   chainUtils,
   ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
-  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, newTokenLandiaService(chainId), newEscrowService(chainId), gasStation),
+  transactionProcessor: (chainId, tokenService) => new TransactionProcessor(jobQueue, tokenService, newEscrowService(chainId), gasStation),
   jobCompletionProcessor: (chainId) => new JobCompletionProcessor(getHttpProvider(chainId), jobQueue),
 };

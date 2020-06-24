@@ -89,7 +89,7 @@ class JobQueue {
       .then((snapshot) => {
 
         if (snapshot.empty) {
-          console.log('No jobs to process for chain [${chainId}]');
+          console.log(`No jobs to process for chain [${chainId}]`);
           return null;
         }
 

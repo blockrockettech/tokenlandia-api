@@ -292,7 +292,7 @@ job.get('/process/preprocess', async function (req, res) {
   const workingJobs = _.map(jobs, (job) => {
     switch (job.jobType) {
       case JOB_TYPES.CREATE_TOKEN:
-        return metadataCreationProcessor.pushCreateTokenJob(job, job.tokenType);
+        return metadataCreationProcessor.pushCreateTokenJob(job);
       case JOB_TYPES.UPDATE_TOKEN:
         return metadataCreationProcessor.pushUpdateTokenJob(job, newTokenLandiaService(chainId));
       case JOB_TYPES.TRANSFER_TOKEN:
@@ -327,22 +327,65 @@ job.get('/process/preprocess', async function (req, res) {
 job.get('/process/transaction', async function (req, res) {
   const {chainId} = req.params;
 
-  const inflightJob = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
-  if (inflightJob) {
-    const mayBeCompleteJob = await jobCompletionProcessor(chainId).processJob(inflightJob);
+  // Clear any inflight jobs
+  const inflightTokenlandiaJob = await jobQueue.getNextJobForProcessing(
+      chainId,
+      [JOB_STATUS.TRANSACTION_SENT],
+      1,
+      TOKEN_TYPE.TOKENLANDIA
+  );
+
+  if (inflightTokenlandiaJob) {
+    const mayBeCompleteJob = await jobCompletionProcessor(chainId).processJob(inflightTokenlandiaJob);
 
     if (mayBeCompleteJob.status === JOB_STATUS.TRANSACTION_SENT) {
       return res
         .status(200)
         .json({
-          msg: `Inflight transaction found, waiting for job [${inflightJob.jobId}] to complete`,
+          msg: `Inflight transaction found, waiting for job [${inflightTokenlandiaJob.jobId}] to complete`,
         });
     }
   }
 
-  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.PRE_PROCESSING_COMPLETE]);
+  const inflightVideoLatinoJob = await jobQueue.getNextJobForProcessing(
+      chainId,
+      [JOB_STATUS.TRANSACTION_SENT],
+      1,
+      TOKEN_TYPE.VIDEO_LATINO
+  );
+
+  if (inflightVideoLatinoJob) {
+    const mayBeCompleteJob = await jobCompletionProcessor(chainId).processJob(inflightVideoLatinoJob);
+
+    if (mayBeCompleteJob.status === JOB_STATUS.TRANSACTION_SENT) {
+      return res
+          .status(200)
+          .json({
+            msg: `Inflight transaction found, waiting for job [${inflightVideoLatinoJob.jobId}] to complete`,
+          });
+    }
+  }
+
+  // If we get to here, try to pick a job that requires a transaction for both token types
+  let job = await jobQueue.getNextJobForProcessing(
+      chainId,
+      [JOB_STATUS.PRE_PROCESSING_COMPLETE],
+      1,
+      TOKEN_TYPE.TOKENLANDIA
+  );
 
   if (!job) {
+    // no tokenlandia jobs found, try finding a video latino job
+    job = await jobQueue.getNextJobForProcessing(
+        chainId,
+        [JOB_STATUS.PRE_PROCESSING_COMPLETE],
+        1,
+        TOKEN_TYPE.VIDEO_LATINO
+    );
+  }
+
+  if (!job) {
+    // no tokenlandia or video latino jobs, report this back to the caller
     return res
       .status(200)
       .json({
@@ -350,7 +393,14 @@ job.get('/process/transaction', async function (req, res) {
       });
   }
 
-  const processedJob = await transactionProcessor(chainId).processJob(job);
+  const tokenService =
+      job.tokenType === TOKEN_TYPE.TOKENLANDIA
+      ?
+      newTokenLandiaService(chainId)
+      :
+      newVideoLatinoService(chainId);
+
+  const processedJob = await transactionProcessor(chainId, tokenService).processJob(job);
 
   return res
     .status(200)
@@ -369,9 +419,22 @@ job.get('/process/transaction', async function (req, res) {
  */
 job.get('/process/completions', async function (req, res) {
   const {chainId} = req.params;
-  const job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
+
+  // check to see if theres a tokenlandia job that needs completing
+  let job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
 
   if (!job) {
+    // no tokenlandia jobs found, try finding a video latino job
+    job = await jobQueue.getNextJobForProcessing(
+        chainId,
+        [JOB_STATUS.TRANSACTION_SENT],
+        1,
+        TOKEN_TYPE.VIDEO_LATINO
+    );
+  }
+
+  if (!job) {
+    // no tokenlandia or video latino jobs, report this back to the caller
     return res
       .status(200)
       .json({
@@ -393,9 +456,9 @@ job.get('/process/completions', async function (req, res) {
 });
 
 /**
- * Get Job Details for JobId
+ * Get Job Details for JobId and Tokenlandia Token Type
  */
-job.get('/details/:jobId', async function (req, res) {
+job.get('/details/:jobId/general', async function (req, res) {
   const {chainId, jobId} = req.params;
   const jobDetails = await jobQueue.getJobForId(chainId, jobId);
 
@@ -413,7 +476,27 @@ job.get('/details/:jobId', async function (req, res) {
 });
 
 /**
- * Delete a pending Job
+ * Get Job Details for JobId and Video Latino Token Type
+ */
+job.get('/details/:jobId/videolatino', async function (req, res) {
+  const {chainId, jobId} = req.params;
+  const jobDetails = await jobQueue.getJobForId(chainId, jobId, TOKEN_TYPE.VIDEO_LATINO);
+
+  if (!jobDetails) {
+    return res
+        .status(400)
+        .json({
+          error: `Unable to find job [${jobId}] on chain [${chainId}]`
+        });
+  }
+
+  return res
+      .status(200)
+      .json(jobDetails);
+});
+
+/**
+ * Delete a pending tokenlandia Job
  */
 job.delete('/cancel', async function (req, res) {
   const {chainId} = req.params;

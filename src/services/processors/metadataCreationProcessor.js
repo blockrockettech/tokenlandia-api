@@ -14,7 +14,7 @@ class MetadataCreationProcessor {
     this.ipfsService = ipfsService;
   }
 
-  async pushCreateTokenJob(job, tokenType = TOKEN_TYPE.TOKENLANDIA) {
+  async pushCreateTokenJob(job) {
 
     const {context, chainId, jobId} = job;
     console.log(`MetadataCreationProcessor - create token job [${jobId}] on chain [${chainId}]`);
@@ -27,11 +27,11 @@ class MetadataCreationProcessor {
     try {
       imageHash = await this.ipfsService.uploadImageToIpfs(image);
     } catch (e) {
-      console.error(`Failed to upload image to IPFS for job ID [${jobId}], chain ID [${chainId}], token type [${tokenType}] due to`, e);
+      console.error(`Failed to upload image to IPFS for job ID [${jobId}], chain ID [${chainId}], token type [${job.tokenType}] due to`, e);
 
       if (e.message === 'IMAGE_URL_INVALID') {
         console.log('Failing job as image URL invalid');
-        return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_FAILED, e.message, tokenType);
+        return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_FAILED, e.message, job.tokenType);
       }
 
       return job;
@@ -65,7 +65,7 @@ class MetadataCreationProcessor {
       metadata
     };
 
-    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext, tokenType);
+    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext, job.tokenType);
   }
 
   async pushUpdateTokenJob(job, tokenService) {
