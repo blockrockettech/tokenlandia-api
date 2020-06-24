@@ -1,37 +1,17 @@
-const _ = require('lodash');
 const axios = require('axios');
 
-const imageUrlValidator = require('../../../imageUrlValidator');
+const {validateData} = require('../schemaBasedValidator');
+
+const urlValidator = require('../../../urlValidator');
 
 const CREATE_TOKEN_SCHEMA = require('./schema/createTokenSchema');
 const UPDATE_TOKEN_FIELDS_SCHEMA = require('./schema/updateTokenFieldsSchema');
 const TRANSFER_TOKEN_FIELDS_SCHEMA = require('./schema/transferTokenFieldsSchema');
 
-const validateData = async (schema, data) => {
-  const {error} = await schema.validate(data, {
-    presence: 'required', // prevent null/empty
-    abortEarly: false // validates all fields
-  });
-
-  if (error) {
-
-    const errors = _.map(error.details, (details) => {
-      const {message, type} = details;
-      return {message, type};
-    });
-
-    return {
-      valid: false,
-      errors
-    };
-  }
-  return {valid: true};
-};
-
 module.exports = {
   isValidCreateTokenJob: async (jobData) => {
     const isDataValid = await validateData(CREATE_TOKEN_SCHEMA, jobData);
-    const isUrlValid = await imageUrlValidator(axios, jobData.image);
+    const isUrlValid = await urlValidator(axios, jobData.image);
 
     const errors = isDataValid.errors || [];
     if (!isUrlValid) {
