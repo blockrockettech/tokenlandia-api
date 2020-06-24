@@ -256,20 +256,42 @@ job.post('/submit/transfer', async function (req, res) {
  */
 job.get('/process/preprocess', async function (req, res) {
   const {chainId} = req.params;
-  const jobs = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.ACCEPTED], 2);
 
-  if (_.size(jobs) === 0) {
-    return res
-      .status(202)
-      .json({
-        msg: `No jobs found for processing for chain ID [${chainId}]`
-      });
+  // Try to get at least 1 job for both token types i.e. tokenlandia and video latino
+  const tokenlandiaJobs = await jobQueue.getNextJobForProcessing(
+      chainId,
+      [JOB_STATUS.ACCEPTED],
+      1,
+      TOKEN_TYPE.TOKENLANDIA
+  );
+
+  let nextBatchSize = 1;
+  if (_.size(tokenlandiaJobs) === 0) {
+    // batch size request for video latino tokens should be upped to 2 as no tokenlandia jobs found
+    nextBatchSize = 2;
   }
+
+  const videoLatinoJobs = await jobQueue.getNextJobForProcessing(
+      chainId,
+      [JOB_STATUS.ACCEPTED],
+      nextBatchSize,
+      TOKEN_TYPE.VIDEO_LATINO
+  );
+
+  if (_.size(videoLatinoJobs) === 0) {
+    return res
+        .status(202)
+        .json({
+          msg: `No jobs found for processing for chain ID [${chainId}]`
+        });
+  }
+
+  const jobs = _.concat(tokenlandiaJobs, videoLatinoJobs);
 
   const workingJobs = _.map(jobs, (job) => {
     switch (job.jobType) {
       case JOB_TYPES.CREATE_TOKEN:
-        return metadataCreationProcessor.pushCreateTokenJob(job);
+        return metadataCreationProcessor.pushCreateTokenJob(job, job.tokenType);
       case JOB_TYPES.UPDATE_TOKEN:
         return metadataCreationProcessor.pushUpdateTokenJob(job, newTokenLandiaService(chainId));
       case JOB_TYPES.TRANSFER_TOKEN:
