@@ -353,6 +353,45 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Job Details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/details/:jobId/general?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"details",
+										":jobId",
+										"general"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										},
+										{
+											"key": "jobId",
+											"value": "VkQPc2EJXsHHyas06T4r"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -411,48 +450,49 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Job Details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/details/:jobId/videolatino?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"details",
+										":jobId",
+										"videolatino"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										},
+										{
+											"key": "jobId",
+											"value": "VkQPc2EJXsHHyas06T4r"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
-				},
-				{
-					"name": "Get Job Details",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/v1/network/:chainId/job/details/:jobId?key={{api_key}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"v1",
-								"network",
-								":chainId",
-								"job",
-								"details",
-								":jobId"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "chainId",
-									"value": "4"
-								},
-								{
-									"key": "jobId",
-									"value": "H7iQMwVFKoW63Iw3uHEr"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
