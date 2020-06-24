@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "342b01fd-116a-4d60-8298-45a15b7737aa",
+		"_postman_id": "1270e527-7674-4b11-a58c-b1fcde3fb6b8",
 		"name": "Token Landia",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -118,206 +118,303 @@
 			"name": "Job Management",
 			"item": [
 				{
-					"name": "Submit Create Token Job",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"token_id\": 113,\n    \"coo\": \"USA\",\n    \"artist_initials\": \"RSA\",\n    \"series\": \"002\",\n    \"design\": \"0003\",\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"artist\": \"artist\",\n    \"artist_assistant\": \"assistant\",\n    \"brand\": \"brand\",\n    \"model\": \"model\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Tokenlandia",
+					"item": [
+						{
+							"name": "Submit Create Token Job",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token_id\": 113,\n    \"coo\": \"USA\",\n    \"artist_initials\": \"RSA\",\n    \"series\": \"002\",\n    \"design\": \"0003\",\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"artist\": \"artist\",\n    \"artist_assistant\": \"assistant\",\n    \"brand\": \"brand\",\n    \"model\": \"model\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/submit/createtoken/general?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"submit",
+										"createtoken",
+										"general"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{host}}/v1/network/:chainId/job/submit/createtoken/general?key={{api_key}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"v1",
-								"network",
-								":chainId",
-								"job",
-								"submit",
-								"createtoken",
-								"general"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
+						{
+							"name": "Delete pending job",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"job_id\": \"2H62ksWAP8rK7yAUlNuI\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/cancel?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"cancel"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
 								}
-							],
-							"variable": [
-								{
-									"key": "chainId",
-									"value": "4"
+							},
+							"response": []
+						},
+						{
+							"name": "Submit Update Token Job",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token_id\": 1,\n    \"purchase_location\": \"manchester\",\n    \"purchase_date\": \"2020-03-11\",\n    \"customization_location\": \"japan\",\n    \"customization_date\": \"2020-03-11\",\n    \"material_1\": \"a1\",\n    \"material_2\": \"b2\",\n    \"material_3\": \"c3\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/submit/updatetoken/general?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"submit",
+										"updatetoken",
+										"general"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
 								}
-							]
+							},
+							"response": []
+						},
+						{
+							"name": "Submit Transfer Token Job",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token_id\": 549,\n    \"recipient\": \"0x9474CE90A96Ca3907428F22F202F72C55559df4a\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/submit/transfer?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"submit",
+										"transfer"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Queue Summary",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/summary?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"summary"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Delete pending job",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"job_id\": \"2H62ksWAP8rK7yAUlNuI\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Videolatino",
+					"item": [
+						{
+							"name": "Submit Create Token Job",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token_id\": 1,\n    \"coo\": \"USA\",\n    \"celebrity_initials\": \"RSA\",\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"video_link\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"video_category\": \"PubliVideos\",\n    \"video_language\": \"EN\",\n    \"celebrity_name\": \"Shakira\",\n    \"creation_location\": \"London\",\n    \"creation_date\": \"2020-06-24\",\n    \"business_brand\": \"amazing records\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/submit/createtoken/videolatino?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"submit",
+										"createtoken",
+										"videolatino"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
 								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/v1/network/:chainId/job/cancel?key={{api_key}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"v1",
-								"network",
-								":chainId",
-								"job",
-								"cancel"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "chainId",
-									"value": "4",
-									"type": "string"
-								}
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "Submit Update Token Job",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"token_id\": 1,\n    \"purchase_location\": \"manchester\",\n    \"purchase_date\": \"2020-03-11\",\n    \"customization_location\": \"japan\",\n    \"customization_date\": \"2020-03-11\",\n    \"material_1\": \"a1\",\n    \"material_2\": \"b2\",\n    \"material_3\": \"c3\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/v1/network/:chainId/job/submit/updatetoken/general?key={{api_key}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"v1",
-								"network",
-								":chainId",
-								"job",
-								"submit",
-								"updatetoken",
-								"general"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "chainId",
-									"value": "4"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Submit Transfer Token Job",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"token_id\": 549,\n    \"recipient\": \"0x9474CE90A96Ca3907428F22F202F72C55559df4a\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/v1/network/:chainId/job/submit/transfer?key={{api_key}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"v1",
-								"network",
-								":chainId",
-								"job",
-								"submit",
-								"transfer"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "chainId",
-									"value": "4"
-								}
-							]
-						}
-					},
-					"response": []
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
 				},
 				{
 					"name": "Get Job Details",
@@ -356,45 +453,12 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Get Queue Summary",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/v1/network/:chainId/job/summary?key={{api_key}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"v1",
-								"network",
-								":chainId",
-								"job",
-								"summary"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "chainId",
-									"value": "4"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Job Management Copy",
+			"name": "Job Management (old)",
 			"item": [
 				{
 					"name": "Submit Create Token Job",
