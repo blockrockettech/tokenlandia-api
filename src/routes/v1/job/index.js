@@ -286,7 +286,8 @@ job.get('/process/preprocess', async function (req, res) {
         });
   }
 
-  const jobs = _.concat(tokenlandiaJobs, videoLatinoJobs);
+  let jobs = _.concat(tokenlandiaJobs, videoLatinoJobs);
+  jobs = _.filter(jobs, job => job !== null);
 
   const workingJobs = _.map(jobs, (job) => {
     switch (job.jobType) {

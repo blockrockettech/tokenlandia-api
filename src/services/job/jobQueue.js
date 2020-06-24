@@ -79,7 +79,7 @@ class JobQueue {
   }
 
   async getNextJobForProcessing(chainId, statuses, limit = 1, tokenType = TOKEN_TYPE.TOKENLANDIA) {
-    console.log(`Get next job for processing for chain [${chainId}]`);
+    console.log(`Get next ${tokenType} job for processing for chain [${chainId}]`);
 
     return this.getJobsCollectionRef(tokenType, chainId)
       .where('status', 'in', statuses)
@@ -108,6 +108,7 @@ class JobQueue {
           jobId: doc.id,
           ...doc.data()
         }));
+
         return jobs;
       });
   }
