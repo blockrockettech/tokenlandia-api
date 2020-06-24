@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {jobValidator} = require('../../src/services');
+const {tokenlandiaJobValidator} = require('../../src/services');
 
 describe('Job validation - Update Token', function () {
 
@@ -14,7 +14,7 @@ describe('Job validation - Update Token', function () {
   };
 
   it('should fail if empty', async function () {
-    const results = await jobValidator.isValidUpdateTokenJob({});
+    const results = await tokenlandiaJobValidator.isValidUpdateTokenJob({});
     results.should.be.deep.equal({
       valid: false,
       errors: [
@@ -29,7 +29,7 @@ describe('Job validation - Update Token', function () {
   });
 
   it('should fail if with unknown', async function () {
-    const results = await jobValidator.isValidUpdateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidUpdateTokenJob({
       ...validPayload,
       unknown_field: 'abc'
     });
@@ -42,14 +42,14 @@ describe('Job validation - Update Token', function () {
   });
 
   it('should pass', async function () {
-    const results = await jobValidator.isValidUpdateTokenJob(validPayload);
+    const results = await tokenlandiaJobValidator.isValidUpdateTokenJob(validPayload);
     results.should.be.deep.equal({
       valid: true
     });
   });
 
   it('should fail if token_id is not a number', async function () {
-    const results = await jobValidator.isValidUpdateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidUpdateTokenJob({
       ...validPayload,
       'token_id': 'abc',
     });

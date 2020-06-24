@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {jobValidator} = require('../../src/services');
+const {tokenlandiaJobValidator} = require('../../src/services');
 
 describe('Job validation - Create Token', function () {
 
@@ -25,7 +25,7 @@ describe('Job validation - Create Token', function () {
   };
 
   it('should fail if empty', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({});
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob({});
     results.should.be.deep.equal({
       valid: false,
       errors: [
@@ -44,7 +44,7 @@ describe('Job validation - Create Token', function () {
   });
 
   it('should fail if token ID is less than 1', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
       ...validPayload,
       'token_id': 0,
     });
@@ -57,7 +57,7 @@ describe('Job validation - Create Token', function () {
   });
 
   it('should fail if with unknown', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
       ...validPayload,
       unknown_field: 'abc'
     });
@@ -70,7 +70,7 @@ describe('Job validation - Create Token', function () {
   });
 
   it('should fail for invalid country code', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
       ...validPayload,
       'coo': 'AAA',
     });
@@ -83,7 +83,7 @@ describe('Job validation - Create Token', function () {
   });
 
   it('should fail if token_id is not a number', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
       ...validPayload,
       'token_id': 'abc',
     });
@@ -96,7 +96,7 @@ describe('Job validation - Create Token', function () {
   });
 
   it('should allow creation without 5 optional fields', async function () {
-    const results = await jobValidator.isValidCreateTokenJob({
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
       ..._.omit(validPayload, [
         'purchase_location',
         'purchase_date',
@@ -116,7 +116,7 @@ describe('Job validation - Create Token', function () {
   });
 
   it('should pass', async function () {
-    const results = await jobValidator.isValidCreateTokenJob(validPayload);
+    const results = await tokenlandiaJobValidator.isValidCreateTokenJob(validPayload);
     results.should.be.deep.equal({
       errors: [],
       valid: true
@@ -126,7 +126,7 @@ describe('Job validation - Create Token', function () {
   describe('artist initials field checks', async function () {
 
     it('fails if less then 3 characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         artist_initials: 'AA'
       });
@@ -139,7 +139,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('fails if more then 3 characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         artist_initials: 'AAAA'
       });
@@ -152,7 +152,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('fails if not A-Z', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         artist_initials: 'AA7'
       });
@@ -168,7 +168,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('fails if has numbers in', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         artist_initials: 'AA!'
       });
@@ -184,7 +184,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('fails if not upper case', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         artist_initials: 'aBC'
       });
@@ -204,7 +204,7 @@ describe('Job validation - Create Token', function () {
   describe('series field checks', async function () {
 
     it('should fail if less than 3 characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         series: '01'
       });
@@ -220,7 +220,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if more than 3 characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         series: '0110'
       });
@@ -236,7 +236,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if not a number', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         series: '0A1'
       });
@@ -252,7 +252,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if contains special characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         series: '10!'
       });
@@ -268,7 +268,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if is not number only', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         series: '10a'
       });
@@ -288,7 +288,7 @@ describe('Job validation - Create Token', function () {
   describe('design field checks', async function () {
 
     it('should fail if less than 3 characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         design: '011'
       });
@@ -304,7 +304,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if more than 3 characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         design: '011'
       });
@@ -320,7 +320,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if not a number', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         design: '0A11'
       });
@@ -336,7 +336,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail if contains special characters', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         design: '100!'
       });
@@ -356,7 +356,7 @@ describe('Job validation - Create Token', function () {
 
   describe('image url checks', async function() {
     it('should fail with a blank image url', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         image: ''
       });
@@ -370,7 +370,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail with an invalid image url', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         image: 'http://127.0.0.1:3000/does/not/work'
       });
@@ -383,7 +383,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail with an image url that returns a 404', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         image: 'https://github.com/blockrockettechf'
       });
@@ -396,7 +396,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should fail with an image url that returns a 500', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         image: 'https://api.cryptokaiju.io/api/network/1/token/nfc/x'
       });
@@ -409,7 +409,7 @@ describe('Job validation - Create Token', function () {
     });
 
     it('should pass with a redirect image url (with http 302 code)', async function () {
-      const results = await jobValidator.isValidCreateTokenJob({
+      const results = await tokenlandiaJobValidator.isValidCreateTokenJob({
         ...validPayload,
         image: 'https://cdn.knownorigin.io/cdn/images/network/1/edition/154200'
       });

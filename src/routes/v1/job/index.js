@@ -5,7 +5,7 @@ const job = require('express').Router({mergeParams: true});
 
 const {
   jobQueue,
-  jobValidator,
+  tokenlandiaJobValidator,
   jobConstants,
   newTokenLandiaService,
   newEscrowService,
@@ -24,7 +24,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
   const {chainId} = req.params;
   const rawJobData = req.body;
 
-  const {valid, errors} = await jobValidator.isValidCreateTokenJob(rawJobData);
+  const {valid, errors} = await tokenlandiaJobValidator.isValidCreateTokenJob(rawJobData);
   console.log(`Incoming job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {
@@ -84,7 +84,7 @@ job.post('/submit/updatetoken/general', async function (req, res) {
   const {chainId} = req.params;
   const rawJobData = req.body;
 
-  const {valid, errors} = await jobValidator.isValidUpdateTokenJob(rawJobData);
+  const {valid, errors} = await tokenlandiaJobValidator.isValidUpdateTokenJob(rawJobData);
   console.log(`Incoming update job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {
@@ -134,7 +134,7 @@ job.post('/submit/transfer', async function (req, res) {
   const {chainId} = req.params;
   const rawJobData = req.body;
 
-  const {valid, errors} = await jobValidator.isValidTransferTokenJob(rawJobData);
+  const {valid, errors} = await tokenlandiaJobValidator.isValidTransferTokenJob(rawJobData);
   console.log(`Incoming transfer job found to be valid [${valid}] for chainId [${chainId}]`);
 
   if (!valid) {

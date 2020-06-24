@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {jobValidator} = require('../../src/services');
+const {tokenlandiaJobValidator} = require('../../src/services');
 
 describe('Job validation - Transfer Token', function () {
 
@@ -9,7 +9,7 @@ describe('Job validation - Transfer Token', function () {
   };
 
   it('should fail if empty', async function () {
-    const results = await jobValidator.isValidTransferTokenJob({});
+    const results = await tokenlandiaJobValidator.isValidTransferTokenJob({});
     results.should.be.deep.equal({
       valid: false,
       errors: [
@@ -20,7 +20,7 @@ describe('Job validation - Transfer Token', function () {
   });
 
   it('should fail if with unknown', async function () {
-    const results = await jobValidator.isValidTransferTokenJob({
+    const results = await tokenlandiaJobValidator.isValidTransferTokenJob({
       ...validPayload,
       unknown_field: 'abc'
     });
@@ -33,14 +33,14 @@ describe('Job validation - Transfer Token', function () {
   });
 
   it('should pass', async function () {
-    const results = await jobValidator.isValidTransferTokenJob(validPayload);
+    const results = await tokenlandiaJobValidator.isValidTransferTokenJob(validPayload);
     results.should.be.deep.equal({
       valid: true
     });
   });
 
   it('should fail if token_id is not a number', async function () {
-    const results = await jobValidator.isValidTransferTokenJob({
+    const results = await tokenlandiaJobValidator.isValidTransferTokenJob({
       ...validPayload,
       'token_id': 'abc',
     });
@@ -53,7 +53,7 @@ describe('Job validation - Transfer Token', function () {
   });
 
   it('should fail if recipient is not correct length', async function () {
-    const results = await jobValidator.isValidTransferTokenJob({
+    const results = await tokenlandiaJobValidator.isValidTransferTokenJob({
       ...validPayload,
       'recipient': 'akjdshakjdhkjash',
     });

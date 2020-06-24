@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios');
 
-const imageUrlValidator = require('../imageUrlValidator');
+const imageUrlValidator = require('../../../imageUrlValidator');
 
 const CREATE_TOKEN_SCHEMA = require('./schema/createTokenSchema');
 const UPDATE_TOKEN_FIELDS_SCHEMA = require('./schema/updateTokenFieldsSchema');
