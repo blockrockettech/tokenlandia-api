@@ -165,6 +165,7 @@ describe('Job processing route', () => {
         .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
         .send({
           'job_id': jobId,
+          'tokenType': 'TOKENLANDIA'
         });
 
       res.should.not.be.empty;
@@ -172,7 +173,7 @@ describe('Job processing route', () => {
       res.body.should.be.deep.equal('success');
 
       updateStub.called.should.be.true;
-      updateStub.args[0].should.be.deep.equal(['4', jobId, 'JOB_CANCELLED', {cancelled: this.now}]);
+      updateStub.args[0].should.be.deep.equal(['4', jobId, 'JOB_CANCELLED', {cancelled: this.now}, 'TOKENLANDIA']);
     });
 
     it('will reject change when in the correct state', async function () {
@@ -188,12 +189,13 @@ describe('Job processing route', () => {
         .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
         .send({
           'job_id': jobId,
+          'tokenType': 'TOKENLANDIA'
         });
 
       res.should.not.be.empty;
       res.status.should.be.equal(400);
       res.body.should.be.deep.equal({
-        'error': `Unable to cancel job [${jobId}] on chain [${chainId}] with status [${JOB_STATUS.JOB_CANCELLED}]`
+        'error': `Unable to cancel TOKENLANDIA job [${jobId}] on chain [${chainId}] with status [${JOB_STATUS.JOB_CANCELLED}]`
       });
     });
 
@@ -209,12 +211,13 @@ describe('Job processing route', () => {
         .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
         .send({
           'job_id': jobId,
+          'tokenType': 'TOKENLANDIA'
         });
 
       res.should.not.be.empty;
       res.status.should.be.equal(400);
       res.body.should.be.deep.equal({
-        'error': `Unable to find job [${jobId}] on chain [${chainId}]`
+        'error': `Unable to find TOKENLANDIA job [${jobId}] on chain [${chainId}]`
       });
     });
 

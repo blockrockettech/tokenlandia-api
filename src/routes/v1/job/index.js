@@ -496,27 +496,41 @@ job.get('/details/:jobId/videolatino', async function (req, res) {
 });
 
 /**
- * Delete a pending tokenlandia Job
+ * Delete a pending Job
  */
 job.delete('/cancel', async function (req, res) {
   const {chainId} = req.params;
-  const {job_id} = req.body;
+  const {job_id, tokenType} = req.body;
 
-  const jobDetails = await jobQueue.getJobForId(chainId, job_id);
+  if (!tokenType || (tokenType !== TOKEN_TYPE.TOKENLANDIA && tokenType !== TOKEN_TYPE.VIDEO_LATINO)) {
+    return res
+        .status(500)
+        .json({
+          error: `'tokenType' must be defined in the body and be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
+        });
+  }
+
+  const jobDetails = await jobQueue.getJobForId(chainId, job_id, tokenType);
 
   if (!job_id || !chainId || !jobDetails) {
     return res
       .status(400)
       .json({
-        error: `Unable to find job [${job_id}] on chain [${chainId}]`
+        error: `Unable to find ${tokenType} job [${job_id}] on chain [${chainId}]`
       });
   }
 
   if (canCancelJob(jobDetails.status)) {
-    console.log(`Attempting to cancel job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`);
-    const updatedJob = await jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, JOB_STATUS.JOB_CANCELLED, {
-      cancelled: Date.now()
-    });
+    console.log(`Attempting to cancel ${tokenType} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`);
+    const updatedJob = await jobQueue.addStatusAndContextToJob(
+        chainId,
+        jobDetails.jobId,
+        JOB_STATUS.JOB_CANCELLED,
+        {
+          cancelled: Date.now()
+        },
+        tokenType
+    );
 
     return res
       .status(200)
@@ -526,7 +540,7 @@ job.delete('/cancel', async function (req, res) {
   return res
     .status(400)
     .json({
-      error: `Unable to cancel job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`
+      error: `Unable to cancel ${tokenType} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`
     });
 });
 
