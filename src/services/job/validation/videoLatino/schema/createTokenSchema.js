@@ -20,7 +20,7 @@ const countryCodeValidator = (value, helpers) => {
 };
 
 const categoryValidator = (value, helpers) => {
-  if (value !== 'VideoSaludos' || value !== 'PubliVideos') {
+  if (value !== 'VideoSaludos' && value !== 'PubliVideos') {
     return helpers.error('any.invalid');
   }
 
