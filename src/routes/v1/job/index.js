@@ -556,10 +556,10 @@ job.get('/:tokenType/summary', async function (req, res) {
 /**
  * Get open jobs for chain
  */
-job.get('/open/summary', async function (req, res) {
-  const {chainId} = req.params;
+job.get('/:tokenType/open/summary', async function (req, res) {
+  const { chainId, tokenType } = req.params;
   return res.status(200)
-    .json(await jobQueue.getIncompleteJobsForChainId(chainId));
+    .json(await jobQueue.getIncompleteJobsForChainId(chainId, tokenType));
 });
 
 module.exports = job;

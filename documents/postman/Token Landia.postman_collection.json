@@ -294,6 +294,41 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Queue Open Jobs Summary",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/TOKENLANDIA/open/summary?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"TOKENLANDIA",
+										"open",
+										"summary"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -408,6 +443,41 @@
 										":chainId",
 										"job",
 										"VIDEO_LATINO",
+										"summary"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Queue Open Jobs Summary",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/VIDEO_LATINO/open/summary?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"VIDEO_LATINO",
+										"open",
 										"summary"
 									],
 									"query": [
