@@ -167,6 +167,9 @@ With body
 
 ```json
 {
-    "job_id": "<job-id>"
+    "job_id": "<job-id>",
+    "token_type": "<token-type>"
 }
 ```
+
+`token_type` needs to be either `TOKENLANDIA` or `VIDEO_LATINO`
