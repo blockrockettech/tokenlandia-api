@@ -7,6 +7,7 @@ const {
   jobQueue,
   tokenlandiaJobValidator,
   videoLatinoJobValidator,
+  generalJobValidator,
   jobConstants,
   newTokenLandiaService,
   newVideoLatinoService,
@@ -190,15 +191,13 @@ job.post('/submit/updatetoken/general', async function (req, res) {
 });
 
 /**
- * Submit a new Job to transfer a Tokenlandia token
+ * Submit a new Job to transfer a Tokenlandia or VideoLatino token
  */
 job.post('/submit/transfer', async function (req, res) {
   const {chainId} = req.params;
   const rawJobData = req.body;
 
-  const {valid, errors} = await tokenlandiaJobValidator.isValidTransferTokenJob(rawJobData);
-  console.log(`Incoming transfer job found to be valid [${valid}] for chainId [${chainId}]`);
-
+  const {valid, errors} = await generalJobValidator.isValidTransferTokenJob(rawJobData);
   if (!valid) {
     console.error(`Errors found in transfer job`, errors);
     return res.status(400).json({
@@ -207,12 +206,13 @@ job.post('/submit/transfer', async function (req, res) {
     });
   }
 
-  const {token_id, recipient} = rawJobData;
+  const {token_id, token_type, recipient} = rawJobData;
+  console.log(`Incoming ${token_type} transfer job found to be valid for chainId [${chainId}]`);
 
   const escrowService = newEscrowService(chainId);
-  const isEscrowed = await escrowService.isTokenEscrowed(token_id);
+  const isEscrowed = await escrowService.isTokenEscrowed(token_id, token_type);
   if (!isEscrowed) {
-    const errorMsg = `Rejecting incoming job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`;
+    const errorMsg = `Rejecting incoming ${token_type} job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`;
     console.error(errorMsg);
     return res.status(400).json({
       error: errorMsg
@@ -221,16 +221,16 @@ job.post('/submit/transfer', async function (req, res) {
 
   const isRecipientValid = isValidAddress(recipient);
   if (!isRecipientValid) {
-    const errorMsg = `Rejecting incoming job - recipient [${recipient}] is not a valid web3 address`;
+    const errorMsg = `Rejecting ${token_type} incoming job - recipient [${recipient}] is not a valid web3 address`;
     console.error(errorMsg);
     return res.status(400).json({
       error: errorMsg
     });
   }
 
-  const existingJobs = await jobQueue.getJobsInFlightForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN);
+  const existingJobs = await jobQueue.getJobsInFlightForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN, token_type);
   if (existingJobs) {
-    console.error(`Rejecting incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
+    console.error(`Rejecting ${token_type} incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
     return res.status(400).json({
       error: `Duplicate Job found`,
       existingJobs
@@ -238,12 +238,12 @@ job.post('/submit/transfer', async function (req, res) {
   }
 
   // Accept job
-  let jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.TRANSFER_TOKEN, rawJobData);
+  let jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.TRANSFER_TOKEN, rawJobData, token_type);
 
   // Skip metadata creation for these job types
-  jobDetails = jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {});
+  jobDetails = jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {}, token_type);
 
-  console.log(`Job [${JOB_TYPES.TRANSFER_TOKEN}] created for tokenId [${token_id}] and chainId [${chainId}]`);
+  console.log(`${token_type} job [${JOB_TYPES.TRANSFER_TOKEN}] created for tokenId [${token_id}] and chainId [${chainId}]`);
 
   // return job details
   return res
@@ -297,7 +297,7 @@ job.get('/process/preprocess', async function (req, res) {
         return metadataCreationProcessor.pushUpdateTokenJob(job, newTokenLandiaService(chainId));
       case JOB_TYPES.TRANSFER_TOKEN:
         // Skip metadata creation for these job types
-        return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {});
+        return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {}, job.tokenType);
       default:
         console.error('Unknown job type', job);
     }

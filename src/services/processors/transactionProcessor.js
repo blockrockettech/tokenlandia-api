@@ -33,7 +33,7 @@ class TransactionProcessor {
           case JOB_TYPES.UPDATE_TOKEN:
             return this._updateTokenMetaData(tokenId, PRE_PROCESSING_COMPLETE.metadataHash);
           case JOB_TYPES.TRANSFER_TOKEN:
-            return this._transferToken(tokenId, ACCEPTED.recipient);
+            return this._transferToken(tokenId, ACCEPTED.recipient, tokenType);
           default:
             throw new Error(`Unknown job type [${jobType}]`);
         }
@@ -82,8 +82,8 @@ class TransactionProcessor {
     };
   }
 
-  async _transferToken(tokenId, recipient) {
-    const {hash, from, to, nonce, gasPrice, gasLimit} = await this.escrowService.transferOwnership(tokenId, recipient);
+  async _transferToken(tokenId, recipient, tokenType) {
+    const {hash, from, to, nonce, gasPrice, gasLimit} = await this.escrowService.transferOwnership(tokenId, recipient, tokenType);
 
     return {
       hash,
