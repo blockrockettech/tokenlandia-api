@@ -1,6 +1,19 @@
 ## Creating New Tokens
 
-This API allows you to transfer the token to a new address from the escrow contract
+This documents how the API allows you to transfer a token (either `Tokenlandia` or `VideoLatino`) to a new address from the escrow contract
+
+### Validation
+
+Before a job is accepted several things are validated.
+
+If any of these things fail a HTTP `400` will be returned with the reason for the failure.
+
+* The post body should be valid
+* No existing transfer job should exist for that token
+* Token should be held in escrow
+* Recipient should be a valid Ethereum address
+
+![Job Accepted Flow](TransferToken.png)
 
 #### Submit Job
 
@@ -12,10 +25,13 @@ Sample request body
 
 ```json
 {
-    'token_id': ${tokenId},
+    'token_id': ${token_id},
+    'token_type': ${token_type}
     'recipient': '0x9474CE90A96Ca3907428F22F202F72C55559df4a'
 }
 ```
+
+Where `token_type` can either be `TOKENLANDIA` or `VIDEO_LATINO`
 
 --------------------
 
@@ -23,17 +39,6 @@ Sample successful job created `JSON` response
 
 ```json
 {
-    "jobId": "AoHZeOquKMZe9SFGnquD",
-    "chainId": "4",
-    "tokenId": "112",
-    "status": "ACCEPTED",
-    "jobType": "CREATE_TOKEN",
-    "createdDate": 1582713451790,
-    "context": {
-        "ACCEPTED": {
-           ...The accepted and formatted data
-        }
-    }
 }
 ```
 
@@ -74,16 +79,3 @@ Sample successful job created `JSON` response
     }
 }
 ```
-
-##### Validation
-
-Before a job is accepted several things are validated.
-
-If any of these things fail a HTTP `400` will be returned with the reason for the failure.
-
-* The post body should be valid
-* No existing transfer job should exist for that token
-* Token should be held in escrow
-* Recipient should be a valid Ethereum address
-
-![Job Accepted Flow](TransferToken.png)

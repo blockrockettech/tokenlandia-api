@@ -146,7 +146,7 @@ Three types of job exist, each one preforming a different blockchain actions.
 
 * Creating new tokens - [docs](/documents/token/create/CREATE_TOKEN_DOCS.md)
 
-* Updating token metadata - [docs](/documents/token/update/UPDATE_TOKEN_DOCS.md)
+* Updating token metadata (only applies to Tokenlandia tokens) - [docs](/documents/token/update/UPDATE_TOKEN_DOCS.md)
 
 * Transferring token - [docs](/documents/token/transfer/TRANSFER_TOKEN_DOCS.md)
 
@@ -157,9 +157,13 @@ Using transactions executed on the `rinkeby` network, we have been able to deter
 
 ### Get Job Status
 
-This API can be used to get the status about a specific job which has been previously accepted.
+This API can be used to get the status about a previously accepted job for a specific token type.
 
-`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/details/${JOB_ID}?key={uuid-key}`
+You can poll this endpoint to see a job's progress through the processing queue. Each token can take a few minutes to process.
+
+#### For a Tokenlandia job
+
+`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/details/{JOB_ID}/general?key={uuid-key}`
 
 ```json
 {
@@ -175,15 +179,19 @@ This API can be used to get the status about a specific job which has been previ
 }
 ```
 
-One a job has been accepted you can poll this endpoint to see its progress through the processing queue, each token 
-can take a few minutes to process.
+#### For a Video Latino job
 
+`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/details/{JOB_ID}/videolatino?key={uuid-key}`
+
+Which would return the same response structure as the tokenlandia example above
 
 ### Get Queue Summary
 
 This API gives you details on how many jobs are at each stage of the processing queue.
 
-`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/summary?key={uuid-key}`
+`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/{tokenType}/summary?key={uuid-key}`
+
+Replacing `{tokenType}` as appropriate
 
 ```json
 {
@@ -214,11 +222,13 @@ This API gives you details on how many jobs are at each stage of the processing 
 }
 ```
 
+Note that the summary for `VIDEO_LATINO` will not include stats on the `UPDATE_TOKEN` job type as this is not supported.
+
 ### Get In Flight Jobs
 
-This API gives you details on jobs which are being processed by the job queue
+This API gives you details on jobs which are being processed by the job queue on a per token type basis
 
-`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/open/summary?key={uuid-key}`
+`HTTP` `GET` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/{tokenType}/open/summary?key={uuid-key}`
 
 ```json
 {
