@@ -351,7 +351,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"token_id\": 1,\n    \"coo\": \"USA\",\n    \"celebrity_initials\": \"RSA\",\n    \"name\": \"token 1\",\n    \"description\": \"token 1 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"video_link\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"video_category\": \"PubliVideos\",\n    \"video_language\": \"EN\",\n    \"celebrity_name\": \"Shakira\",\n    \"creation_location\": \"London\",\n    \"creation_date\": \"2020-06-24\",\n    \"business_brand\": \"amazing records\"\n}",
+									"raw": "{\n    \"token_id\": 4,\n    \"coo\": \"GBR\",\n    \"celebrity_initials\": \"RSA\",\n    \"name\": \"token 4\",\n    \"description\": \"token 4 description\",\n    \"image\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"video_link\": \"https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg\",\n    \"video_category\": \"PubliVideos\",\n    \"video_language\": \"EN\",\n    \"celebrity_name\": \"Shakira\",\n    \"creation_location\": \"London\",\n    \"creation_date\": \"2020-06-24\",\n    \"business_brand\": \"amazing records\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -879,7 +879,33 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{host}}/v1/network/:chainId/asset/:tokenType/info/:tokenIdOrProductId",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"asset",
+								":tokenType",
+								"info",
+								":tokenIdOrProductId"
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
+								},
+								{
+									"key": "tokenType",
+									"value": "VIDEO_LATINO"
+								},
+								{
+									"key": "tokenIdOrProductId",
+									"value": "3"
+								}
+							]
 						}
 					},
 					"response": []
