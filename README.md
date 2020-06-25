@@ -17,9 +17,16 @@ Fire it up:
 
 All API endpoints are network aware, this is so we can point the API to either `Rinkeby` for test or `mainnet` for production
 
-* When ever you see `/network/{chainId}` - `{chainId}` needs to be replaced with one of the following:
+* Whenever you see `/network/{chainId}` - `{chainId}` needs to be replaced with one of the following:
     - `1` - For the `main` ethereum network
     - `4` - For the `rinkeby` test ethereum network
+
+#### Multi-asset support and switching between assets
+
+Some API endpoints are asset aware and will allow you to perform specific operations on either `Tokenlandia` or `VideoLatino` tokens.
+* Whenever you see `/{tokenType}/` or similar, `{tokenType}` needs to be replaced with one of the following:
+  - `TOKENLANDIA` - For operations on `Tokenlandia` tokens
+  - `VIDEO_LATINO` - For operations on `VideoLatino` tokens
     
 #### Security
 
@@ -61,15 +68,15 @@ For your convenience, we have also included information about `mainnet` current 
 
 You can hit the following `GET` endpoint:
 
-    /v1/network/{chainId}/asset/{tokenIdOrProductId}
+    /v1/network/{chainId}/asset/{tokenType}/info/{tokenIdOrProductId}
     
-Replacing `{chainId}` and `{tokenIdOrProductId}` as appropriate.
+Replacing `{chainId}`, `{tokenType}` and `{tokenIdOrProductId}` as appropriate.
 
 This will return information about a token ONLY once it has been minted to the blockchain.
 
 For example - this `HTTP` `GET` request we could run is:
 
-    https://api-56b6el2v7a-uc.a.run.app/v1/network/4/asset/info/1
+    https://api-56b6el2v7a-uc.a.run.app/v1/network/4/asset/VIDEO_LATINO/info/1
     
 This is for chain ID `4` / `rinkeby` and token ID `1`. There are 3 tokens (token ID 1-3) minted on rinkeby.
 
@@ -77,34 +84,35 @@ The expected response would be:
 
 ```
 {
-    product_code: "ASM-JSH-001-0001",
-    product_id: "ASM-JSH-001-0001-1",
-    token_id: "1",
-    token_uri: "https://ipfs.infura.io/ipfs/QmZvyK4dmEFJ4mjpRxEnsstqPcAsNnNRZkdwwJm3DPpTnr",
-    open_sea_link: "https://rinkeby.opensea.io/assets/0xD2d84c15Eda5E93aa15f9DDCAA029eaa3f524aDa/1",
-    etherscan_link: "https://rinkeby.etherscan.io/token/0xD2d84c15Eda5E93aa15f9DDCAA029eaa3f524aDa?a=1",
-    name: "Token 1",
-    description: "Token 1 Desc",
-    image: "https://ipfs.infura.io/ipfs/QmXhGB4gbUnZgiaFSjL5r8EVHk63JdPasUSQPfZrsJ2cGf",
-    type: "PHYSICAL_ASSET",
-    created: 1579181406,
-    attributes: {
-        coo: "ASM",
-        initials: "JSH",
-        token_id: "1",
-        purchase_location: "Token 1 Purchase Loc",
-        customization_location: "Token 1 Cust Loc",
-        brand: "Token 1 Brand",
-        model: "Token 1 Model",
-        artist: "Token 1 Art",
-        artist_assistant: "Token 1 Assistant",
-        material_1: "Cotton",
-        product_id: "ASM-JSH-001-0001-1",
-        series: "001",
-        design: "0001",
-        purchase_date: "2020-01-02",
-        customization_date: "2020-01-02"
-    }
+	0: "GBR-MIA",
+	1: "QmUSz4d2dRoiKK2Bs3vmdbVAU8pwSG8ryRu6bUNxGyUSvp",
+	_productCode: "GBR-MIA",
+	_metadataIpfsHash: "QmUSz4d2dRoiKK2Bs3vmdbVAU8pwSG8ryRu6bUNxGyUSvp",
+	token_id: "1",
+	token_uri: "https://ipfs.infura.io/ipfs/QmUSz4d2dRoiKK2Bs3vmdbVAU8pwSG8ryRu6bUNxGyUSvp",
+	open_sea_link: "https://rinkeby.opensea.io/assets/0x84cCfbc2Ec9572307Def63535A9346ab08336fdB/1",
+	etherscan_link: "https://rinkeby.etherscan.io/token/0x84cCfbc2Ec9572307Def63535A9346ab08336fdB?a=1",
+	transaction_hash: "0xe413fd079f8ae4b100782422f8649e5b305e8ff9c356cc33070f4add8feb9e68",
+	etherscan_transaction_hash: "https://rinkeby.etherscan.io/tx/0xe413fd079f8ae4b100782422f8649e5b305e8ff9c356cc33070f4add8feb9e68",
+	contract_address: "0x84cCfbc2Ec9572307Def63535A9346ab08336fdB",
+	name: "Shakira Shakira",
+	description: "Hello from Shakira",
+	image: "https://ipfs.infura.io/ipfs/QmdxsMpz6MRtCBD9kabu8DXsHch93sLnZE3DVGhfAt5isV",
+	type: "VIDEO_LATINO",
+	created: 1591794541,
+	attributes: {
+		coo: "GBR",
+		initials: "MIA",
+		token_id: "1",
+		creation_location: "Colombia",
+		creation_date: "2020-06-02",
+		business_brand: "Brand",
+		celebrity_name: "Shakira",
+		video_language: "EN",
+		video_link: "aws",
+		video_category: "VideoSaludos",
+		video_id: "GBR-MIA-1"
+	}
 }
 ```
 
@@ -127,9 +135,10 @@ A breakdown of each state is as follows:
 
 * `ACCEPTED`            - Job is valid and has been accepted
 * `PRE_PROCESSING_COMPLETE`    - Any pre processing such as generating token metadata and storing on IPFS is done at this stage
+* `PRE_PROCESSING_FAILED` - When a failure has taken place at the pre processing stage. It could be something like the push to the ipfs gateway failed etc.
 * `TRANSACTION_SENT`    - Token transaction has been sent to the blockchain based on the job type
 * `JOB_COMPLETE`        - The transaction has been successfully been mined on the blockchain
-* `TRANSACTION_FAILED`  - Something has gone wrong and the job has failed
+* `TRANSACTION_FAILED`  - Something has gone wrong executing the transaction and the job has failed
 
 ### Job Types
 
