@@ -172,55 +172,6 @@
 							"response": []
 						},
 						{
-							"name": "Delete pending job",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"job_id\": \"2H62ksWAP8rK7yAUlNuI\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{host}}/v1/network/:chainId/job/cancel?key={{api_key}}",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"v1",
-										"network",
-										":chainId",
-										"job",
-										"cancel"
-									],
-									"query": [
-										{
-											"key": "key",
-											"value": "{{api_key}}"
-										}
-									],
-									"variable": [
-										{
-											"key": "chainId",
-											"value": "4"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Submit Update Token Job",
 							"request": {
 								"method": "POST",
@@ -272,62 +223,12 @@
 							"response": []
 						},
 						{
-							"name": "Submit Transfer Token Job",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"token_id\": 549,\n    \"recipient\": \"0x9474CE90A96Ca3907428F22F202F72C55559df4a\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{host}}/v1/network/:chainId/job/submit/transfer?key={{api_key}}",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"v1",
-										"network",
-										":chainId",
-										"job",
-										"submit",
-										"transfer"
-									],
-									"query": [
-										{
-											"key": "key",
-											"value": "{{api_key}}"
-										}
-									],
-									"variable": [
-										{
-											"key": "chainId",
-											"value": "4"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Get Queue Summary",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/network/:chainId/job/summary?key={{api_key}}",
+									"raw": "{{host}}/v1/network/:chainId/job/TOKENLANDIA/summary?key={{api_key}}",
 									"host": [
 										"{{host}}"
 									],
@@ -336,6 +237,7 @@
 										"network",
 										":chainId",
 										"job",
+										"TOKENLANDIA",
 										"summary"
 									],
 									"query": [
@@ -489,10 +391,143 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Queue Summary",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/network/:chainId/job/VIDEO_LATINO/summary?key={{api_key}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"network",
+										":chainId",
+										"job",
+										"VIDEO_LATINO",
+										"summary"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{api_key}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "chainId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Submit Transfer Token Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token_id\": 3,\n    \"token_type\": \"VIDEO_LATINO\",\n    \"recipient\": \"0x12D062B19a2DF1920eb9FC28Bd6E9A7E936de4c2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/network/:chainId/job/submit/transfer?key={{api_key}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"job",
+								"submit",
+								"transfer"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete pending job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"job_id\": \"2H62ksWAP8rK7yAUlNuI\",\n    \"token_type\": \"TOKENLANDIA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/network/:chainId/job/cancel?key={{api_key}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"network",
+								":chainId",
+								"job",
+								"cancel"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "chainId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}

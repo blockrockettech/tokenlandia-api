@@ -3,13 +3,15 @@ const ServiceFactory = require('../../../services');
 const axios = require('axios');
 const token = require('express').Router({mergeParams: true});
 
-token.get('/:assetType/info/:tokenIdOrProductId', async function (req, res) {
-  const {chainId, assetType} = req.params;
+const {TOKEN_TYPE} = require('../../../services/job/jobConstants');
+
+token.get('/:tokenType/info/:tokenIdOrProductId', async function (req, res) {
+  const {chainId, tokenType} = req.params;
 
   let token;
 
   // Load the correct token
-  if (assetType === 'Tokenlandia') {
+  if (tokenType.toLowerCase() === TOKEN_TYPE.TOKENLANDIA.toLowerCase()) {
     try {
       token = ServiceFactory.newTokenLandiaService(chainId);
     } catch (e) {

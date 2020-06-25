@@ -165,7 +165,7 @@ describe('Job processing route', () => {
         .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
         .send({
           'job_id': jobId,
-          'tokenType': 'TOKENLANDIA'
+          'token_type': 'TOKENLANDIA'
         });
 
       res.should.not.be.empty;
@@ -189,7 +189,7 @@ describe('Job processing route', () => {
         .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
         .send({
           'job_id': jobId,
-          'tokenType': 'TOKENLANDIA'
+          'token_type': 'TOKENLANDIA'
         });
 
       res.should.not.be.empty;
@@ -211,7 +211,7 @@ describe('Job processing route', () => {
         .delete(`${getBaseUrl(chainId)}/cancel?key=${API_ACCESS_KEY}`)
         .send({
           'job_id': jobId,
-          'tokenType': 'TOKENLANDIA'
+          'token_type': 'TOKENLANDIA'
         });
 
       res.should.not.be.empty;

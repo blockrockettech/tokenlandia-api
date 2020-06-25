@@ -246,16 +246,23 @@ class JobQueue {
         numOfPreProcessingCompleteJobs,
         numOfPreProcessingFailedJobs,
         numOfTransactionSentJobs,
-        numOfJobCompleteJobs,
-        numOfTransactionFailedJobs
+        numOfTransactionFailedJobs,
+        numOfJobCompleteJobs
       };
     };
 
-    return {
+    const coreJobsSummary = {
       [JOB_TYPES.CREATE_TOKEN]: await getSummaryInfo(JOB_TYPES.CREATE_TOKEN),
-      [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
       [JOB_TYPES.TRANSFER_TOKEN]: await getSummaryInfo(JOB_TYPES.TRANSFER_TOKEN),
     };
+
+    return tokenType === TOKEN_TYPE.TOKENLANDIA ?
+        {
+          ...coreJobsSummary,
+          [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
+        }
+        :
+        coreJobsSummary;
   }
 
   async getIncompleteJobsForChainId(chainId, tokenType = TOKEN_TYPE.TOKENLANDIA) {

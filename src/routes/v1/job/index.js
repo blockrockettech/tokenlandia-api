@@ -500,28 +500,28 @@ job.get('/details/:jobId/videolatino', async function (req, res) {
  */
 job.delete('/cancel', async function (req, res) {
   const {chainId} = req.params;
-  const {job_id, tokenType} = req.body;
+  const {job_id, token_type} = req.body;
 
-  if (!tokenType || (tokenType !== TOKEN_TYPE.TOKENLANDIA && tokenType !== TOKEN_TYPE.VIDEO_LATINO)) {
+  if (!token_type || (token_type !== TOKEN_TYPE.TOKENLANDIA && token_type !== TOKEN_TYPE.VIDEO_LATINO)) {
     return res
         .status(500)
         .json({
-          error: `'tokenType' must be defined in the body and be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
+          error: `'token_type' must be defined in the body and be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
         });
   }
 
-  const jobDetails = await jobQueue.getJobForId(chainId, job_id, tokenType);
+  const jobDetails = await jobQueue.getJobForId(chainId, job_id, token_type);
 
   if (!job_id || !chainId || !jobDetails) {
     return res
       .status(400)
       .json({
-        error: `Unable to find ${tokenType} job [${job_id}] on chain [${chainId}]`
+        error: `Unable to find ${token_type} job [${job_id}] on chain [${chainId}]`
       });
   }
 
   if (canCancelJob(jobDetails.status)) {
-    console.log(`Attempting to cancel ${tokenType} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`);
+    console.log(`Attempting to cancel ${token_type} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`);
     const updatedJob = await jobQueue.addStatusAndContextToJob(
         chainId,
         jobDetails.jobId,
@@ -529,7 +529,7 @@ job.delete('/cancel', async function (req, res) {
         {
           cancelled: Date.now()
         },
-        tokenType
+        token_type
     );
 
     return res
@@ -540,17 +540,17 @@ job.delete('/cancel', async function (req, res) {
   return res
     .status(400)
     .json({
-      error: `Unable to cancel ${tokenType} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`
+      error: `Unable to cancel ${token_type} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`
     });
 });
 
 /**
  * Get job summary details
  */
-job.get('/summary', async function (req, res) {
-  const {chainId} = req.params;
+job.get('/:tokenType/summary', async function (req, res) {
+  const {chainId, tokenType} = req.params;
   return res.status(200)
-    .json(await jobQueue.getJobTypeSummaryForChainId(chainId));
+    .json(await jobQueue.getJobTypeSummaryForChainId(chainId, tokenType));
 });
 
 /**
