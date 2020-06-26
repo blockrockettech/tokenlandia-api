@@ -170,6 +170,26 @@ describe('Job processing route tests (General)', () => {
         });
       });
     });
+
+    describe('validating escrow status', async function() {
+      it('fails when token is not escrowed', async function() {
+        const chainId = 4;
+
+        const res = await chai.request(require('../../../../src'))
+            .post(`${getBaseUrl(chainId)}/submit/transfer?key=${API_ACCESS_KEY}`)
+            .send({
+              "recipient": "0xD677AEd0965AC9B54e709F01A99cEcA205aebC4B",
+              "token_type": "TOKENLANDIA",
+              "token_id": "99999"
+            });
+
+        res.should.not.be.empty;
+        res.status.should.be.equal(400);
+        res.body.should.be.deep.equal({
+          'error': `Rejecting incoming TOKENLANDIA job - tokenId [99999] is not escrowed for chainId [4]`
+        });
+      });
+    });
   });
 
   function getBaseUrl(chainId) {
