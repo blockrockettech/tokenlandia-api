@@ -218,6 +218,15 @@ job.post('/submit/transfer', async function (req, res) {
 
   console.log(`Incoming ${token_type} transfer job found to be valid for chainId [${chainId}]`);
 
+  const existingJobs = await jobQueue.getJobsInFlightForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN, token_type);
+  if (existingJobs) {
+    console.error(`Rejecting ${token_type} incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
+    return res.status(400).json({
+      error: `Duplicate Job found`,
+      existingJobs
+    });
+  }
+
   const escrowService = newEscrowService(chainId);
   const isEscrowed = await escrowService.isTokenEscrowed(token_id, token_type);
   if (!isEscrowed) {
@@ -225,15 +234,6 @@ job.post('/submit/transfer', async function (req, res) {
     console.error(errorMsg);
     return res.status(400).json({
       error: errorMsg
-    });
-  }
-
-  const existingJobs = await jobQueue.getJobsInFlightForTokenId(chainId, token_id, JOB_TYPES.TRANSFER_TOKEN, token_type);
-  if (existingJobs) {
-    console.error(`Rejecting ${token_type} incoming job - existing job found for tokenId [${token_id}] and chainId [${chainId}] and job [${JOB_TYPES.TRANSFER_TOKEN}]`);
-    return res.status(400).json({
-      error: `Duplicate Job found`,
-      existingJobs
     });
   }
 

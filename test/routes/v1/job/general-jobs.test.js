@@ -190,6 +190,34 @@ describe('Job processing route tests (General)', () => {
         });
       });
     });
+
+    describe('validating jobs - in flight checks', async function() {
+      it('fails when there is an in flight job', async function() {
+        const {jobQueue} = require('../../../../src/services');
+
+        const existingJobs = [
+          {jobId: 'existingJobId'}
+        ];
+
+        sinon.stub(jobQueue, 'getJobsInFlightForTokenId').returns(Promise.resolve(existingJobs));
+
+        const chainId = 4;
+        const res = await chai.request(require('../../../../src'))
+            .post(`${getBaseUrl(chainId)}/submit/transfer?key=${API_ACCESS_KEY}`)
+            .send({
+              "recipient": "0xD677AEd0965AC9B54e709F01A99cEcA205aebC4B",
+              "token_type": "TOKENLANDIA",
+              "token_id": "99999"
+            });
+
+        res.should.not.be.empty;
+        res.status.should.be.equal(400);
+        res.body.should.be.deep.equal({
+          error: `Duplicate Job found`,
+          existingJobs,
+        });
+      });
+    });
   });
 
   function getBaseUrl(chainId) {
