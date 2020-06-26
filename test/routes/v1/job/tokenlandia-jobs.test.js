@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const {JOB_STATUS} = require('../../../../src/services/job/jobConstants');
+const {JOB_STATUS, JOB_TYPES, TOKEN_TYPE} = require('../../../../src/services/job/jobConstants');
 
 const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
 
@@ -22,6 +22,68 @@ describe('Job processing route tests (Tokenlandia)', () => {
   });
 
   describe('create token job', function () {
+
+    it('successfully adds the create token job', async () => {
+      const {jobQueue} = require('../../../../src/services');
+
+      sinon.stub(jobQueue, 'getJobsForTokenId').returns(Promise.resolve(null));
+
+      const chainId = '4';
+      const createJobData = {
+        'token_id': 99999,
+        'coo': 'USA',
+        'artist_initials': 'RSA',
+        'series': '002',
+        'design': '0003',
+        'name': 'token 1',
+        'description': 'token 1 description',
+        'image': 'http://test.test.com',
+        'artist': 'artist',
+        'artist_assistant': 'assistant',
+        'brand': 'brand',
+        'model': 'model',
+      };
+
+      const product_code = `${createJobData.coo}-${createJobData.artist_initials}-${createJobData.series}-${createJobData.design}`;
+      const enhancedJobData = {
+        ...createJobData,
+        type: 'GENERAL_ASSET',
+        product_id: `${product_code}-${createJobData.token_id}`,
+        product_code
+      };
+
+      const finalJobData = {
+        chainId,
+        tokenId: createJobData.token_id.toString(),
+        status: JOB_STATUS.ACCEPTED,
+        jobType: JOB_TYPES.CREATE_TOKEN,
+        tokenType: TOKEN_TYPE.TOKENLANDIA,
+        createdDate: Date.now(),
+
+        // The actual payload
+        context: {
+          [JOB_STATUS.ACCEPTED]: {
+            ...enhancedJobData
+          }
+        }
+      };
+
+      sinon.stub(jobQueue, 'addJobToQueue').callsFake((chain, jobType, jobData, tokenType) => {
+        chain.should.be.equal(chainId);
+        jobType.should.be.equal(JOB_TYPES.CREATE_TOKEN);
+        jobData.should.be.deep.equal(enhancedJobData);
+
+        return finalJobData;
+      });
+
+      const res = await chai.request(require('../../../../src'))
+          .post(`${getBaseUrl(chainId)}/submit/createtoken/general?key=${API_ACCESS_KEY}`)
+          .send(createJobData);
+
+      res.should.not.be.empty;
+      res.status.should.be.equal(202);
+      res.body.should.be.deep.equal(finalJobData);
+    });
 
     describe('validating chain ID', async function () {
       it('fails in invalid chain ID', async function () {

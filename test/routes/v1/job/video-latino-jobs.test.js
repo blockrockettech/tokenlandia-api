@@ -73,6 +73,7 @@ describe('Job processing route tests (Video Latino)', () => {
         chain.should.be.equal(chainId);
         jobType.should.be.equal(JOB_TYPES.CREATE_TOKEN);
         jobData.should.be.deep.equal(enhancedJobData);
+        tokenType.should.be.equal(TOKEN_TYPE.VIDEO_LATINO);
 
         return finalJobData;
       });
