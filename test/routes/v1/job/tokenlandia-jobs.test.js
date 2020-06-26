@@ -9,7 +9,7 @@ const {JOB_STATUS} = require('../../../../src/services/job/jobConstants');
 
 const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
 
-describe('Job processing route', () => {
+describe('Job processing route tests (Tokenlandia)', () => {
 
   beforeEach(function () {
     this.now = Date.now();

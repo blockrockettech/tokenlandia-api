@@ -207,21 +207,21 @@ job.post('/submit/transfer', async function (req, res) {
   }
 
   const {token_id, token_type, recipient} = rawJobData;
-  console.log(`Incoming ${token_type} transfer job found to be valid for chainId [${chainId}]`);
-
-  const escrowService = newEscrowService(chainId);
-  const isEscrowed = await escrowService.isTokenEscrowed(token_id, token_type);
-  if (!isEscrowed) {
-    const errorMsg = `Rejecting incoming ${token_type} job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`;
+  const isRecipientValid = isValidAddress(recipient);
+  if (!isRecipientValid) {
+    const errorMsg = `Rejecting ${token_type} incoming job - recipient [${recipient}] is not a valid web3 address`;
     console.error(errorMsg);
     return res.status(400).json({
       error: errorMsg
     });
   }
 
-  const isRecipientValid = isValidAddress(recipient);
-  if (!isRecipientValid) {
-    const errorMsg = `Rejecting ${token_type} incoming job - recipient [${recipient}] is not a valid web3 address`;
+  console.log(`Incoming ${token_type} transfer job found to be valid for chainId [${chainId}]`);
+
+  const escrowService = newEscrowService(chainId);
+  const isEscrowed = await escrowService.isTokenEscrowed(token_id, token_type);
+  if (!isEscrowed) {
+    const errorMsg = `Rejecting incoming ${token_type} job - tokenId [${token_id}] is not escrowed for chainId [${chainId}]`;
     console.error(errorMsg);
     return res.status(400).json({
       error: errorMsg
