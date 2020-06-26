@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const {JOB_STATUS} = require('../../../../src/services/job/jobConstants');
+const {JOB_STATUS, JOB_TYPES, TOKEN_TYPE} = require('../../../../src/services/job/jobConstants');
 
 const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
 
@@ -22,6 +22,69 @@ describe('Job processing route tests (Video Latino)', () => {
   });
 
   describe('create token job', function () {
+
+    it('successfully adds the create token job', async () => {
+      const {jobQueue} = require('../../../../src/services');
+
+      sinon.stub(jobQueue, 'getJobsForTokenId').returns(Promise.resolve(null));
+
+      const chainId = '4';
+      const createJobData = {
+        "token_id": 99999999,
+        "coo": "GBR",
+        "celebrity_initials": "RSA",
+        "name": "token 4",
+        "description": "token 4 description",
+        "image": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+        "video_link": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+        "video_category": "PubliVideos",
+        "video_language": "EN",
+        "celebrity_name": "Shakira",
+        "creation_location": "London",
+        "creation_date": "2020-06-24",
+        "business_brand": "amazing records"
+      };
+
+      const product_code = `${createJobData.coo}-${createJobData.celebrity_initials}`;
+      const enhancedJobData = {
+        ...createJobData,
+        type: TOKEN_TYPE.VIDEO_LATINO,
+        product_id: `${product_code}-${createJobData.token_id}`,
+        product_code
+      };
+
+      const finalJobData = {
+        chainId,
+        tokenId: createJobData.token_id.toString(),
+        status: JOB_STATUS.ACCEPTED,
+        jobType: JOB_TYPES.CREATE_TOKEN,
+        tokenType: TOKEN_TYPE.VIDEO_LATINO,
+        createdDate: Date.now(),
+
+        // The actual payload
+        context: {
+          [JOB_STATUS.ACCEPTED]: {
+            ...enhancedJobData
+          }
+        }
+      };
+
+      sinon.stub(jobQueue, 'addJobToQueue').callsFake((chain, jobType, jobData, tokenType) => {
+        chain.should.be.equal(chainId);
+        jobType.should.be.equal(JOB_TYPES.CREATE_TOKEN);
+        jobData.should.be.deep.equal(enhancedJobData);
+
+        return finalJobData;
+      });
+
+      const res = await chai.request(require('../../../../src'))
+          .post(`${getBaseUrl(chainId)}/submit/createtoken/videolatino?key=${API_ACCESS_KEY}`)
+          .send(createJobData);
+
+      res.should.not.be.empty;
+      res.status.should.be.equal(202);
+      res.body.should.be.deep.equal(finalJobData);
+    });
 
     describe('validating chain ID', async function () {
       it('fails in invalid chain ID', async function () {
@@ -83,6 +146,42 @@ describe('Job processing route tests (Video Latino)', () => {
         res.status.should.be.equal(400);
         res.body.should.be.deep.equal({
           'error': 'Token already created'
+        });
+      });
+    });
+
+    describe('validating jobs - in flight checks', async function() {
+      it('fails when there is an in flight job', async function() {
+        const {jobQueue} = require('../../../../src/services');
+
+        const existingJob = {jobId: 'existingJobId'};
+
+        sinon.stub(jobQueue, 'getJobsForTokenId').returns(Promise.resolve(existingJob));
+
+        const chainId = 4;
+        const res = await chai.request(require('../../../../src'))
+            .post(`${getBaseUrl(chainId)}/submit/createtoken/videolatino?key=${API_ACCESS_KEY}`)
+            .send({
+              "token_id": 99999999,
+              "coo": "GBR",
+              "celebrity_initials": "RSA",
+              "name": "token 4",
+              "description": "token 4 description",
+              "image": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+              "video_link": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+              "video_category": "PubliVideos",
+              "video_language": "EN",
+              "celebrity_name": "Shakira",
+              "creation_location": "London",
+              "creation_date": "2020-06-24",
+              "business_brand": "amazing records"
+            });
+
+        res.should.not.be.empty;
+        res.status.should.be.equal(400);
+        res.body.should.be.deep.equal({
+          error: `Duplicate Job found`,
+          existingJob,
         });
       });
     });
