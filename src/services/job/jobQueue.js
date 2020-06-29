@@ -5,8 +5,8 @@ const INFLIGHT_JOB_STATUSES = [JOB_STATUS.ACCEPTED, JOB_STATUS.PRE_PROCESSING_CO
 
 class JobQueue {
 
-  constructor() {
-    this.db = require('../database');
+  constructor(db) {
+    this.db = db;
   }
 
   async addJobToQueue(

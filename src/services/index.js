@@ -19,7 +19,9 @@ const TransactionProcessor = require('./processors/transactionProcessor');
 
 const JobCompletionProcessor = require('./processors/jobCompletionProcessor');
 
-const jobQueue = new JobQueue();
+const db = require('./database');
+
+const jobQueue = new JobQueue(db);
 
 const ipfsService = new IpfsService(ipfsClient);
 

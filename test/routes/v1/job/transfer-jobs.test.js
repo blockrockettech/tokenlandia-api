@@ -172,6 +172,10 @@ describe('Job processing route tests (General)', () => {
       it('fails when token is not escrowed', async function() {
         const chainId = 4;
 
+        // Simple stub this to prevent it from new'ing itself up
+        const {jobQueue} = require('../../../../src/services');
+        sinon.stub(jobQueue, 'getJobsInFlightForTokenId').returns(Promise.resolve());
+
         const res = await chai.request(require('../../../../src'))
             .post(`${getBaseUrl(chainId)}/submit/transfer?key=${API_ACCESS_KEY}`)
             .send({
