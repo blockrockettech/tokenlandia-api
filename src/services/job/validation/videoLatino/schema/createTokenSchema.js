@@ -50,6 +50,7 @@ module.exports = Joi.object({
   celebrity_name: Joi.string().min(1).max(50).required(),
 
   creation_location: Joi.string().min(1).max(125).required(),
+
   creation_date: Joi.string().required().pattern(YYYY_MM_DD_PATTERN),
 
   business_brand: Joi.string().min(1).max(50).required(),

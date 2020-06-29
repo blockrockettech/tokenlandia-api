@@ -11,6 +11,7 @@ const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
 const {getHttpProvider} = require('../web3/provider');
 const gasStation = require('../web3/gasStation.service');
+const {TOKEN_TYPE} = jobConstants;
 
 const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
 
@@ -28,9 +29,16 @@ const newTokenLandiaService = (chainId) => new TokenLandia(chainId);
 const newVideoLatinoService = (chainId) => new VideoLatino(chainId);
 const newEscrowService = (chainId) => new EscrowContract(chainId);
 
+const newTokenService = (tokenType, chainId) => {
+  return tokenType === TOKEN_TYPE.TOKENLANDIA
+    ? newTokenLandiaService(chainId)
+    : newVideoLatinoService(chainId);
+};
+
 module.exports = {
   newTokenLandiaService,
   newVideoLatinoService,
+  newTokenService,
   newEscrowService,
   jobQueue,
   tokenlandiaJobValidator,

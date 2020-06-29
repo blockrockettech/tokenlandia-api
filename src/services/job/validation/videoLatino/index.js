@@ -23,7 +23,7 @@ module.exports = {
 
     return {
       errors,
-      valid: isDataValid.valid && isImageUrlValid && isVideoUrlValid
+      valid: isDataValid.valid && errors.length === 0
     };
   },
 };

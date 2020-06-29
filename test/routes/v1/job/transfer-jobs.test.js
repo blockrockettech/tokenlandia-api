@@ -5,8 +5,6 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const {JOB_STATUS} = require('../../../../src/services/job/jobConstants');
-
 const API_ACCESS_KEY = process.env.API_ACCESS_KEY;
 
 describe('Job processing route tests (General)', () => {
@@ -172,7 +170,7 @@ describe('Job processing route tests (General)', () => {
 
     describe('validating escrow status', async function() {
       // TODO: github test runner does not like this test - why?
-      it.skip('fails when token is not escrowed', async function() {
+      it('fails when token is not escrowed', async function() {
         const chainId = 4;
 
         const res = await chai.request(require('../../../../src'))

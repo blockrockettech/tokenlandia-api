@@ -1,9 +1,7 @@
 const axios = require('axios');
 const _ = require('lodash');
 
-const TokenLandia = require('../contract/tokenlandia');
-
-const {JOB_STATUS, TOKEN_TYPE} = require('../job/jobConstants');
+const {JOB_STATUS} = require('../job/jobConstants');
 
 const BASE_IPFS_URL = 'https://ipfs.infura.io/ipfs';
 

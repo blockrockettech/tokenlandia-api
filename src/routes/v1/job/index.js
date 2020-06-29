@@ -12,12 +12,11 @@ const {
   newTokenLandiaService,
   newVideoLatinoService,
   newEscrowService,
-  transactionProcessor,
-  metadataCreationProcessor,
-  jobCompletionProcessor
 } = require('../../../services/index');
 
-const {JOB_STATUS, JOB_TYPES, TOKEN_TYPE, canCancelJob} = jobConstants;
+const {JOB_STATUS, JOB_TYPES, TOKEN_TYPE, ASSET_TYPE, canCancelJob, isValidTokenType} = jobConstants;
+
+const {PRE_PROCESSING_COMPLETE, JOB_CANCELLED} = JOB_STATUS;
 
 /**
  * Submit a new Job to create a new Tokenlandia token
@@ -64,7 +63,7 @@ job.post('/submit/createtoken/general', async function (req, res) {
   // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
-    type: 'GENERAL_ASSET',
+    type: ASSET_TYPE.GENERAL_ASSET,
     product_id: `${product_code}-${token_id}`,
     product_code
   };
@@ -135,8 +134,8 @@ job.post('/submit/createtoken/videolatino', async function (req, res) {
 
   // return job details
   return res
-      .status(202)
-      .json(jobDetails);
+    .status(202)
+    .json(jobDetails);
 });
 
 /**
@@ -177,7 +176,7 @@ job.post('/submit/updatetoken/general', async function (req, res) {
   // Build full job data from composite properties
   const jobData = {
     ...rawJobData,
-    type: 'GENERAL_ASSET',
+    type: ASSET_TYPE.GENERAL_ASSET,
   };
 
   // Accept job
@@ -241,7 +240,7 @@ job.post('/submit/transfer', async function (req, res) {
   let jobDetails = await jobQueue.addJobToQueue(chainId, JOB_TYPES.TRANSFER_TOKEN, rawJobData, token_type);
 
   // Skip metadata creation for these job types
-  jobDetails = jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {}, token_type);
+  jobDetails = jobQueue.addStatusAndContextToJob(chainId, jobDetails.jobId, PRE_PROCESSING_COMPLETE, {}, token_type);
 
   console.log(`${token_type} job [${JOB_TYPES.TRANSFER_TOKEN}] created for tokenId [${token_id}] and chainId [${chainId}]`);
 
@@ -249,210 +248,6 @@ job.post('/submit/transfer', async function (req, res) {
   return res
     .status(202)
     .json(jobDetails);
-});
-
-/**
- * Process the next available IPFS metadata push
- */
-job.get('/process/preprocess', async function (req, res) {
-  const {chainId} = req.params;
-
-  // Try to get at least 1 job for both token types i.e. tokenlandia and video latino
-  const tokenlandiaJobs = await jobQueue.getNextJobForProcessing(
-      chainId,
-      [JOB_STATUS.ACCEPTED],
-      1,
-      TOKEN_TYPE.TOKENLANDIA
-  );
-
-  let nextBatchSize = 1;
-  if (_.size(tokenlandiaJobs) === 0) {
-    // batch size request for video latino tokens should be upped to 2 as no tokenlandia jobs found
-    nextBatchSize = 2;
-  }
-
-  const videoLatinoJobs = await jobQueue.getNextJobForProcessing(
-      chainId,
-      [JOB_STATUS.ACCEPTED],
-      nextBatchSize,
-      TOKEN_TYPE.VIDEO_LATINO
-  );
-
-  if (_.size(videoLatinoJobs) === 0) {
-    return res
-        .status(202)
-        .json({
-          msg: `No jobs found for processing for chain ID [${chainId}]`
-        });
-  }
-
-  let jobs = _.concat(tokenlandiaJobs, videoLatinoJobs);
-  jobs = _.filter(jobs, job => job !== null);
-
-  const workingJobs = _.map(jobs, (job) => {
-    switch (job.jobType) {
-      case JOB_TYPES.CREATE_TOKEN:
-        return metadataCreationProcessor.pushCreateTokenJob(job);
-      case JOB_TYPES.UPDATE_TOKEN:
-        return metadataCreationProcessor.pushUpdateTokenJob(job, newTokenLandiaService(chainId));
-      case JOB_TYPES.TRANSFER_TOKEN:
-        // Skip metadata creation for these job types
-        return jobQueue.addStatusAndContextToJob(chainId, job.jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, {}, job.tokenType);
-      default:
-        console.error('Unknown job type', job);
-    }
-  });
-
-  const results = await Promise.all(workingJobs);
-
-  return res
-    .status(200)
-    .json({
-      results: _.map(results, (processedJob) => {
-        return {
-          msg: `Pre-processing job [${processedJob.jobId}]`,
-          chainId: chainId,
-          tokenId: processedJob.tokenId,
-          jobId: processedJob.jobId,
-          jobType: processedJob.jobType,
-          status: processedJob.status
-        };
-      })
-    });
-});
-
-/**
- * Process the next available transaction
- */
-job.get('/process/transaction', async function (req, res) {
-  const {chainId} = req.params;
-
-  // Clear any inflight jobs
-  const inflightTokenlandiaJob = await jobQueue.getNextJobForProcessing(
-      chainId,
-      [JOB_STATUS.TRANSACTION_SENT],
-      1,
-      TOKEN_TYPE.TOKENLANDIA
-  );
-
-  if (inflightTokenlandiaJob) {
-    const mayBeCompleteJob = await jobCompletionProcessor(chainId).processJob(inflightTokenlandiaJob);
-
-    if (mayBeCompleteJob.status === JOB_STATUS.TRANSACTION_SENT) {
-      return res
-        .status(200)
-        .json({
-          msg: `Inflight transaction found, waiting for job [${inflightTokenlandiaJob.jobId}] to complete`,
-        });
-    }
-  }
-
-  const inflightVideoLatinoJob = await jobQueue.getNextJobForProcessing(
-      chainId,
-      [JOB_STATUS.TRANSACTION_SENT],
-      1,
-      TOKEN_TYPE.VIDEO_LATINO
-  );
-
-  if (inflightVideoLatinoJob) {
-    const mayBeCompleteJob = await jobCompletionProcessor(chainId).processJob(inflightVideoLatinoJob);
-
-    if (mayBeCompleteJob.status === JOB_STATUS.TRANSACTION_SENT) {
-      return res
-          .status(200)
-          .json({
-            msg: `Inflight transaction found, waiting for job [${inflightVideoLatinoJob.jobId}] to complete`,
-          });
-    }
-  }
-
-  // If we get to here, try to pick a job that requires a transaction for both token types
-  let job = await jobQueue.getNextJobForProcessing(
-      chainId,
-      [JOB_STATUS.PRE_PROCESSING_COMPLETE],
-      1,
-      TOKEN_TYPE.TOKENLANDIA
-  );
-
-  if (!job) {
-    // no tokenlandia jobs found, try finding a video latino job
-    job = await jobQueue.getNextJobForProcessing(
-        chainId,
-        [JOB_STATUS.PRE_PROCESSING_COMPLETE],
-        1,
-        TOKEN_TYPE.VIDEO_LATINO
-    );
-  }
-
-  if (!job) {
-    // no tokenlandia or video latino jobs, report this back to the caller
-    return res
-      .status(200)
-      .json({
-        msg: `No jobs found for processing for chain ID [${chainId}]`,
-      });
-  }
-
-  const tokenService =
-      job.tokenType === TOKEN_TYPE.TOKENLANDIA
-      ?
-      newTokenLandiaService(chainId)
-      :
-      newVideoLatinoService(chainId);
-
-  const processedJob = await transactionProcessor(chainId, tokenService).processJob(job);
-
-  return res
-    .status(200)
-    .json({
-      msg: `Processing job [${processedJob.jobId}]`,
-      chainId: chainId,
-      tokenId: processedJob.tokenId,
-      jobId: processedJob.jobId,
-      status: processedJob.status,
-      jobType: processedJob.jobType,
-    });
-});
-
-/**
- * Process the next available competition job
- */
-job.get('/process/completions', async function (req, res) {
-  const {chainId} = req.params;
-
-  // check to see if theres a tokenlandia job that needs completing
-  let job = await jobQueue.getNextJobForProcessing(chainId, [JOB_STATUS.TRANSACTION_SENT]);
-
-  if (!job) {
-    // no tokenlandia jobs found, try finding a video latino job
-    job = await jobQueue.getNextJobForProcessing(
-        chainId,
-        [JOB_STATUS.TRANSACTION_SENT],
-        1,
-        TOKEN_TYPE.VIDEO_LATINO
-    );
-  }
-
-  if (!job) {
-    // no tokenlandia or video latino jobs, report this back to the caller
-    return res
-      .status(200)
-      .json({
-        msg: `No jobs found for processing for chain ID [${chainId}]`
-      });
-  }
-
-  const processedJob = await jobCompletionProcessor(chainId).processJob(job);
-
-  return res
-    .status(200)
-    .json({
-      msg: `Processing job [${processedJob.jobId}]`,
-      chainId: chainId,
-      tokenId: processedJob.tokenId,
-      jobId: processedJob.jobId,
-      status: processedJob.status
-    });
 });
 
 /**
@@ -484,15 +279,15 @@ job.get('/details/:jobId/videolatino', async function (req, res) {
 
   if (!jobDetails) {
     return res
-        .status(400)
-        .json({
-          error: `Unable to find job [${jobId}] on chain [${chainId}]`
-        });
+      .status(400)
+      .json({
+        error: `Unable to find job [${jobId}] on chain [${chainId}]`
+      });
   }
 
   return res
-      .status(200)
-      .json(jobDetails);
+    .status(200)
+    .json(jobDetails);
 });
 
 /**
@@ -502,12 +297,12 @@ job.delete('/cancel', async function (req, res) {
   const {chainId} = req.params;
   const {job_id, token_type} = req.body;
 
-  if (!token_type || (token_type !== TOKEN_TYPE.TOKENLANDIA && token_type !== TOKEN_TYPE.VIDEO_LATINO)) {
+  if (!token_type || !isValidTokenType(token_type)) {
     return res
-        .status(500)
-        .json({
-          error: `'token_type' must be defined in the body and be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
-        });
+      .status(500)
+      .json({
+        error: `'token_type' must be defined in the body and be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
+      });
   }
 
   const jobDetails = await jobQueue.getJobForId(chainId, job_id, token_type);
@@ -523,13 +318,13 @@ job.delete('/cancel', async function (req, res) {
   if (canCancelJob(jobDetails.status)) {
     console.log(`Attempting to cancel ${token_type} job [${job_id}] on chain [${chainId}] with status [${jobDetails.status}]`);
     const updatedJob = await jobQueue.addStatusAndContextToJob(
-        chainId,
-        jobDetails.jobId,
-        JOB_STATUS.JOB_CANCELLED,
-        {
-          cancelled: Date.now()
-        },
-        token_type
+      chainId,
+      jobDetails.jobId,
+      JOB_CANCELLED,
+      {
+        cancelled: Date.now()
+      },
+      token_type
     );
 
     return res
@@ -549,6 +344,15 @@ job.delete('/cancel', async function (req, res) {
  */
 job.get('/:tokenType/summary', async function (req, res) {
   const {chainId, tokenType} = req.params;
+
+  if (!isValidTokenType(tokenType)) {
+    return res
+      .status(500)
+      .json({
+        error: `Invalid 'tokenType' - must be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
+      });
+  }
+
   return res.status(200)
     .json(await jobQueue.getJobTypeSummaryForChainId(chainId, tokenType));
 });
@@ -557,9 +361,23 @@ job.get('/:tokenType/summary', async function (req, res) {
  * Get open jobs for chain
  */
 job.get('/:tokenType/open/summary', async function (req, res) {
-  const { chainId, tokenType } = req.params;
+  const {chainId, tokenType} = req.params;
+
+  if (!isValidTokenType(tokenType)) {
+    return res
+      .status(500)
+      .json({
+        error: `Invalid 'tokenType' - must be either [${TOKEN_TYPE.TOKENLANDIA}] or [${TOKEN_TYPE.VIDEO_LATINO}]`
+      });
+  }
+
   return res.status(200)
     .json(await jobQueue.getIncompleteJobsForChainId(chainId, tokenType));
 });
+
+/**
+ * Attach the job processor routes
+ */
+job.use('/process', require('./process-jobs.routes'))
 
 module.exports = job;

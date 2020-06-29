@@ -1,7 +1,9 @@
 const {
   JOB_STATUS,
+  TOKEN_TYPE,
   canCancelJob,
-  canMoveToStatus
+  canMoveToStatus,
+  isValidTokenType
 } = require('../../src/services/job/jobConstants');
 
 describe('Job constants', async function () {
@@ -30,7 +32,7 @@ describe('Job constants', async function () {
 
     describe('PRE_PROCESSING_COMPLETE', async function () {
       it('success', async function () {
-        [JOB_STATUS.TRANSACTION_SENT, JOB_STATUS.PRE_PROCESSING_FAILED].forEach((status) => {
+        [JOB_STATUS.TRANSACTION_SENT, JOB_STATUS.TRANSACTION_FAILED].forEach((status) => {
           canMoveToStatus(JOB_STATUS.PRE_PROCESSING_COMPLETE, status).should.be.true;
         });
       });
@@ -39,9 +41,9 @@ describe('Job constants', async function () {
         [
           JOB_STATUS.ACCEPTED,
           JOB_STATUS.PRE_PROCESSING_COMPLETE,
+          JOB_STATUS.PRE_PROCESSING_FAILED,
           JOB_STATUS.JOB_COMPLETE,
           JOB_STATUS.JOB_CANCELLED,
-          JOB_STATUS.TRANSACTION_FAILED
         ].forEach((status) => {
           canMoveToStatus(JOB_STATUS.PRE_PROCESSING_COMPLETE, status).should.be.false;
         });
@@ -151,5 +153,18 @@ describe('Job constants', async function () {
     });
 
   });
+
+  describe('isValidTokenType', async function () {
+    it('is valid', async function () {
+      [TOKEN_TYPE.VIDEO_LATINO, TOKEN_TYPE.TOKENLANDIA].forEach((type) => {
+        isValidTokenType(type).should.be.true;
+      });
+    });
+
+    it('is invalid', async function () {
+      isValidTokenType('INVALID_STATE').should.be.false;
+    });
+  });
+
 
 });

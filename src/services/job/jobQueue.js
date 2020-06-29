@@ -10,11 +10,11 @@ class JobQueue {
   }
 
   async addJobToQueue(
-      chainId,
-      jobType,
-      jobData,
-      tokenType = TOKEN_TYPE.TOKENLANDIA,
-      initialState = JOB_STATUS.ACCEPTED
+    chainId,
+    jobType,
+    jobData,
+    tokenType = TOKEN_TYPE.TOKENLANDIA,
+    initialState = JOB_STATUS.ACCEPTED
   ) {
     const {token_id} = jobData;
 
@@ -78,7 +78,7 @@ class JobQueue {
     return this.getJobForId(chainId, jobId, tokenType);
   }
 
-  async getNextJobForProcessing(chainId, statuses, limit = 1, tokenType = TOKEN_TYPE.TOKENLANDIA) {
+  async getNextJobForProcessing(chainId, statuses, tokenType = TOKEN_TYPE.TOKENLANDIA, limit = 1) {
     console.log(`Get next ${tokenType} job for processing for chain [${chainId}]`);
 
     return this.getJobsCollectionRef(tokenType, chainId)
@@ -93,16 +93,6 @@ class JobQueue {
           return null;
         }
 
-        // Single job
-        if (limit === 1) {
-          const document = snapshot.docs[0];
-          return {
-            jobId: document.id,
-            ...document.data()
-          };
-        }
-
-        // Multiple job
         const jobs = [];
         snapshot.forEach(doc => jobs.push({
           jobId: doc.id,
@@ -256,13 +246,12 @@ class JobQueue {
       [JOB_TYPES.TRANSFER_TOKEN]: await getSummaryInfo(JOB_TYPES.TRANSFER_TOKEN),
     };
 
-    return tokenType === TOKEN_TYPE.TOKENLANDIA ?
-        {
-          ...coreJobsSummary,
-          [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
-        }
-        :
-        coreJobsSummary;
+    return tokenType === TOKEN_TYPE.TOKENLANDIA
+      ? {
+        ...coreJobsSummary,
+        [JOB_TYPES.UPDATE_TOKEN]: await getSummaryInfo(JOB_TYPES.UPDATE_TOKEN),
+      }
+      : coreJobsSummary;
   }
 
   async getIncompleteJobsForChainId(chainId, tokenType = TOKEN_TYPE.TOKENLANDIA) {
