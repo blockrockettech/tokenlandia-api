@@ -1,8 +1,6 @@
 const axios = require('axios');
 const _ = require('lodash');
 
-const TokenLandia = require('../contract/tokenlandia');
-
 const {JOB_STATUS} = require('../job/jobConstants');
 
 const BASE_IPFS_URL = 'https://ipfs.infura.io/ipfs';
@@ -27,11 +25,11 @@ class MetadataCreationProcessor {
     try {
       imageHash = await this.ipfsService.uploadImageToIpfs(image);
     } catch (e) {
-      console.error(`Failed to upload image to IPFS for job ID [${jobId}] chain ID [${chainId}] due to`, e);
+      console.error(`Failed to upload image to IPFS for job ID [${jobId}], chain ID [${chainId}], token type [${job.tokenType}] due to`, e);
 
       if (e.message === 'IMAGE_URL_INVALID') {
         console.log('Failing job as image URL invalid');
-        return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_FAILED, e.message);
+        return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_FAILED, e.message, job.tokenType);
       }
 
       return job;
@@ -65,7 +63,7 @@ class MetadataCreationProcessor {
       metadata
     };
 
-    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext);
+    return this.jobQueue.addStatusAndContextToJob(chainId, jobId, JOB_STATUS.PRE_PROCESSING_COMPLETE, newContext, job.tokenType);
   }
 
   async pushUpdateTokenJob(job, tokenService) {

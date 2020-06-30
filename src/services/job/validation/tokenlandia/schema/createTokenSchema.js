@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Joi = require('@hapi/joi');
 
-const countryCodes = require('../../../data/country_codes');
+const countryCodes = require('../../../../../data/country_codes');
 
 const YYYY_MM_DD_PATTERN = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))+$/;
 

@@ -32,7 +32,7 @@ const NEXT_STATES = Object.freeze({
   ],
   [JOB_STATUS.PRE_PROCESSING_COMPLETE]: [
     JOB_STATUS.TRANSACTION_SENT, // success
-    JOB_STATUS.PRE_PROCESSING_FAILED, // failure
+    JOB_STATUS.TRANSACTION_FAILED, // failure
   ],
   [JOB_STATUS.TRANSACTION_SENT]: [
     JOB_STATUS.JOB_COMPLETE,  // success
@@ -44,13 +44,29 @@ const NEXT_STATES = Object.freeze({
   [JOB_STATUS.JOB_CANCELLED]: [], // No valid transition
 });
 
+const TOKEN_TYPE = Object.freeze({
+  TOKENLANDIA: 'TOKENLANDIA',
+  VIDEO_LATINO: 'VIDEO_LATINO',
+});
+
+const ASSET_TYPE = Object.freeze({
+  GENERAL_ASSET: 'GENERAL_ASSET',   // TL core products
+  REAL_ESTATE: 'REAL_ESTATE',       // TL real estate NFTs from the core TL contract
+  VIDEO_LATINO: 'VIDEO_LATINO',     // video NFTs
+});
+
 const canCancelJob = (jobStatus) => _.includes([JOB_STATUS.ACCEPTED], jobStatus);
 
 const canMoveToStatus = (from, to) => _.includes(NEXT_STATES[from], to);
 
+const isValidTokenType = (type) => _.includes(_.values(TOKEN_TYPE), type);
+
 module.exports = {
   JOB_TYPES,
   JOB_STATUS,
+  TOKEN_TYPE,
+  ASSET_TYPE,
   canCancelJob,
-  canMoveToStatus
+  canMoveToStatus,
+  isValidTokenType
 };

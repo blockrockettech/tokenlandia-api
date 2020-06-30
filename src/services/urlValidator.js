@@ -1,4 +1,4 @@
-async function imageUrlValidator(httpClient, url) {
+async function urlValidator(httpClient, url) {
   if (!httpClient || !url) {
     return false;
   }
@@ -13,4 +13,4 @@ async function imageUrlValidator(httpClient, url) {
   return false;
 }
 
-module.exports = imageUrlValidator;
+module.exports = urlValidator;

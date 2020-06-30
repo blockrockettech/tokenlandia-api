@@ -3,12 +3,15 @@ const VideoLatino = require('./contract/videoLatino');
 const EscrowContract = require('./contract/escrow');
 const JobQueue = require('./job/jobQueue');
 const jobConstants = require('./job/jobConstants');
-const jobValidator = require('./job/jobValidator');
+const tokenlandiaJobValidator = require('./job/validation/tokenlandia');
+const videoLatinoJobValidator = require('./job/validation/videoLatino');
+const generalJobValidator = require('./job/validation/general');
 const chainUtils = require('../utils/chain');
 const ipfsClient = require('./ipfs/ipfsClient');
 const IpfsService = require('./ipfs/infura.ipfs.service');
 const {getHttpProvider} = require('../web3/provider');
 const gasStation = require('../web3/gasStation.service');
+const {TOKEN_TYPE} = jobConstants;
 
 const MetadataCreationProcessor = require('./processors/metadataCreationProcessor');
 
@@ -26,16 +29,25 @@ const newTokenLandiaService = (chainId) => new TokenLandia(chainId);
 const newVideoLatinoService = (chainId) => new VideoLatino(chainId);
 const newEscrowService = (chainId) => new EscrowContract(chainId);
 
+const newTokenService = (tokenType, chainId) => {
+  return tokenType === TOKEN_TYPE.TOKENLANDIA
+    ? newTokenLandiaService(chainId)
+    : newVideoLatinoService(chainId);
+};
+
 module.exports = {
   newTokenLandiaService,
   newVideoLatinoService,
+  newTokenService,
   newEscrowService,
   jobQueue,
-  jobValidator,
+  tokenlandiaJobValidator,
+  videoLatinoJobValidator,
+  generalJobValidator,
   jobConstants,
   chainUtils,
   ipfsService,
   metadataCreationProcessor: new MetadataCreationProcessor(jobQueue, ipfsService),
-  transactionProcessor: (chainId) => new TransactionProcessor(jobQueue, newTokenLandiaService(chainId), newEscrowService(chainId), gasStation),
+  transactionProcessor: (chainId, tokenService) => new TransactionProcessor(jobQueue, tokenService, newEscrowService(chainId), gasStation),
   jobCompletionProcessor: (chainId) => new JobCompletionProcessor(getHttpProvider(chainId), jobQueue),
 };

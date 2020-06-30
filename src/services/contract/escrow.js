@@ -1,11 +1,14 @@
 const {ethers} = require('ethers');
 const {
   getEscrowContractAddress,
-  getTokenLandiaContractAddress
+  getTokenLandiaContractAddress,
+  getVideoLatinoContractAddress,
 } = require('../../utils/truffle');
 const EscrowContractTruffleConf = require('../../truffleconf/escrow/TrustedNftEscrow');
 
 const {getWallet, getHttpProvider} = require('../../web3/provider');
+
+const {TOKEN_TYPE} = require('../job/jobConstants');
 
 class EscrowService {
 
@@ -19,10 +22,11 @@ class EscrowService {
       throw new Error(`Invalid chain ID [${chainId}]`);
     }
 
-    this.nftContractAddress = getTokenLandiaContractAddress(this.chainId);
+    this.tokenlandiaContractAddress = getTokenLandiaContractAddress(this.chainId);
+    this.videoLatinoContractAddress = getVideoLatinoContractAddress(this.chainId);
     this.escrowContractAddress = getEscrowContractAddress(this.chainId);
 
-    if (!this.nftContractAddress || !this.escrowContractAddress) {
+    if (!this.tokenlandiaContractAddress || !this.videoLatinoContractAddress || !this.escrowContractAddress) {
       throw new Error(`No contracts for chain ID '${chainId}'`);
     }
 
@@ -33,17 +37,29 @@ class EscrowService {
     );
   }
 
-  async isTokenEscrowed(tokenId) {
+  getNftContractAddress(tokenType) {
+    return tokenType === TOKEN_TYPE.TOKENLANDIA
+        ?
+        this.tokenlandiaContractAddress
+        :
+        this.videoLatinoContractAddress;
+  }
+
+  async isTokenEscrowed(tokenId, tokenType = TOKEN_TYPE.TOKENLANDIA) {
     try {
-      return await this.contract.isTokenEscrowed(this.nftContractAddress, tokenId);
+      return await this.contract.isTokenEscrowed(this.getNftContractAddress(tokenType), tokenId);
     } catch (e) {
       console.error('Contract call isTokenEscrowed failed',e);
       return false;
     }
   }
 
-  async transferOwnership(tokenId, recipient) {
-    return await this.contract.transferOwnership(this.nftContractAddress, tokenId, recipient);
+  async transferOwnership(tokenId, recipient, tokenType = TOKEN_TYPE.TOKENLANDIA) {
+    return await this.contract.transferOwnership(
+        this.getNftContractAddress(tokenType),
+        tokenId,
+        recipient
+    );
   }
 
 }

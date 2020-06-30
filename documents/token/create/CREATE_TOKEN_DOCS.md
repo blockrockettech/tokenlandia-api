@@ -1,8 +1,23 @@
 ## Creating New Tokens
 
-This API allows you to create new tokens
+This documents how the API allows you to create new tokens.
 
-#### Submit Job
+Both `Tokenlandia` and `VideoLatino` tokens can be created using the correct endpoint below.
+
+### Validation 
+
+Before a job is accepted several things are validated based on the token type.
+
+If any of these things fail a HTTP `400` will be returned with the reason for the failure.
+
+* No existing create job should exist for that token
+* No existing token should already exist with that ID
+* The post body should be valid
+
+![Job Accepted Flow](CreateToken.png)
+
+&nbsp;
+### Creating a Tokenlandia token
 
 * `HTTP` `POST` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/submit/createtoken/general?key={uuid-key}`
 
@@ -76,22 +91,71 @@ Sample successful job created `JSON` response
 {
     "error": "Duplicate Job found",
     "existingJob": {
-	    ...the exsiting job
+	    ...the exisiting job
     }
 }
 ```
 
-##### Validation
+&nbsp;
+### Creating a VideoLatino token
 
-Before a job is accepted several things are validated.
+* `HTTP` `POST` `https://api-56b6el2v7a-uc.a.run.app/v1/network/4/job/submit/createtoken/videolatino?key={uuid-key}`
 
-If any of these things fail a HTTP `400` will be returned with the reason for the failure.
+Sample request body
 
-* No existing create job should exist for that token
-* No existing token should already exist with that ID
-* The post body should be valid
+```json
+{
+    "token_id": 4,
+    "coo": "GBR",
+    "celebrity_initials": "RSA",
+    "name": "token 4",
+    "description": "token 4 description",
+    "image": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+    "video_link": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+    "video_category": "PubliVideos",
+    "video_language": "EN",
+    "celebrity_name": "Shakira",
+    "creation_location": "London",
+    "creation_date": "2020-06-24",
+    "business_brand": "amazing records"
+}
+```
 
-![Job Accepted Flow](CreateToken.png)
+--------------------
+
+Sample successful job created `JSON` response
+
+```json
+{{
+     "jobId": "MeU44ME3t6GhxkhtEWOF",
+     "chainId": "4",
+     "tokenId": "4",
+     "status": "ACCEPTED",
+     "jobType": "CREATE_TOKEN",
+     "tokenType": "VIDEO_LATINO",
+     "createdDate": 1593097189786,
+     "context": {
+         "ACCEPTED": {
+             "token_id": 4,
+             "coo": "GBR",
+             "celebrity_initials": "RSA",
+             "name": "token 4",
+             "description": "token 4 description",
+             "image": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+             "video_link": "https://ichef.bbci.co.uk/news/320/cpsprodpb/14C0F/production/_110970058_gettyimages-147807964-1.jpg",
+             "video_category": "PubliVideos",
+             "video_language": "EN",
+             "celebrity_name": "Shakira",
+             "creation_location": "London",
+             "creation_date": "2020-06-24",
+             "business_brand": "amazing records",
+             "type": "VIDEO_LATINO",
+             "product_id": "GBR-RSA-4",
+             "product_code": "GBR-RSA"
+         }
+     }
+ }
+```
 
 #### Deleting a Job
 
@@ -103,6 +167,9 @@ With body
 
 ```json
 {
-    "job_id": "<job-id>"
+    "job_id": "<job-id>",
+    "token_type": "<token-type>"
 }
 ```
+
+`token_type` needs to be either `TOKENLANDIA` or `VIDEO_LATINO`
