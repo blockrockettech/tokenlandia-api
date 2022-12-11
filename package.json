@@ -20,7 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "ethers": "^4.0.44",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-bearer-token": "^2.4.0",
     "ipfs-http-client": "^41.0.0",
     "lodash": "^4.17.15",
